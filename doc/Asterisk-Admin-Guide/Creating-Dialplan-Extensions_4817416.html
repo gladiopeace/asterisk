@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Creating Dialplan Extensions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Basic-PBX-Functionality_4817469.html">Basic PBX Functionality</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Creating Dialplan Extensions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Apr 28, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The last things we need to do to enable Alice and Bob to call each other is to configure a couple of extensions in the dialplan.</p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <h5 id="CreatingDialplanExtensions-WhatisanExtension%3F">What is an Extension?</h5>
+<p>When dealing with Asterisk, the term extension does not represent a physical device such as a phone. An extension is simply a set of actions in the dialplan which may or may not write a physical device. In addition to writing a phone, an extensions might be used for such things auto-attendant menus and conference bridges. In this guide we will be careful to use the words phone or device when referring to the physical phone, and extension when referencing the set of instructions in the Asterisk dialplan.</p>
+                    </div>
+    </div>
+
+<p>Let's take a quick look at the dialplan, and then add two extensions.</p>
+
+<p>Open <strong>extensions.conf</strong>, and take a quick look at the file. Near the top of the file, you'll see some general-purpose sections named [general] and [globals]. Any sections in the dialplan beneath those two sections is known as a <strong>context</strong>. The sample <strong>extensions.conf</strong> file has a number of other contexts, with names like [demo] and [default].</p>
+
+<p>We'll cover contexts more in <a href="Dialplan-Fundamentals_4817412.html">Dialplan Fundamentals</a>, but for now you should know that each phone or outside connection in Asterisk points at a single context. If the dialed extension does not exist in the specified context, Asterisk will reject the call.</p>
+
+<p>Go to the bottom of your <strong>extensions.conf</strong> file, and add a new context named [users].</p>
+
+<h5 id="CreatingDialplanExtensions-NamingYourDialplanContexts">Naming Your Dialplan Contexts</h5>
+
+<p>There's nothing special about the name <strong>users</strong> for this context. It could have been named <strong>strawberry_milkshake</strong>, and it would have behaved exactly the same way. It is considered best practice, however, to name your contexts for the types of extensions that are contained in that context. Since this context contains extensions for the users of our PBX system, we'll call our context <strong>users</strong>.</p>
+
+<p>Underneath that context name, we'll create an extesion numbered <strong>6001</strong> which attempts to ring Alice's phone for twenty seconds, and an extension <strong>6002</strong> which attempts to rings Bob's phone for twenty seconds.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[users]
+exten=&gt;6001,1,Dial(SIP/demo-alice,20)
+exten=&gt;6002,1,Dial(SIP/demo-bob,20)</pre>
+</div></div>
+<p>After adding that section to <strong>extensions.conf</strong>, go to the Asterisk command-line interface and tell Asterisk to reload the dialplan by typing the command <strong>dialplan reload</strong>. You can verify that Asterisk successfully read the configuration file by typing <strong>dialplan show users</strong> at the CLI.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; dialplan show users
+[ Context &#39;users&#39; created by &#39;pbx_config&#39; ]
+  &#39;6001&#39; =&gt;         1. Dial(SIP/demo-alice,20)                    [pbx_config]
+  &#39;6002&#39; =&gt;         1. Dial(SIP/demo-bob,20)                      [pbx_config]
+
+-= 2 extensions (2 priorities) in 1 context. =-  
+</pre>
+</div></div>
+
+<p>Now we're ready to make a test call!</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

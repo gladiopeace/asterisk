@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Jabber in Asterisk</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Historical-Pages_20189322.html">Historical Pages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Jabber in Asterisk
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Aug 08, 2012
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                        <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>This information applies to Asterisk 10 and earlier versions.  XMPP Support for Asterisk 11 has been completely rewritten</p>
+                    </div>
+    </div>
+
+
+<p><a href="http://en.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol" class="external-link" rel="nofollow">XMPP</a> (Jabber) is an XML based protocol primarily for presence and messaging.  It is an open standard and there are several open server implementations, such as ejabberd, jabberd(2), openfire, and others, as well as several open source clients, Psi, gajim, gaim etc. XMPP differs from other IM applications as it is immensly extendable.  This allows us to easily integrate Asterisk with XMPP. The Asterisk XMPP Interface is provided by res_jabber.so.</p>
+
+<p><code>res_jabber</code> allows for Asterisk to connect to any XMPP (Jabber) server and is also used to provide the connection interface for <code>chan_jingle</code> and <code>chan_gtalk</code>.</p>
+
+<p>Functions (<code>JABBER_STATUS</code>, <code>JABBER_RECEIVE</code>) and applications (<code>JabberSend</code>) are exposed to the dialplan.</p>
+
+<p>You'll find examples of how to use these functions/applications hereafter. We assume that 'asterisk-xmpp' is properly configured in <code>jabber.conf</code>.</p>
+
+<h5 id="JabberinAsterisk-JabberSend"><code>JabberSend</code></h5>
+
+<p><code>JabberSend</code> sends an XMPP message to a buddy. Example:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.ael</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+context default {
+	_XXXX =&gt; {
+	      JabberSend(asterisk-xmpp,buddy@gmail.com,${CALLERID(name)} is calling ${EXTEN});
+	      Dial(SIP/${EXTEN}, 30);
+	      Hangup();
+	}
+}
+</pre>
+</div></div>
+
+<h5 id="JabberinAsterisk-JABBER_STATUS"><code>JABBER_STATUS</code></h5>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>As of Asterisk 1.6.0, the corresponding application <code>JabberStatus</code> is still available, but marked as deprecated in favor of this function.</p>
+                    </div>
+    </div>
+
+
+<p><code>JABBER_STATUS</code> stores the status of a buddy in a dialplan variable for further use. Here is an AEL example of how to use it:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.ael</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+1234 =&gt; {
+	Set(STATUS=${JABBER_STATUS(asterisk-xmpp,buddy@gmail.com)});
+	if (${STATUS}=1) {
+		NoOp(User is online and active, ring his Gtalk client.);
+		Dial(Gtalk/asterisk-xmpp/buddy@gmail.com);
+	} else {
+		NoOp(Prefer the SIP phone);
+		Dial(SIP/1234);
+	}
+}
+</pre>
+</div></div>
+
+<h5 id="JabberinAsterisk-JABBER_RECEIVE"><code>JABBER_RECEIVE</code></h5>
+
+<p><code>JABBER_RECEIVE</code> waits (up to X seconds) for a XMPP message and returns its content. Used along with <code>JabberSend</code> (or <code>SendText</code>, provided it's implemented in the corresponding channel type), <code>JABBER_RECEIVE</code> helps Asterisk interact with users while calls flow through the dialplan.</p>
+
+<p><code>JABBER_RECEIVE</code>/<code>JabberSend</code> are not tied to the XMPP media modules <code>chan_gtalk</code> and <code>chan_jingle</code>, and can be used anywhere in the dialplan.  In the following example, calls targeted to extension 1234 (be it accessed from SIP, DAHDI or whatever channel type) are controlled by user bob@domain.com. Asterisk notifies him that a call is coming, and asks him to take an action. This dialog takes place over an XMPP chat.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.ael</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+context from-ext {
+	1234 =&gt; {
+		Answer();
+		JabberSend(asterisk-xmpp,bob@jabber.org,Call from $CALLERID(num) - choose an option to process the call);
+		JabberSend(asterisk-xmpp,bob@jabber.org,1 : forward to cellphone);
+		JabberSend(asterisk-xmpp,bob@jabber.org,2 : forward to work phone);
+		JabberSend(asterisk-xmpp,bob@jabber.org,Default action : forward to your voicemail);
+		Set(OPTION=${JABBER_RECEIVE(asterisk-xmpp,bob@jabber.org,20)});
+		switch (${OPTION}) {
+			case 1:
+				JabberSend(asterisk-xmpp,bob@jabber.org,(Calling cellphone...);
+				Dial(SIP/987654321);
+				break;
+			case 2:
+				JabberSend(asterisk-xmpp,bob@jabber.org,(Calling workphone...);
+				Dial(SIP/${EXTEN});
+				break;
+			default:
+				Voicemail(${EXTEN}|u)
+		}
+	}
+}
+</pre>
+</div></div>
+
+<p>When calling from a GoogleTalk or Jingle client, the <code>CALLERID(name)</code> is set to the XMPP id of the caller (i.e. his JID). In the following example, Asterisk chats back with the caller identified by the caller id. We also take advantage of the <code>SendText</code> implementation in <code>chan_gtalk</code> (available in <code>chan_jingle</code>, and <code>chan_sip</code> as well), to allow the caller to establish SIP calls from his GoogleTalk client:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.ael</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+context gtalk-in {
+	s =&gt; {
+	  NoOp(Caller id : ${CALLERID(all)});
+	  Answer();
+	  SendText(Please enter the number you wish to call);
+	  Set(NEWEXTEN=${JABBER_RECEIVE(asterisk-xmpp,${CALLERID(name)})});
+	  SendText(Calling ${NEWEXTEN} ...);
+	  Dial(SIP/${NEWEXTEN);
+	  Hangup();
+	}
+}
+</pre>
+</div></div>
+
+<p>The maintainer of <code>res_jabber</code> is Philippe Sultan &lt;philippe.sultan@gmail.com&gt;.</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-21463201"></a>
+                                    <font class="smallfont"><p>is there any plan to add raw-udp support?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by zuhairraza at Sep 07, 2012 10:56
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21463203"></a>
+                                    <font class="smallfont"><p>There's currently no immediate plans to add raw-udp support to the new chan_motif channel driver, I may do it in my spare time since it should be relatively easy.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Sep 08, 2012 12:38
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21463204"></a>
+                                    <font class="smallfont"><p>Hi Joshua, </p>
+
+<p>I hope you will get that spare time soon <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/> I was waiting for jingle audio support in Asterisk for long time. </p>
+
+<p>It works with jitsi like a charm, but not with Spark's jitsi-jingle plugin which is based on raw-udp transport. </p>
+
+<p>Thank you for the response. </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by zuhairraza at Sep 08, 2012 14:54
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

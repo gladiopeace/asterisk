@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Using Templates</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Configuration-Files_4817443.html">Asterisk Configuration Files</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Templates_4817463.html">Templates</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Using Templates
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Apr 28, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>To use a template when creating another section, simply put the template name in parentheses after the section heading name, as shown in the example below. If you want to inherit from multiple templates, use commas to separate the template names).</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[template-name](!)
+setting=value
+
+[template-2](!)
+setting2=value2
+
+[section-name](template-name,template-2)
+setting3=value3</pre>
+</div></div>
+<p>The newly-created section will inherit all the values and objects defined in the template(s), as well as any new settings or objects defined in the newly-created section. The settings and objects defined in the newly-created section override settings or objects of the same name from the templates. Consider this example:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[test-one](!)
+permit=192.168.0.2
+host=alpha.example.com
+deny=192.168.0.1
+
+[test-two](!)
+permit=192.168.1.2
+host=bravo.example.com
+deny=192.168.1.1
+
+[test-three](test-one,test-two)
+permit=192.168.3.1
+host=charlie.example.com</pre>
+</div></div>
+<p>The [test-three] section will be processed as though it had been written in the following way:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[test-three]
+permit=192.168.0.2
+host=alpha.example.com
+deny=192.168.0.1
+permit=192.168.1.2
+host=bravo.example.com
+deny=192.168.1.1
+permit=192.168.3.1
+host=charlie.example.com</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-8127073"></a>
+                                    <font class="smallfont"><p>Shouldn't section <a class="createlink" href="/wiki/pages/createpage.action?spaceKey=AST&amp;title=test-three">test-three</a>(foo,bar) read <a class="createlink" href="/wiki/pages/createpage.action?spaceKey=AST&amp;title=test-three">test-three</a>(test-one,test-two) instead?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jpms at Nov 07, 2010 23:33
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-8127082"></a>
+                                    <font class="smallfont"><p>IMO this is actually a bad example.  Having multiple host definitions within a peer is not a valid configuration.  Same can be said about deny, permit, deny, permit logic.</p>
+
+<p>sip.conf.sample currently has the following example:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+
+[basic-options](!)                ; a template
+        dtmfmode=rfc2833
+        context=from-office
+        type=friend
+
+[natted-phone](!,basic-options)   ; another template inheriting basic-options
+        nat=yes
+        directmedia=no
+        host=dynamic
+
+[public-phone](!,basic-options)   ; another template inheriting basic-options
+        nat=no
+        directmedia=yes
+
+[my-codecs](!)                    ; a template for my preferred codecs
+        disallow=all
+        allow=ilbc
+        allow=g729
+        allow=gsm
+        allow=g723
+        allow=ulaw
+
+[ulaw-phone](!)                   ; and another one for ulaw-only
+        disallow=all
+        allow=ulaw
+
+; and finally instantiate a few phones
+;
+; [2133](natted-phone,my-codecs)
+;        secret = peekaboo
+; [2134](natted-phone,ulaw-phone)
+;        secret = not_very_secret
+; [2136](public-phone,ulaw-phone)
+;        secret = not_very_secret_either
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by pabelanger at Nov 08, 2010 08:19
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-8814599"></a>
+                                    <font class="smallfont"><p>True, it's not the best example.  However, since it was blatantly wrong, I went ahead and made the suggested fix.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by russell at Nov 08, 2010 14:18
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

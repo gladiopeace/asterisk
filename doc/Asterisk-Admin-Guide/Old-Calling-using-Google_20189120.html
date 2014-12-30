@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Old Calling using Google</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Historical-Pages_20189322.html">Historical Pages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Old Calling using Google
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Jul 24, 2012
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                        <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            
+<p>Note that Google's changes to their Google Voice system have rendered the functionality of chan_gtalk and res_jabber unreliable.  Additionally, ongoing maintenance of of chan_gtalk and res_jabber for Asterisk versions prior to Asterisk 11 is not provided by Digium and is instead in the charge of the community.  For more information, please see the current page <a href="Calling-using-Google_5996698.html">Calling using Google</a>, where things have changed, as well as the blog posting <a href="http://blogs.digium.com/2012/07/24/asterisk-11-development-the-motive-for-motif/" class="external-link" rel="nofollow">http://blogs.digium.com/2012/07/24/asterisk-11-development-the-motive-for-motif/</a></p>
+                    </div>
+    </div>
+
+
+<h2 id="OldCallingusingGoogle-Prerequisites">Prerequisites</h2>
+
+<p>Asterisk communicates with Google Voice and Google Talk using the chan_gtalk Channel Driver and the res_jabber Resource module.  Before proceeding, please ensure that both are compiled and part of your installation.  Compilation of res_jabber and chan_gtalk for use with Google Talk / Voice are dependant on the iksemel library files as well as the OpenSSL development libraries presence on your system.</p>
+
+<p>Calling using Google Voice or via the Google Talk web client requires the use of Asterisk 1.8.1.1 or greater.  The 1.6.x versions of Asterisk only support calls made using the legacy GoogleTalk external client.</p>
+
+<p>For basic calling between Google Talk web clients, you need a Google Mail account.</p>
+
+<p>For calling to and from the PSTN, you will need a Google Voice account.</p>
+
+<p>In your Google account, you'll want to change the Chat setting from the default of &quot;Automatically allow people that I communicate with often to chat with me and see when I'm online&quot; to the second option of &quot;Only allow people that I've explicitly approved to chat with me and see when I'm online.&quot;</p>
+
+<p>IPv6 is currently not supported.  Use of IPv4 is required.</p>
+
+<p>Google Voice can now be used with Google Apps accounts.</p>
+
+<h2 id="OldCallingusingGoogle-Gtalkconfiguration">Gtalk configuration</h2>
+
+<p>The chan_gtalk Channel Driver is configured with the gtalk.conf configuration file, typically located in /etc/asterisk.  What follows is the minimum required configuration for successful operation.</p>
+
+<h5 id="OldCallingusingGoogle-MinimumGtalkConfiguration">Minimum Gtalk Configuration</h5>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[general]
+context=local
+allowguest=yes
+bindaddr=0.0.0.0
+externip=216.208.246.1
+
+[guest]
+disallow=all
+allow=ulaw
+context=local
+connection=asterisk
+</pre>
+</div></div>
+
+<p>This general section of this configuration specifies several items.</p>
+<ol>
+	<li>That calls will terminate to or originate from the <strong>local</strong> context; context=local</li>
+	<li>That guest calls are allowd; allowguest=yes</li>
+	<li>That RTP sessions will be bound to a local address (an IPv4 address must be present); bindaddr=0.0.0.0</li>
+	<li>(optional) That your external (the one outside of your NAT) IP address is defined; externip=216.208.246.1</li>
+</ol>
+
+
+<p>The guest section of this configuration specifies several items.</p>
+<ol>
+	<li>That no codecs are allowed; disallow=all</li>
+	<li>That the ulaw codec is explicitly allowed; allow=ulaw</li>
+	<li>That calls received by the guest user will be terminated into the <strong>local</strong> context; context=local</li>
+	<li>That the Jabber connection used for guest calls is called &quot;asterisk;&quot; connection=asterisk</li>
+</ol>
+
+
+<h2 id="OldCallingusingGoogle-JabberConfiguration">Jabber Configuration</h2>
+
+<p>The res_jabber Resource is configured with the jabber.conf configuration file, typically located in /etc/asterisk.  What follows is the minimum required configuration for successful operation.</p>
+
+<h5 id="OldCallingusingGoogle-MinimumJabberConfiguration">Minimum Jabber Configuration</h5>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[general]
+autoregister=yes
+
+[asterisk]
+type=client
+serverhost=talk.google.com
+username=your_google_username@gmail.com/Talk
+secret=your_google_password
+port=5222
+usetls=yes
+usesasl=yes
+statusmessage=&quot;I am an Asterisk Server&quot;
+timeout=100
+</pre>
+</div></div>
+
+<p>The general section of this configuration specifies several items.</p>
+<ol>
+	<li>Debug mode is enabled, so that XMPP messages can be seen on the Asterisk CLI; debug=yes</li>
+	<li>Automated buddy pruning is disabled, otherwise buddies will be automatically removed from your list; autoprune=no</li>
+	<li>Automated registration of users from the buddy list is enabled; autoregister=yes</li>
+</ol>
+
+
+<p>The asterisk section of this configuration specifies several items.</p>
+<ol>
+	<li>The type is set to client, as we're connecting to Google as a service; type=client</li>
+	<li>The serverhost is Google's talk server; serverhost=talk.google.com</li>
+	<li>Our username is configured as your_google_username@gmail.com/resource, where our resource is &quot;Talk;&quot; username=your_google_username@gmail.com/Talk</li>
+	<li>Our password is configured using the secret option; secret=your_google_password</li>
+	<li>Google's talk service operates on port 5222; port=5222</li>
+	<li>TLS encryption is required by Google; usetls=yes</li>
+	<li>Simple Authentication and Security Layer (SASL) is used by Google; usesasl=yes</li>
+	<li>We set a status message so other Google chat users can see that we're an Asterisk server; statusmessage=&quot;I am an Asterisk Server&quot;</li>
+	<li>We set a timeout for receiving message from Google that allows for plenty of time in the event of network delay; timeout=100</li>
+</ol>
+
+
+
+<h2 id="OldCallingusingGoogle-Phoneconfiguration">Phone configuration</h2>
+
+<p>Now, let's place a phone into the same context as the Google calls.  The configuration of a SIP device for this purpose would, in sip.conf, typically located in /etc/asterisk, look something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[malcolm]
+type=peer
+secret=my_secure_password
+host=dynamic
+context=local
+</pre>
+</div></div>
+
+<h2 id="OldCallingusingGoogle-Dialplanconfiguration">Dialplan configuration</h2>
+
+<h5 id="OldCallingusingGoogle-Incomingcalls">Incoming calls</h5>
+
+<p>Next, let's configure our dialplan to receive an incoming call from Google and route it to the SIP phone we created.  To do this, our dialplan, extensions.conf, typically located in /etc/asterisk, would look like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; s,1,Answer()
+exten =&gt; s,n,Wait(2)
+exten =&gt; s,n,SendDTMF(1)
+exten =&gt; s,n,Dial(SIP/malcolm,20)
+</pre>
+</div></div>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Note that you might have to adjust the &quot;Wait&quot; time from 2 (in seconds) to something larger, like 8, depending on the current mood of Google.  Otherwise, your incoming calls might not be successfully picked up.</p>
+                    </div>
+    </div>
+
+
+<p>This example uses the &quot;s&quot; unmatched extension, because Google does not forward any DID when it sends the call to Asterisk.</p>
+
+<p>In this example, we're Answering the call, Waiting 2 seconds, sending the DTMF &quot;1&quot; back to Google, and <strong>then</strong> dialing the call.<br />
+We do this, because inbound calls from Google enable, even if it's disabled in your Google Voice control panel, call screening.<br />
+Without this SendDTMF event, you'll have to confirm with Google whether or not you want to answer the call.</p>
+
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Using Google&#39;s voicemail</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Another method for accomplishing the sending of the DTMF event is to use the D dial option.  The D option tells Asterisk to send a specified DTMF string after the called party has answered.  DTMF events specified before a colon are sent to the <strong>called</strong> party.  DTMF events specified after a colon are sent to the <strong>calling</strong> party.</p>
+
+<p>In this example then, one does not need to actually answer the call first.  This means that if the called party doesn't answer, Google will resort to sending the call to one's Google Voice voicemail box, instead of leaving it at Asterisk.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+exten =&gt; s,1,Dial(SIP/malcolm,20,D(:1))
+</pre>
+</div></div>
+                    </div>
+    </div>
+
+
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Filtering Caller ID</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+
+<p>The inbound CallerID from Google is going to look a bit nasty, e.g.:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>+15555551212@voice.google.com/srvres-MTAuMjE4LjIuMTk3Ojk4MzM=
+</pre>
+</div></div>
+
+<p>Your VoIP client (SIPDroid) might not like this, so let's simplify that Caller ID a bit, and make it more presentable for your phone's display.  Here's the example that we'll step through:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; s,1,Set(crazygooglecid=${CALLERID(name)})
+exten =&gt; s,n,Set(stripcrazysuffix=${CUT(crazygooglecid,@,1)})
+exten =&gt; s,n,Set(CALLERID(all)=${stripcrazysuffix})
+exten =&gt; s,n,Dial(SIP/malcolm,20,D(:1))
+</pre>
+</div></div>
+
+<p>First, we set a variable called <strong>crazygooglecid</strong> to be equal to the name field of the CALLERID function.  Next, we use the CUT function to grab everything that's before the @ symbol, and save it in a new variable called <strong>stripcrazysuffix.</strong>  We'll set this new variable to the CALLERID that we're going to use for our Dial.  Finally, we'll actually Dial our internal destination.</p>
+                    </div>
+    </div>
+
+
+<h5 id="OldCallingusingGoogle-Outgoingcalls">Outgoing calls</h5>
+
+<p>Outgoing calls to Google Talk users take the form of:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; 100,1,Dial(gtalk/asterisk/mybuddy@gmail.com)
+</pre>
+</div></div>
+
+<p>Where the technology is &quot;gtalk,&quot; the dialing peer is &quot;asterisk&quot; as defined in jabber.conf, and the dial string is the Google account name.</p>
+
+<p>Outgoing calls made to Google Voice take the form of:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; _1XXXXXXXXXX,1,Dial(gtalk/asterisk/+${EXTEN}@voice.google.com)
+</pre>
+</div></div>
+
+<p>Where the technology is &quot;gtalk,&quot; the dialing peer is &quot;asterisk&quot; as defined in jabber.conf, and the dial string is a full E.164 number (plus character followed by country code, followed by the rest of the digits).</p>
+
+<h3 id="OldCallingusingGoogle-InteractiveVoicewithTextResponse%28IVTR%29">Interactive Voice with Text Response (IVTR)</h3>
+
+<p>Because the Google Talk web client provides both audio and text interface, you can use it to provide a text-based way of traversing Interactive Voice Response (IVR) menus.  This is necessary since the client does not have any DTMF inputs.</p>
+
+<p>In the following dialplan example, we will answer the call, wait a bit, send some text that will show up in the caller's Google Talk client, play back a prompt, capture the caller's text-based response, and then dial the appropriate SIP device.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+exten =&gt; s,1,Answer()
+exten =&gt; s,n,SendText(&quot;If you know the extension of the party you wish to reach, dial it now.&quot;)
+exten =&gt; s,n,Background(if-u-know-ext-dial)
+exten =&gt; s,n,Set(OPTION=${JABBER_RECEIVE(asterisk,${CALLERID(name)::15},5)})
+exten =&gt; s,n,Dial(SIP/${OPTION},20)
+</pre>
+</div></div>
+
+<p>Note that with the JABBER_RECEIVE function, we're receiving the text from <strong>asterisk</strong> which we defined earlier in this page as our connection to Google.  We're also specifying with <strong>${CALLERID(name)::15}</strong> that we want to strip off the last 15 characters from the CallerID name string - which is the number of characters that Google is appending, as of this writing, to represent an internal call ID number, and that we want to wait <strong>5</strong> seconds for a response.</p>
+
+<h3 id="OldCallingusingGoogle-Webinar">Webinar</h3>
+
+<p>A Webinar was conducted on Tuesday, March 24, 2011 detailing Asterisk configuration for calling using Google as well as several usage cases.  A copy of the slides, in PDF format, is available here - <a href="attachments/20189120/20414468.pdf">Google Calling Webinar - Public.pdf</a></p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/20189120/20414468.pdf">Google Calling Webinar - Public.pdf</a> (application/pdf)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

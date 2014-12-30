@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Using The include and exec Constructs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Configuration-Files_4817443.html">Asterisk Configuration Files</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Using The include and exec Constructs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Apr 28, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>There are two other constructs we can use within our configuration files. They are <strong>#include</strong> and <strong>#exec</strong>.</p>
+
+<p>The <strong>#include</strong> construct tells Asterisk to read in the contents of another configuration file, and act as though the contents were at this location in this configuration file. The syntax is <strong>#include filename</strong>, where <strong>filename</strong> is the name of the file you'd like to include. This construct is most often used to break a large configuration file into smaller pieces, so that it's more manageable.</p>
+
+<p>The <strong>#exec</strong> takes this one step further. It allows you to execute an external program, and place the output of that program into the current configuration file. The syntax is <strong>#exec program</strong>, where <strong>program</strong> is the name of the program you'd like to execute.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+
+<h4 id="UsingTheincludeandexecConstructs-Enabling%23execFunctionality">Enabling #exec Functionality</h4>
+<p>The #exec construct is not enabled by default, as it has some risks both in terms of performance and security. To enable this functionality, go to the <strong>asterisk.conf</strong> configuration file (by default located in <em>/etc/asterisk</em>) and set <strong>execincludes=yes</strong> in the <strong>[options]</strong> section. By default both the <strong>[options]</strong> section heading and the <strong>execincludes=yes</strong> option have been commented out, you you'll need to remove the semicolon from the beginning of both lines.</p>
+                    </div>
+    </div>
+
+
+<p>Let's look at example of both constructs in action.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[section-name]
+setting=true
+#include otherconfig.conf      ; include another configuration file
+#exec otherprogram             ; include output of otherprogram</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-13076159"></a>
+                                    <font class="smallfont"><p>Hi, I have a request please. someone could put an example of a shell script for the extensions.conf using #exec. I have a simple script, which use echo add an exten, but it doesn´t work...please help</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by laar789 at Apr 12, 2011 11:54
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-13076226"></a>
+                                    <font class="smallfont"><p>Something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>#exec /usr/bin/curl -s http://example.com/mystuff &gt; /etc/asterisk/mystuff
+#include mystuff
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Apr 19, 2011 11:43
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21463575"></a>
+                                    <font class="smallfont"><p><strong>exec</strong> and <strong>include</strong> constructs don't work on the following config files:</p>
+<ul>
+	<li>asterisk.conf</li>
+	<li>modules.conf</li>
+</ul></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ovi at Sep 26, 2012 13:38
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21463576"></a>
+                                    <font class="smallfont"><p>Please post this issue to <a class="external-link" href="https://issues.asterisk.org/jira" rel="nofollow">https://issues.asterisk.org/jira</a> to document these exceptions to the wiki, code, and other documentation.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Sep 26, 2012 13:43
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

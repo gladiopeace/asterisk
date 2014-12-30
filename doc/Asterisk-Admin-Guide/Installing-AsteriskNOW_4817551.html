@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Installing AsteriskNOW</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk_4817553.html">Installing Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Installing AsteriskNOW
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  mdavenport  on Mar 19, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Thank you for downloading AsteriskNOW. This Linux distribution has been carefully customized and tested with Asterisk, and installs all of the packages needed for its use. It is the officially recommended development and runtime platform for Asterisk and Digium hardware, including Digium phones.</p>
+
+<p>This guide provides a brief overview of installation, configuration, and maintenance of your system.</p>
+
+<p>More information is available at <a href="http://wiki.centos.org/" class="external-link" rel="nofollow">http://wiki.centos.org/</a>.</p>
+
+<p>Please report any bugs at <a href="https://issues.asterisk.org/jira" class="external-link" rel="nofollow">https://issues.asterisk.org/jira</a></p>
+
+<h3 id="InstallingAsteriskNOW-Installation">Installation</h3>
+
+<ul>
+	<li>Burn the AsteriskNOW DVD image to DVD disc and then boot from the DVD to begin the installation process.
+	<ul>
+		<li>If you are unfamiliar with burning disc images, the Ubuntu community has a great Burning ISO Howto available at <a href="https://help.ubuntu.com/community/BurningIsoHowto" class="external-link" rel="nofollow">https://help.ubuntu.com/community/BurningIsoHowto</a>.</li>
+		<li>If you are unfamiliar with booting to DVD, the Ubuntu community has a wonderful Boot From DVD HOWTO available at <a href="https://help.ubuntu.com/community/BootFromCD" class="external-link" rel="nofollow">https://help.ubuntu.com/community/BootFromCD</a>.</li>
+	</ul>
+	</li>
+</ul>
+
+
+<ul>
+	<li>After booting from the AsteriskNOW DVD, you will be presented with the following screen and options for an installation with, or without the FreePBX web interface.  This QuickStart assumes that the FreePBX web interface has been installed.  To do this, selection option 1 and press &lt;ENTER&gt;:</li>
+</ul>
+
+
+<p><img class="confluence-embedded-image image-center" src="attachments/4817551/22937605.png" data-image-src="attachments/4817551/22937605.png"></p>
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>This will begin the automated graphical installation process.</p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>During the installation, you are first presented with an option for setting the system Time Zone:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937606.png" data-image-src="attachments/4817551/22937606.png">** Choose the location that is nearest to you and move to the next screen.</li>
+</ul>
+
+
+<ul>
+	<li>Next, you will be prompted to set a root password:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937607.png" data-image-src="attachments/4817551/22937607.png">
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            
+<p>The 'root' user is the administrative account for Linux systems.  Most system configuration requires 'root' access.  If this password is lost, it is impossible to recover.  It is recommend that your password contain a mix of lowercase and UPPERCASE letters, numbers, and/or symbols.  Or, if you're into entropy, try a <a href="http://xkcd.com/936/" class="external-link" rel="nofollow">pass phrase</a>.</p>
+                    </div>
+    </div>
+</li>
+</ul>
+
+
+<ul>
+	<li>Then, you will choose your Hard Disk Layout:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937604.png" data-image-src="attachments/4817551/22937604.png"></li>
+</ul>
+
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>It is recommended to select &quot;Use All Space&quot; and move to the next screen.</p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>Now, sit back, relax, have a cup of coffee and wait while the system is installed.  This will take approximately 15-30 minutes.  You will see a progress bar indicating the installation status.<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937603.png" data-image-src="attachments/4817551/22937603.png"></li>
+</ul>
+
+
+<p>Once installation has completed, you will be prompted to reboot into your installation:</p>
+
+<p><img class="confluence-embedded-image image-center" src="attachments/4817551/22937610.png" data-image-src="attachments/4817551/22937610.png"></p>
+
+<ul>
+	<li>After the system reboots you will see this screen:</li>
+</ul>
+
+
+<p><img class="confluence-embedded-image image-center" src="attachments/4817551/22937611.png" data-image-src="attachments/4817551/22937611.png"></p>
+
+<p>Congratulations!  You have successfully installed AsteriskNOW.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Notice the text that says &quot;To configure AsteriskNOW with FreePBX, point your web browser to <a href="http://xx.xx.xx.xx/" class="external-link" rel="nofollow">http://xx.xx.xx.xx/</a>.&quot;  Write this down, you will need it in the next section.</p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>Now, before you move on, it is important to update your AsteriskNOW system to the latest Linux packages.  To do this, use the yum utility &quot;yum.&quot;  Perform a &quot;yum update&quot;<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937612.png" data-image-src="attachments/4817551/22937612.png">** If new packages are available for installation, the utility will ask permission to install them.  And, if the utility has not been run before, it may ask permission to accept a yum key.  You should accept both to stay up to date.</li>
+</ul>
+
+
+<ul>
+	<li>You are now ready to move on to configuration of AsteriskNOW from the FreePBX web interface.</li>
+</ul>
+
+
+<h3 id="InstallingAsteriskNOW-FreePBXConfiguration">FreePBX Configuration</h3>
+
+<ul>
+	<li>To configure your system using FreePBX, open a web browser on another PC to the address specified during boot, e.g. &quot;To configure AsteriskNOW with FreePBX, point your web browser to <a href="http://xx.xx.xx.xx/" class="external-link" rel="nofollow">http://xx.xx.xx.xx/</a>.  If successful, you will be presented with the FreePBX main screen:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937609.png" data-image-src="attachments/4817551/22937609.png"></li>
+</ul>
+
+
+<ul>
+	<li>From here, we want the &quot;FreePBX Administration&quot; link.  Click it, and you will see the FreePBX login screen:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937608.png" data-image-src="attachments/4817551/22937608.png"></li>
+</ul>
+
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>The default username is <strong>admin</strong><br />
+The default password is <strong>admin</strong></p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>Having successfully logged into FreePBX, you will see the FreePBX dashboard:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937615.png" data-image-src="attachments/4817551/22937615.png"></li>
+</ul>
+
+
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            
+<p>Notice the <strong>Red</strong> reload button.  It will appear after changes are made to any page.  If you see it, it should be clicked, it will affect any changes on the system that FreePBX needs to make.  This guide assumes that whenever you see it, you will click it.</p>
+                    </div>
+    </div>
+
+
+<ul>
+	<li>Next, we will change the default admin password.  This is imperative!  Failure to do this is inviting disaster.  The importance of doing this <strong>CANNOT be understated.</strong>
+	<ul>
+		<li>First, visit the Admin tool<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937616.png" data-image-src="attachments/4817551/22937616.png"></li>
+		<li>Next, select admin from the right column<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937617.png" data-image-src="attachments/4817551/22937617.png"></li>
+		<li>Then, change the admin password<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937614.png" data-image-src="attachments/4817551/22937614.png"></li>
+	</ul>
+	</li>
+</ul>
+
+
+<ul>
+	<li>Finally, one should update any out of date modules on the system.  To do this, we will visit the Module Admin tool:<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937613.png" data-image-src="attachments/4817551/22937613.png">
+	<ul>
+		<li>Click the Check Online button and you will see any out of date modules<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937618.png" data-image-src="attachments/4817551/22937618.png"></li>
+		<li>To update a module, click it, and then select the Download option<br />
+<img class="confluence-embedded-image image-center" src="attachments/4817551/22937619.png" data-image-src="attachments/4817551/22937619.png"></li>
+		<li>Finally, press the Process button and follow the instructions to complete the module update.</li>
+	</ul>
+	</li>
+</ul>
+
+
+<h3 id="InstallingAsteriskNOW-Updating%2CQuerying%2CRemovingPackages">Updating, Querying, Removing Packages</h3>
+
+<p>After completing installation of AsteriskNOW, all of the packages for running Asterisk are installed. However system updates are often available.</p>
+
+<p>AsteriskNOW contains several yum repositories in addition to the ones provided by CentOS. These are asterisk-current/asterisk-tested and digium-current/digium-tested. The asterisk- repositories contain packages for Digium-provided Open Source software (such as Asterisk, libpri, and DAHDI). The digium- repositories contain non-free or commercial software (such as the Digium Phone module for Asterisk, G.729 for Asterisk, Fax For Asterisk, and the HPEC echo cancellation module). This allows you to install additional software and to stay up to date with the latest changes.</p>
+
+<p>Packages can be installed or removed by using `yum install &lt;package&gt;` or `yum remove &lt;package&gt;`. Updates should be regularly installed by using `yum update`. For a very full list of available and installed packages, you can use `yum list | less`. For more information about Yum, visit <a href="http://yum.baseurl.org/wiki/YumCommands" class="external-link" rel="nofollow">http://yum.baseurl.org/wiki/YumCommands</a> or type `man yum`.</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937603.png">05_installing.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937604.png">04_hard_drive.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937605.png">01-boot_menu.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937606.png">02_time_zone.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937607.png">03_root_password.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937608.png">10_web_login_2.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937609.png">09_web_login.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937610.png">06_reboot.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937611.png">07_linux_login.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937612.png">08_yum_update.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937613.png">15_module_admin_home.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937614.png">14_change_admin_pass.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937615.png">11_web_home_red_button.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937616.png">12_find_administrators.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937617.png">13_select_admin.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937618.png">16_module_update_check.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817551/22937619.png">17_module_admin_update.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

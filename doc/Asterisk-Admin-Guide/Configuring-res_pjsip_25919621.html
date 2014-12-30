@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Configuring res_pjsip</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Installation-and-Configuration_25919781.html">Asterisk 12 Installation and Configuration</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Configuring res_pjsip
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  rnewton , edited by  rnewton  on Oct 03, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570464824 {padding: 0px;}
+div.rbtoc1387570464824 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1387570464824 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570464824'>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-Overview'>Overview</a></li>
+<li><a href='#Configuringres_pjsip-BeforeYouConfigure'>Before You Configure</a></li>
+<li><a href='#Configuringres_pjsip-QuickStart'>Quick Start</a></li>
+<li><a href='#Configuringres_pjsip-pjsip.confExplained'>pjsip.conf Explained</a>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-ConfigurationSectionFormat'>Configuration Section Format</a></li>
+<li><a href='#Configuringres_pjsip-SectionTypes'>Section Types</a>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-ENDPOINT%28res_pjsip%29'><strong>ENDPOINT</strong>&nbsp; (res_pjsip)</a></li>
+<li><a href='#Configuringres_pjsip-TRANSPORT%28res_pjsip%29'><strong>TRANSPORT</strong>&nbsp; (res_pjsip)</a></li>
+<li><a href='#Configuringres_pjsip-AUTH%28res_pjsip%29'><strong>AUTH</strong> &nbsp; (res_pjsip)</a></li>
+<li><a href='#Configuringres_pjsip-AOR%28res_pjsip%29'><strong>AOR</strong>&nbsp; (res_pjsip)</a></li>
+<li><a href='#Configuringres_pjsip-REGISTRATION%28res_pjsip_outbound_registration%29'><strong>REGISTRATION</strong> (res_pjsip_outbound_registration)</a></li>
+<li><a href='#Configuringres_pjsip-DOMAIN_ALIAS%28res_pjsip%29'><strong>DOMAIN_ALIAS</strong> (res_pjsip)</a></li>
+<li><a href='#Configuringres_pjsip-ACL%28res_pjsip_acl%29'><strong>ACL</strong> &nbsp; (res_pjsip_acl)</a></li>
+<li><a href='#Configuringres_pjsip-IDENTIFY%28res_pjsip_endpoint_identifier_ip%29'><strong>IDENTIFY</strong>&nbsp; (res_pjsip_endpoint_identifier_ip)</a></li>
+<li><a href='#Configuringres_pjsip-CONTACT%28res_pjsip%29'><strong>CONTACT</strong> (res_pjsip)</a></li>
+</ul>
+</li>
+<li><a href='#Configuringres_pjsip-ConfigSectionHelpandDefaults'>Config Section Help and Defaults</a></li>
+<li><a href='#Configuringres_pjsip-RelationshipsofConfigurationObjectsinpjsip.conf'>Relationships of Configuration Objects in pjsip.conf</a></li>
+</ul>
+</li>
+<li><a href='#Configuringres_pjsip-Fullres_pjsipconfigurationexamplesbyscenario'>Full res_pjsip configuration examples by scenario</a>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-AnendpointwithasingleSIPphonewithinboundregistrationtoAsterisk'>An endpoint with a single SIP phone with inbound registration to Asterisk</a></li>
+<li><a href='#Configuringres_pjsip-ASIPtrunktoyourserviceprovider%2Cincludingoutboundregistration'>A SIP trunk to your service provider, including outbound registration</a></li>
+<li><a href='#Configuringres_pjsip-MultipleendpointswithphonesregisteringtoAsterisk%2Cusingtemplates'>Multiple endpoints with phones registering to Asterisk, using templates</a></li>
+</ul>
+</li>
+<li><a href='#Configuringres_pjsip-Dialingusingchan_pjsip'>Dialing using chan_pjsip</a>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-Dialingfromdialplaninextensions.conf'>Dialing from dialplan in extensions.conf</a></li>
+</ul>
+</li>
+<li><a href='#Configuringres_pjsip-OldtoNew-sip.conftopjsip.confexamplecomparison'>Old to New - sip.conf to pjsip.conf example comparison</a>
+<ul class='toc-indentation'>
+<li><a href='#Configuringres_pjsip-ExampleEndpointConfiguration'>Example Endpoint Configuration</a></li>
+<li><a href='#Configuringres_pjsip-ExampleSIPTrunkConfiguration'>Example SIP Trunk Configuration</a></li>
+</ul>
+</li>
+<li><a href='#Configuringres_pjsip-Disablingres_pjsipandchan_pjsip'>Disabling res_pjsip and chan_pjsip</a></li>
+</ul>
+</div></p><h1 id="Configuringres_pjsip-Overview">Overview</h1><p>This page is intended to help an Asterisk administrator understand configuration fundamentals for the new SIP resources and channel driver included with Asterisk 12. It covers an explanation of configuration for pjsip.conf which configures the SIP resource modules utilized by the chan_pjsip driver.</p><p>If you are looking for info on how to configure sip.conf (the config used by the older SIP channel driver for Asterisk), then you'll want to go here <a href="Creating-SIP-Accounts_4817421.html">Creating SIP Accounts</a> for some basic info or check out the sip.conf sample file included in the /configs directory of your Asterisk source files.</p><h1 id="Configuringres_pjsip-BeforeYouConfigure">Before You Configure</h1><p>This page assumes certain knowledge, or that you have completed a few prerequisites</p><ul><li>You have <a href="Installing-pjproject_25919783.html">installed pjproject</a>, a dependency for res_pjsip.</li><li>You have Installed Asterisk including the <a href="Using-Menuselect-to-Select-Asterisk-Options_4817523.html">res_pjsip and chan_pjsip modules</a> (implying you installed their dependencies as well)</li><li>You understand basic Asterisk concepts. Including the <a href="Dialplan-Fundamentals_4817412.html">role of extensions.conf</a> (dialplan) in your overall Asterisk configuration.</li></ul><p>If you don't know anything about Asterisk yet, then you should probably start at the <a href="Getting-Started_5243710.html">Getting Started section</a>.</p><h1 id="Configuringres_pjsip-QuickStart">Quick Start</h1><p>If you like to play before you read or figure out things as you go; here's a few quick steps to get you started.</p><ul><li>Understand that res_pjsip is configured through pjsip.conf. This is where you'll be configuring everything related to your SIP trunks or phones.</li><li>Look at the <a href="https://wiki.asterisk.org/wiki/display/AST/Configuring+res_pjsip#Configuringres_pjsip-Fullres_pjsipconfigurationexamplesbyscenario" rel="nofollow">Full res_pjsip configuration examples by scenario</a> section. Grab the example most appropriate to your goal and use that to replace your pjsip.conf.</li><li>Reference documentation for all configuration parameters is available on the wiki:<ul><li><a href="Asterisk-12-Configuration_res_pjsip_26477927.html">Core res_pjsip configuration options</a></li><li><a href="Asterisk-12-Configuration_res_pjsip_acl_26477926.html">Configuration options for ACLs in res_pjsip_acl</a></li><li><a href="Asterisk-12-Configuration_res_pjsip_outbound_registration_26477931.html">Configuration options for outbound registration, provided by res_pjsip_outbound_registration</a></li><li><a href="Asterisk-12-Configuration_res_pjsip_endpoint_identifier_ip_26477929.html">Configuration options for endpoint identification by IP address, provided by res_pjsip_endpoint_identifier_ip</a></li></ul></li><li>You'll need to tweak details in pjsip.conf and on your SIP device (for example IP addresses and authentication credentials) to get it working with Asterisk.<br />Refer back to this page, the sample pjsip.conf, or the reference documentation if you get confused.</li></ul><h1 id="Configuringres_pjsip-pjsip.confExplained">pjsip.conf Explained</h1><h3 id="Configuringres_pjsip-ConfigurationSectionFormat">Configuration Section Format</h3><p>pjsip.conf is a flat text file composed of <strong>sections </strong>like most configuration files used with Asterisk. Each <strong>section</strong> defines configuration for a <strong>configuration object</strong> within res_pjsip or an associated module.</p><p><strong>Sections</strong> are identified by <strong>names in square brackets</strong>. (see <span style="color: rgb(0,128,0);">SectionName</span> below)</p><p>Each section has one or more <strong>configuration options</strong> that can be assigned a value by using an <strong>equal sign</strong> followed by a value. (see <span style="color: rgb(0,128,0);">ConfigOption</span> and <span style="color: rgb(0,128,0);">Value</span> below)These options and values are the configuration for a particular component of functionality provided by the configuration object's respective Asterisk modules.</p><p>Every section will have a <strong>type</strong> option that defines what kind of section is being configured. You'll see that in every example config section below.</p><div class="panel" style="border-width: 1px;"><div class="panelHeader" style="border-bottom-width: 1px;"><b>Syntax for res_sip config objects</b></div><div class="panelContent">
+<p><span style="color: rgb(255,0,0);"> <strong>[</strong> </span><span style="color: rgb(0,128,0);">SectionName</span> <span style="color: rgb(255,0,0);"> <strong>]</strong> </span> <br /> <span style="color: rgb(0,128,0);">ConfigOption</span> <span style="color: rgb(255,0,0);"> <strong>=</strong> </span> <span style="color: rgb(0,128,0);">Value</span> <br /> <span style="color: rgb(0,128,0);">ConfigOption</span> <span style="color: rgb(255,0,0);"> <strong>=</strong> </span> <span style="color: rgb(0,128,0);">Value</span></p>
+</div></div><h3 id="Configuringres_pjsip-SectionTypes">Section Types</h3><p>Below is a brief description of each section type and an example showing configuration of that section only. The module providing the configuration object related to the section is listed in parentheses next to each section name.</p><p>There are dozens of config options for some of the sections, but the examples below are very minimal for the sake of simplicity.</p>    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">Option Values and Defaults</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p><strong>How do I know what values I can use for an option?</strong> Use the built-in configuration help at the CLI or view the wiki section listing all config option help text. You can use &quot;config show help res_pjsip &lt;configobject&gt; &lt;configoption&gt;&quot; to get help on a particular option. The output will typically describe the <strong>default</strong> value for an option as well. <strong>Link to list of config options goes here, once we have them pulled onto the wiki</strong></p><p><strong><strong>Defaults</strong>:</strong> For many config options, it's very helpful to understand their default behavior. For example, endpoint's &quot;transport=&quot; option, if no value is assigned then Asterisk will *DEFAULT* to the first configured transport in pjsip.conf which is valid for the URI we are trying to contact.<strong> </strong></p>
+                    </div>
+    </div>
+<p> </p><h4 id="Configuringres_pjsip-ENDPOINT%28res_pjsip%29"><strong>ENDPOINT</strong>  (res_pjsip)</h4><p>Endpoint configuration provides numerous options relating to core SIP functionality and ties to other sections such as auth, aor and transport. You can't contact an endpoint without associating one or more AoR sections. An endpoint is essentially a profile for the configuration of a SIP endpoint such as a phone or remote server.</p>
+<div id="expander-2032054681" class="expand-container">
+<div id="expander-control-2032054681" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-2032054681" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[6001]
+type=endpoint
+context=default
+disallow=all
+allow=ulaw
+transport=simpletrans
+auth=auth6001
+aors=6001</pre>
+</div></div><p>If you want to define the Caller Id this endpoint should use, then add something like the following:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">trust_id_outbound=yes
+callerid=Spaceman Spiff &lt;6001&gt;</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-TRANSPORT%28res_pjsip%29"><strong>TRANSPORT</strong>  (res_pjsip)</h4><p>Configure how res_pjsip will operate at the transport layer. For example, it supports configuration options for protocols such as TCP, UDP or WebSockets and encryption methods like TLS/SSL. You can setup multiple transport sections and other sections (such as endpoints) could each use the same transport, or a unique one.</p>    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            <p><strong>Reloading Config:</strong> Configuration for transport type sections can't be reloaded during run-time without a full module unload and load. You'll effectively need to restart Asterisk completely for your transport changes to take effect.</p>
+                    </div>
+    </div>
+
+<div id="expander-1820884201" class="expand-container">
+<div id="expander-control-1820884201" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-1820884201" class="expand-content"><p>A basic UDP transport bound to all interfaces</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+</pre>
+</div></div><p>Or a TLS transport, with many possible options and parameters:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[simpletrans]
+type=transport
+protocol=tls
+bind=0.0.0.0
+;various TLS specific options below:
+cert_file=
+privkey_file=
+ca_list_file=
+cipher=
+method=</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-AUTH%28res_pjsip%29"><strong>AUTH</strong>   (res_pjsip)</h4><p>Authentication sections hold the options and credentials related to inbound or outbound authentication. You'll associate other sections such as endpoints or registrations to this one. Multiple endpoints or registrations can use a single auth config if needed.</p>
+<div id="expander-1692333540" class="expand-container">
+<div id="expander-control-1692333540" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-1692333540" class="expand-content"><p>An example with username and password authentication</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[auth6001]
+type=auth
+auth_type=userpass
+password=6001
+username=6001
+
+</pre>
+</div></div><p>And then an example with MD5 authentication</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[auth6001]
+type=auth
+auth_type=md5
+md5_cred=51e63a3da6425a39aecc045ec45f1ae8
+username=6001 </pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-AOR%28res_pjsip%29"><strong>AOR</strong>  (res_pjsip)</h4><p>A primary feature of AOR objects (Address of Record) is to tell Asterisk where an endpoint can be contacted. Without an associated AOR section, an endpoint cannot be contacted. AOR objects also store associations to mailboxes for MWI requests and other data that might relate to the whole group of contacts such as expiration and qualify settings.</p><p>When Asterisk receives an inbound registration, it'll look to match against available AORs.</p><p><strong>Registrations:</strong> The name of the AOR section must match the user portion of the SIP URI in the &quot;To:&quot; header of the inbound SIP registration. That will usually be the &quot;user name&quot; set in your hard or soft phones configuration.</p>
+<div id="expander-1395637086" class="expand-container">
+<div id="expander-control-1395637086" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-1395637086" class="expand-content"><p>First, we have a configuration where you are expecting the SIP User Agent (likely a phone) to register against the AOR. In this case, the contact objects will be created automatically. We limit the maximum contact creation to 1. We could do 10 if we wanted up to 10 SIP User Agents to be able to register against it.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[6001]
+type=aor
+max_contacts=1</pre>
+</div></div><p>Second, we have a configuration where you are <strong>not</strong> expecting the SIP User Agent to register against the AOR. In this case, you can assign contacts manually as follows. We don't have to worry about max_contacts since that option only affects the maximum allowed contacts to be created through external interaction, like registration.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[6001]
+type=aor
+contact=sip:6001@192.0.2.1:5060</pre>
+</div></div><p>Third, it's useful to note that you could define only the domain and omit the user portion of the SIP URI if you wanted. Then you could define the <strong>user</strong> portion dynamically in your dialplan when calling the Dial application. You'll likely do this when building an AOR/Endpoint combo to use for dialing out to an ITSP.  For example: &quot;Dial(PJSIP/${EXTEN}@mytrunk)&quot;</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[mytrunk]
+type=aor
+contact=sip:203.0.113.1:5060</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-REGISTRATION%28res_pjsip_outbound_registration%29"><strong>REGISTRATION</strong> (res_pjsip_outbound_registration)</h4><p>The registration section contains information about an outbound registration. You'll use this when setting up a registration to another system whether it's local or a trunk from your ITSP.</p>
+<div id="expander-1533366033" class="expand-container">
+<div id="expander-control-1533366033" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-1533366033" class="expand-content"><p>This example shows you how you might configure registration and outbound authentication against another Asterisk system, where the other system is using the older chan_sip peer setup.</p><p>This example is just the registration itself. You'll of course need the associated transport and auth sections. Plus, if you want to receive calls from the far end (who now knows where to send calls, thanks to your registration!) then you'll need endpoint, AOR and possibly identify sections setup to match inbound calls to a context in your dialplan.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[mytrunk]
+type=registration
+transport=simpletrans
+outbound_auth=mytrunk
+server_uri=sip:myaccountname@203.0.113.1:5060
+client_uri=sip:myaccountname@192.0.2.1:5060
+retry_interval=60
+</pre>
+</div></div><p>And an example that may work with a SIP trunking provider</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[mytrunk]
+type=registration
+transport=simpletrans
+outbound_auth=mytrunk
+server_uri=sip:sip.example.com
+client_uri=sip:1234567890@sip.example.com
+retry_interval=60</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-DOMAIN_ALIAS%28res_pjsip%29"><strong>DOMAIN_ALIAS</strong> (res_pjsip)</h4><p>Allows you to specify an alias for a domain. <span>If the domain on a session is not found to match an AoR then this object is used to see if we have an alias for the AoR to which the endpoint is binding. This sections name as defined in configuration should be the domain alias and a config option (domain=) is provided to specify the domain to be aliased.</span> </p>
+<div id="expander-734050994" class="expand-container">
+<div id="expander-control-734050994" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-734050994" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[example2.com]
+type=domain_alias
+domain=example.com</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-ACL%28res_pjsip_acl%29"><strong>ACL</strong>   (res_pjsip_acl)</h4><p>The ACL module used by 'res_pjsip'. This module is independent of 'endpoints' and operates on all inbound SIP communication using res_pjsip. Features such as an Access Control List, as defined in the configuration section itself, or as defined in <strong>acl.conf</strong>. ACL's can be defined specifically for source IP addresses, or IP addresses within the contact header of SIP traffic.</p>
+<div id="expander-203971057" class="expand-container">
+<div id="expander-control-203971057" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-203971057" class="expand-content"><p>A configuration pulling from the acl.conf file:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[acl]
+type=acl
+acl=example_named_acl1</pre>
+</div></div><p>A configuration defined in the object itself:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[acl]
+type=acl
+deny=0.0.0.0/0.0.0.0
+permit=209.16.236.0
+permit=209.16.236.1</pre>
+</div></div><p>A configuration where we are restricting based on contact headers instead of IP addresses.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[acl]
+type=acl
+contactdeny=0.0.0.0/0.0.0.0
+contactpermit=209.16.236.0
+contactpermit=209.16.236.1</pre>
+</div></div><p>All of these configurations can be combined.</p></div>
+</div>
+<h4 id="Configuringres_pjsip-IDENTIFY%28res_pjsip_endpoint_identifier_ip%29"><strong>IDENTIFY</strong>  (res_pjsip_endpoint_identifier_ip)</h4><p>Controls how the res_pjsip_endpoint_identifier_ip module determines what endpoint an incoming packet is from. If you don't have an identify section defined, or else you have res_pjsip_endpoint_<strong>identifier_ip</strong> loading <strong>after</strong> res_pjsip_endpoint_<strong>identifier_user</strong>, then res_pjsip_endpoint_<strong>identifier_user</strong> will identify inbound traffic by pulling the user from the &quot;From:&quot; SIP header in the packet. Basically the module load order, and your configuration will both determine whether you identify by IP or by user.</p>
+<div id="expander-1116919009" class="expand-container">
+<div id="expander-control-1116919009" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE BASIC CONFIGURATION</span>
+</div>
+<div id="expander-content-1116919009" class="expand-content"><p>Its use is quite straightforward. With this configuration if Asterisk sees inbound traffic from 203.0.113.1 then it will match that to Endpoint 6001.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[6001]
+type=identify
+endpoint=6001
+match=203.0.113.1</pre>
+</div></div></div>
+</div>
+<h4 id="Configuringres_pjsip-CONTACT%28res_pjsip%29"><strong>CONTACT</strong> (res_pjsip)</h4><p>The contact config object effectively acts as an alias for a SIP URIs and holds information about an inbound registrations. Contact objects can be associated with an individual SIP User Agent and contain a few config options related to the connection. Contacts are created automatically upon registration to an AOR, or can be created manually by using the &quot;contact=&quot; config option in an AOR section. Manually configuring a CONTACT config object itself is outside the scope of this &quot;getting started&quot; style document.</p><h3 id="Configuringres_pjsip-ConfigSectionHelpandDefaults">Config Section Help and Defaults</h3><p>Once we have the XML configuration help pulled onto the wiki we'll put a link here to that wiki section.</p><p>In the meantime use the built-in configuration help to your advantage. You can use &quot;config show help res_pjsip &lt;configobject&gt; &lt;configoption&gt;&quot; to get help on a particular option. That help will typically describe the default value for an option as well. </p><h3 id="Configuringres_pjsip-RelationshipsofConfigurationObjectsinpjsip.conf">Relationships of Configuration Objects in pjsip.conf</h3><p>Now that you understand the various configuration sections related to each config object, lets look at how they interrelate.</p><p>You'll see that the new SIP implementation within Asterisk is extremely flexible due to its modular design. A diagram will help you to visualize the relationships between the various configuration objects. The following entity relationship diagram covers only the configuration relationships between the objects. For example if an <strong>endpoint</strong> object requires authorization for registration of a SIP device, then you may associate a single <strong>auth</strong> object with the endpoint object. Though many endpoints could use the same or different auth objects.</p><p><strong>Configuration Flow</strong>: This lets you know which direction the objects are associated to other objects. e.g. The identify config section has an option &quot;endpoint=&quot; which allows you to associate it with an endpoint object.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Entity Relationships</th><th class="confluenceTh">Relationship Descriptions</th></tr><tr><td colspan="1" class="confluenceTd">
+
+<map id="gliffy-map-26279944-724" name="gliffy-map-26279944-724"></map>
+<table width="100%" class="gliffy-macro-table">
+    <tr>
+        <td >
+            <table class="gliffy-macro-inner-table">
+                <caption align="bottom">
+                                    </caption>
+                <tr>
+                    <td>
+                        <img style="border: none; width: 388px;" usemap="#gliffy-map-26279944-724" src="attachments/25919621/26279945.png" alt="" class="gliffy-macro-image"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+</td><td colspan="1" class="confluenceTd"><p>ENDPOINT</p><ul><li>Many ENDPOINTs can be associated with many AORs</li><li>Zero to many ENDPOINTs can be associated with zero to one AUTHs</li><li>Zero to many ENDPOINTs can be associated with at least one TRANSPORT</li><li>Zero to one ENDPOINTs can be associated with an IDENTIFY</li></ul><p>REGISTRATION</p><ul><li>Zero to many REGISTRATIONs can be associated with zero to one AUTHs</li><li>Zero to many REGISTRATIONs can be associated with at least one TRANSPORT</li></ul><p>AOR</p><ul><li>Many ENDPOINTs can be associated with many AORs</li><li>Many AORs can be associated with many CONTACTs</li></ul><p>CONTACT</p><ul><li>Many CONTACTs can be associated with many AORs</li></ul><p>IDENTIFY</p><ul><li>Zero to One ENDPOINTs can be associated with an IDENTIFY object</li></ul><p>ACL, DOMAIN_ALIAS</p><ul><li>These objects don't have a direct configuration relationship to the other objects.</li></ul></td></tr></tbody></table></div><p> </p><h1 id="Configuringres_pjsip-Fullres_pjsipconfigurationexamplesbyscenario">Full res_pjsip configuration examples by scenario</h1><p>Below are some sample configurations to demonstrate various scenarios with complete pjsip.conf files.</p><h3 id="Configuringres_pjsip-AnendpointwithasingleSIPphonewithinboundregistrationtoAsterisk">An endpoint with a single SIP phone with inbound registration to Asterisk</h3>
+<div id="expander-9076100" class="expand-container">
+<div id="expander-control-9076100" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE CONFIGURATION</span>
+</div>
+<div id="expander-content-9076100" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">;===============TRANSPORT
+
+[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+;===============EXTENSION 6001
+
+[6001]
+type=endpoint
+context=internal
+disallow=all
+allow=ulaw
+transport=simpletrans
+auth=auth6001
+aors=6001
+
+[auth6001]
+type=auth
+auth_type=userpass
+password=6001
+username=6001
+
+[6001]
+type=aor
+max_contacts=1</pre>
+</div></div><ul><li>auth= is used for the endpoint as opposed to outbound_auth= since we want to allow inbound registration for this endpoint</li><li>max_contacts= is set to something non-zero as we want to allow contacts to be created through registration</li></ul><p> </p></div>
+</div>
+<h3 id="Configuringres_pjsip-ASIPtrunktoyourserviceprovider%2Cincludingoutboundregistration">A SIP trunk to your service provider, including outbound registration</h3>
+<div id="expander-499332286" class="expand-container">
+<div id="expander-control-499332286" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE CONFIGURATION</span>
+</div>
+<div id="expander-content-499332286" class="expand-content"><p>Trunks are a little tricky since many providers have unique requirements. Your final configuration may differ from what you see here.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">;==============TRANSPORTS
+
+[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+;===============TRUNK
+
+[mytrunk]
+type=registration
+transport=simpletrans
+outbound_auth=mytrunk
+server_uri=sip:sip.example.com
+client_uri=sip:1234567890@sip.example.com
+retry_interval=60
+
+[mytrunk]
+type=auth
+auth_type=userpass
+password=1234567890
+username=1234567890
+
+[mytrunk]
+type=aor
+contact=sip:203.0.113.1:5060
+
+[mytrunk]
+type=endpoint
+transport=simpletrans
+context=from-external
+disallow=all
+allow=ulaw
+outbound_auth=mytrunk
+aors=mytrunk
+
+[mytrunk]
+type=identify
+endpoint=mytrunk
+match=203.0.113.1
+</pre>
+</div></div><ul><li><p>&quot;contact=sip:203.0.113.1:5060&quot;, we don't define the user portion statically since we'll set that dynamically in dialplan when we call the Dial application.<br />See the dialing examples in the section &quot;Dialing using chan_pjsip&quot; for more.</p></li><li><p>&quot;outbound_auth=mytrunk&quot;, we use &quot;outbound_auth&quot; instead of &quot;auth&quot; since the provider isn't typically going to authenticate with us when calling, but we will probably<br />have to authenticate when calling through them.</p></li><li>We use an identify object to map all traffic from the provider's IP as traffic to that endpoint since the user portion of their From: header may vary with each call.</li><li>This example assumes that sip.example.com resolves to 203.0.113.1</li></ul></div>
+</div>
+<h3 id="Configuringres_pjsip-MultipleendpointswithphonesregisteringtoAsterisk%2Cusingtemplates">Multiple endpoints with phones registering to Asterisk, using templates</h3>
+<div id="expander-1782953951" class="expand-container">
+<div id="expander-control-1782953951" class="expand-control">
+    <span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">EXAMPLE CONFIGURATION</span>
+</div>
+<div id="expander-content-1782953951" class="expand-content"><p>We want to show here that generally, with a large configuration you'll end up using templates to make configuration easier to handle when scaling. This avoids having redundant code in every similar section that you create.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"> ;===============TRANSPORT
+
+[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+;===============ENDPOINT TEMPLATES
+
+[endpoint-basic](!)
+type=endpoint
+transport=simpletrans
+context=internal
+disallow=all
+allow=ulaw
+
+[auth-userpass](!)
+type=auth
+auth_type=userpass
+
+[aor-single-reg](!)
+type=aor
+max_contacts=1
+
+;===============EXTENSION 6001
+
+[6001](endpoint-basic)
+auth=auth6001
+aors=6001
+
+[auth6001](auth-userpass)
+password=6001
+username=6001
+
+[6001](aor-single-reg)
+
+;===============EXTENSION 6002
+
+[6002](endpoint-basic)
+auth=auth6002
+aors=6002
+
+[auth6002](auth-userpass)
+password=6002
+username=6002
+
+[6002](aor-single-reg)
+
+;===============EXTENSION 6003
+
+[6003](endpoint-basic)
+auth=auth6003
+aors=6003
+
+[auth6003](auth-userpass)
+password=6003
+username=6003
+
+[6003](aor-single-reg) </pre>
+</div></div><p>Obviously the larger your configuration is, the more templates will benefit you. Here we just break apart the endpoints with templates, but you could do that with any config section that needs instances with variation, but where each may share common settings with their peers.</p></div>
+</div>
+<h1 id="Configuringres_pjsip-Dialingusingchan_pjsip">Dialing using chan_pjsip</h1><h3 id="Configuringres_pjsip-Dialingfromdialplaninextensions.conf">Dialing from dialplan in extensions.conf</h3><p>We are assuming you already know a little bit about the Dial application here. To see the full help for it, see &quot;core show help application dial&quot; on the Asterisk CLI, or see <a href="https://wiki.asterisk.org/wiki/display/AST/Application_Dial">Application_Dial</a></p><p>Below we'll simply dial an endpoint using the chan_pjsip channel driver. This is really going to look at the AOR of the same name as the endpoint and start dialing the contacts associated.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">exten =&gt; _6XXX,1,Dial(PJSIP/${EXTEN})</pre>
+</div></div><p>Heres how you would dial with an explicit SIP URI, user and domain, via an endpoint (in this case dialing out a trunk), but not using its associated AOR/contact objects.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">exten =&gt; _9NXXNXXXXXX,1,Dial(PJSIP/mytrunk/sip:${EXTEN:1}@203.0.113.1:5060)</pre>
+</div></div><p>This uses a contact(and its domain) set in the AOR associated with the <strong>mytrunk</strong> endpoint, but still explicitly sets the user portion of the URI in the dial string. For the AOR's contact, you would define it in the AOR config without the user name.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">exten =&gt; _9NXXNXXXXXX,1,Dial(PJSIP/${EXTEN:1}@mytrunk)</pre>
+</div></div><h1 id="Configuringres_pjsip-OldtoNew-sip.conftopjsip.confexamplecomparison">Old to New - sip.conf to pjsip.conf example comparison</h1><p>We want to provide some examples of what similar configurations would look like between the old sip.conf and the new pjsip.conf</p><p>These examples contain only the configuration required for sip.conf/pjsip.conf as the configuration for other files should be the same excepting the Dial statements in your extensions.conf</p><p>There is also a script available to provide a basic conversion of a sip.conf config to a pjsip.conf config. ADD<strong> A LINK TO SIP.CONF to PJSIP.CONF SCRIPT WHEN READY</strong></p><h3 id="Configuringres_pjsip-ExampleEndpointConfiguration">Example Endpoint Configuration</h3><p>This examples shows the configuration required for:</p><ul><li>two SIP phones need to make calls to or through Asterisk, we also want to be able to call them from Asterisk</li><li>for them to be identified as users (in the old chan_sip) or endpoints (in the new res_sip/chan_pjsip)</li><li>both devices need to use username and password authentication</li><li>6001 is setup to allow registration to Asterisk, and 6002 is setup with a static host/contact</li></ul><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">sip.conf</th><th class="confluenceTh">pjsip.conf</th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[general]
+udpbindaddr=0.0.0.0
+
+[6001]
+type=friend
+host=dynamic
+disallow=all
+allow=ulaw
+context=internal
+secret=1234
+
+[6002]
+type=friend
+host=192.0.2.1
+disallow=all
+allow=ulaw
+context=internal
+secret=1234</pre>
+</div></div><p> </p><p> </p></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+[6001]
+type = endpoint
+transport = simpletrans
+context = internal
+disallow = all
+allow = ulaw
+aors = 6001
+auth = auth6001
+
+[6001]
+type = aor
+max_contacts = 1
+
+[auth6001]
+type=auth
+auth_type=userpass
+password=1234
+username=6001
+
+[6002]
+type = endpoint
+transport = simpletrans
+context = internal
+disallow = all
+allow = ulaw
+aors = 6002
+auth = auth6002
+
+[6002]
+type = aor
+contact = sip:6002@192.0.2.1:5060
+
+[auth6002]
+type=auth
+auth_type=userpass
+password=1234
+username=6001</pre>
+</div></div></td></tr></tbody></table></div><h3 id="Configuringres_pjsip-ExampleSIPTrunkConfiguration">Example SIP Trunk Configuration</h3><p>This shows configuration for a SIP trunk as would typically be provided by an ITSP. That is registration to a remote server, authentication to it and a peer/endpoint setup to allow inbound calls from the provider.</p><ul><li>SIP provider requires registration to their server with a username of &quot;myaccountname&quot; and a password of &quot;1234567890&quot;</li><li>SIP provider requires registration to their server at the address of 203.0.113.1:5060</li><li>SIP provider requires outbound calls to their server at the same address of registration, plus using same authentication details.</li><li>SIP provider will call your server with a user name of &quot;mytrunk&quot;. Their traffic will only be coming from 203.0.113.1</li></ul><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">sip.conf</th><th class="confluenceTh">pjsip.conf</th></tr><tr><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[general]
+udpbindaddr=0.0.0.0
+
+register =&gt; myaccountname:1234567890@203.0.113.1:5060
+
+[mytrunk]
+type=friend
+secret=1234567890
+username=myaccountname
+host=203.0.113.1
+disallow=all
+allow=ulaw
+context=from-external</pre>
+</div></div></td><td class="confluenceTd"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[simpletrans]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+[mytrunk]
+type=registration
+transport=simpletrans
+outbound_auth=mytrunk
+server_uri=sip:myaccountname@203.0.113.1:5060
+client_uri=sip:myaccountname@192.0.2.1:5060
+
+[mytrunk]
+type=auth
+auth_type=userpass
+password=1234567890
+username=myaccountname
+
+[mytrunk]
+type=aor
+contact=sip:203.0.113.1:5060
+
+[mytrunk]
+type=endpoint
+transport=simpletrans
+context=from-external
+disallow=all
+allow=ulaw
+outbound_auth=mytrunk
+aors=mytrunk
+
+[mytrunk]
+type=identify
+endpoint=mytrunk
+match=203.0.113.1</pre>
+</div></div></td></tr></tbody></table></div><p> </p><h1 id="Configuringres_pjsip-Disablingres_pjsipandchan_pjsip">Disabling res_pjsip and chan_pjsip</h1><p>There are several methods to disable or remove modules in Asterisk. Which method is best depends on your intent.</p><p>If you have built Asterisk with the PJSIP modules, but don't intend to use them at this moment, you might consider the following:</p><ol><li><p>Edit the file <strong>modules.conf</strong> in your Asterisk configuration directory. (typically /etc/asterisk/)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">noload =&gt; res_pjsip_pubsub.so
+noload =&gt; res_pjsip_session.so
+noload =&gt; chan_pjsip.so
+noload =&gt; res_pjsip_exten_state.so
+noload =&gt; res_pjsip_log_forwarder.so</pre>
+</div></div><p>Having a noload for the above modules should (at the moment of writing this) prevent any PJSIP related modules from loading.<br /><br /></p></li><li>Restart Asterisk!</li></ol><p>Other possibilities would be:</p><ul><li>Remove all PJSIP modules from the modules directory (often, /usr/lib/asterisk/modules)</li><li>Remove the configuration file (pjsip.conf)</li><li>Un-install and re-install Asterisk with no PJSIP related modules.</li><li>If you are wanting to use chan_pjsip alongside chan_sip, you could change the port or bind interface of your chan_pjsip transport in pjsip.conf</li></ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279946">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279947.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279948">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279949.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279950">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279951.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279952">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279953.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279954">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279955.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279944">res_sip_configrelationships</a> (application/gliffy+json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/25919621/26279945.png">res_sip_configrelationships.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:14</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

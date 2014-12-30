@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Contexts, Extensions, and Priorities</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Dialplan-Fundamentals_4817412.html">Dialplan Fundamentals</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Contexts, Extensions, and Priorities
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Feb 24, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The dialplan is organized into various sections, called contexts. Contexts are the basic organizational unit within the dialplan, and as such, they keep different sections of the dialplan independent from each other. We'll use contexts to enforce security boundaries between the various parts of our dialplan, as well as to provide different classes of service to groups of users.</p>
+
+<p>The syntax for a context is exactly the same as any other section heading in the configuration files, as explained in <a href="Sections-and-Settings_4817449.html">Section 206.2.1. Sections and Settings</a>. Simply place the context name in square brackets. For example, here is the context we defined in the previous module:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[users]</pre>
+</div></div>
+<p>Within each context, we can define one or more <strong>extensions</strong>. As explained in the previous module, an extension is simply a named set of actions. Asterisk will perform each action, in sequence, when that extension number is dialed. The syntax for an extension is:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; number,priority,application([parameter[,parameter2...]])
+</pre>
+</div></div>
+<p>As an example, let's review extension <strong>6001</strong> from the previous module. It looks like:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; 6001,1,Dial(SIP/demo-alice,20)
+</pre>
+</div></div>
+<p>In this case, the extension number is <strong>6001</strong>, the priority number is <strong>1</strong>, the application is <strong>Dial()</strong>, and the two parameters to the application are <strong>SIP/demo-alice</strong> and <strong>20</strong>.<br />
+Within each extension, there must be one or more <em>priorities</em>. A priority is simply a sequence number. The first priority on an extension is executed first. When it finishes, the second priority is executed, and so forth.</p>
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Priority numbers<br />
+Priority numbers must begin with 1, and must increment sequentially. If Asterisk can't find the next priority number, it will terminate the call. We call this <em>auto-fallthrough</em>. Consider the example below:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; 6123,1,do something
+exten =&gt; 6123,2,do something else
+exten =&gt; 6123,4,do something different
+</pre>
+</div></div>
+<p>In this case, Asterisk would execute priorites one and two, but would then terminate the call, because it couldn't find priority number three.</p>
+                    </div>
+    </div>
+
+
+<p>Priority number can also be simplied by using the letter <strong>n</strong> in place of the priority numbers greater than one. The letter <strong>n</strong> stands for <strong>next</strong>, and when Asterisk sees priority n it replaces it in memory with the previous priority number plus one. Note that you must still explicitly declare priority number one.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; 6123,1,do something
+exten =&gt; 6123,n,do something else
+exten =&gt; 6123,n,do something different</pre>
+</div></div>
+<p>You can also assign a label (or alias) to a particular priority number by placing the label in parentheses directly after the priority number, as shown below. Labels make it easier to jump back to a particular location within the extension at a later time.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; 6123,1,do something
+exten =&gt; 6123,n(repeat),do something else
+exten =&gt; 6123,n,do something different</pre>
+</div></div>
+<p>Here, we've assigned a label named <strong>repeat</strong> to the second priority.</p>
+
+<p>Included in the Asterisk 1.6.2 branch (and later) there is a way to avoid having to repeat the extension name/number or pattern using the <strong>same =&gt;</strong> prefix.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; _1NXXNXXXXXX,1,do something
+same =&gt; n(repeat),do something else
+same =&gt; n,do something different</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

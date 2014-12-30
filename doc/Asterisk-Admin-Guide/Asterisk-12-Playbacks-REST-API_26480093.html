@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Playbacks REST API</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-ARI_22773909.html">Asterisk 12 ARI</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Playbacks REST API
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Nov 09, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12PlaybacksRESTAPI-Playbacks">Playbacks</h1>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Method </p></th>
+<th class="confluenceTh"><p> Path </p></th>
+<th class="confluenceTh"><p> Return Model </p></th>
+<th class="confluenceTh"><p> Summary </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> GET </p></td>
+<td class="confluenceTd"><p> <a href="Asterisk-12-Playbacks-REST-API_26480093.html">/playbacks/{playbackId}</a> </p></td>
+<td class="confluenceTd"><p> <a href="Asterisk-12-REST-Data-Models_22773915.html#Asterisk12RESTDataModels-Playback">Playback</a> </p></td>
+<td class="confluenceTd"><p> Get a playback's details. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> DELETE </p></td>
+<td class="confluenceTd"><p> <a href="Asterisk-12-Playbacks-REST-API_26480093.html">/playbacks/{playbackId}</a> </p></td>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> Stop a playback. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> POST </p></td>
+<td class="confluenceTd"><p> <a href="Asterisk-12-Playbacks-REST-API_26480093.html">/playbacks/{playbackId}/control</a> </p></td>
+<td class="confluenceTd"><p> void </p></td>
+<td class="confluenceTd"><p> Control a playback. </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p><span class="confluence-anchor-link" id="Asterisk12PlaybacksRESTAPI-get"></span></p>
+<h2 id="Asterisk12PlaybacksRESTAPI-GET%2Fplaybacks%2F%7BplaybackId%7D">GET /playbacks/{playbackId}</h2>
+
+<p>Get a playback's details.</p>
+
+<h3 id="Asterisk12PlaybacksRESTAPI-Pathparameters">Path parameters</h3>
+<ul>
+	<li>playbackId: string - Playback's id</li>
+</ul>
+
+
+<h3 id="Asterisk12PlaybacksRESTAPI-ErrorResponses">Error Responses</h3>
+<ul>
+	<li>404 - The playback cannot be found</li>
+</ul>
+
+
+<p><span class="confluence-anchor-link" id="Asterisk12PlaybacksRESTAPI-stop"></span></p>
+<h2 id="Asterisk12PlaybacksRESTAPI-DELETE%2Fplaybacks%2F%7BplaybackId%7D">DELETE /playbacks/{playbackId}</h2>
+
+<p>Stop a playback.</p>
+
+<h3 id="Asterisk12PlaybacksRESTAPI-Pathparameters.1">Path parameters</h3>
+<ul>
+	<li>playbackId: string - Playback's id</li>
+</ul>
+
+
+<h3 id="Asterisk12PlaybacksRESTAPI-ErrorResponses.1">Error Responses</h3>
+<ul>
+	<li>404 - The playback cannot be found</li>
+</ul>
+
+
+<p><span class="confluence-anchor-link" id="Asterisk12PlaybacksRESTAPI-control"></span></p>
+<h2 id="Asterisk12PlaybacksRESTAPI-POST%2Fplaybacks%2F%7BplaybackId%7D%2Fcontrol">POST /playbacks/{playbackId}/control</h2>
+
+<p>Control a playback.</p>
+
+<h3 id="Asterisk12PlaybacksRESTAPI-Pathparameters.2">Path parameters</h3>
+<ul>
+	<li>playbackId: string - Playback's id</li>
+</ul>
+
+
+<h3 id="Asterisk12PlaybacksRESTAPI-Queryparameters">Query parameters</h3>
+<ul>
+	<li>operation: string - <strong>(required)</strong> Operation to perform on the playback.</li>
+</ul>
+
+
+<h3 id="Asterisk12PlaybacksRESTAPI-ErrorResponses.2">Error Responses</h3>
+<ul>
+	<li>400 - The provided operation parameter was invalid</li>
+	<li>404 - The playback cannot be found</li>
+	<li>409 - The operation cannot be performed in the playback's current state</li>
+</ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:15</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

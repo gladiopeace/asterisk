@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Building and Installing DAHDI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk_4817553.html">Installing Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk-From-Source_4817561.html">Installing Asterisk From Source</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Building and Installing DAHDI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  mdavenport  on Feb 20, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570659674 {padding: 0px;}
+div.rbtoc1387570659674 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1387570659674 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570659674'>
+<ul class='toc-indentation'>
+<li><a href='#BuildingandInstallingDAHDI-WithInternetAccess'>With Internet Access</a></li>
+<li><a href='#BuildingandInstallingDAHDI-WithoutInternetAccess'>Without Internet Access</a></li>
+</ul>
+</div>
+
+<p>Let's install DAHDI! On Linux, we will use the DAHDI-linux-complete tarball, which contains both the DAHDI Linux drivers as well as the DAHDI tools. Again, we're assuming that you've untarred the tarball in the /usr/local/src directory, and that you'll replace X and Y with the appropriate version numbers.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>LibPRI 1.4.13 and later source code depends on DAHDI include files. So, as a change from older versions, one must install DAHDI before installing libPRI.</p>
+                    </div>
+    </div>
+
+
+<h2><a name="BuildingandInstallingDAHDI-WithInternetAccess"></a>With Internet Access</h2>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server src]# cd dahdi-linux-complete-2.X.Y+2.X.Y
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make install
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make config
+</pre>
+</div></div>
+
+<h2><a name="BuildingandInstallingDAHDI-WithoutInternetAccess"></a>Without Internet Access</h2>
+<p>When installing on a system without internet access, there are a few additional steps that are required to build DAHDI.<br/>
+The firmware files for the various VPM modules will need to be downloaded and extracted in the source directory. The file specific links provided below are the current versions as of this writing. Please check the link below for the full list of versions.</p>
+
+<p><a href="http://downloads.digium.com/pub/telephony/firmware/releases/" class="external-link" rel="nofollow">http://downloads.digium.com/pub/telephony/firmware/releases/</a></p>
+
+<p>On a system with internet access, download the following files:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fw-hx8-2.06.tar.gz
+
+wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fw-oct6114-064-1.05.01.tar.gz
+
+wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fw-oct6114-128-1.05.01.tar.gz
+
+wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fw-vpmoct032-1.8.0.tar.gz
+
+wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fw-tc400m-MR6.12.tar.gz
+
+wget http://downloads.digium.com/pub/telephony/firmware/releases/dahdi-fwload-vpmadt032-1.25.0.tar.gz
+</pre>
+</div></div>
+
+<p>Now send these to the Asterisk system and store them in </p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/usr/local/src/dahdi-linux-complete-2.X.Y+2.X.Y/linux/drivers/dahdi/firmware/ </pre>
+</div></div>
+
+<p>Now we can continue the installation on the Asterisk system using the steps below.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server src]# cd dahdi-linux-complete-2.X.Y+2.X.Y
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# cd linux/drivers/dahdi/firmware
+
+[root@server firmware]# for tarball in $(ls dahdi-fw-*.tar.gz); do tar -zxf $tarball; done;
+
+[root@server firmware]# cd -
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make install
+
+[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# make config
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

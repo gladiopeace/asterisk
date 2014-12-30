@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : LDAP Realtime Driver</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Features_4260053.html">Features</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : LDAP Realtime Driver
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  lathama  on Jan 20, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="LDAPRealtimeDriver-AsteriskRealtimeLightweightDirectoryAccessProtocol%28LDAP%29Driver">Asterisk Realtime Lightweight Directory Access Protocol (LDAP) Driver</h1>
+
+<p>With this driver Asterisk, using the <a href="Realtime-Database-Configuration_4620317.html">Realtime Database Configuration</a>, can access and update information in an LDAP directory. Asterisk can configure SIP/IAX2 users, extensions, queues, queue members, and entire configuration files. This guide assumes you have a working knowledge of LDAP and have an LDAP server with authentication already setup. Asterisk requires read and write permissions to update the directory.</p>
+
+<p>See <a href="http://svn.asterisk.org/svn/asterisk/trunk/configs/res_ldap.conf.sample" class="external-link" rel="nofollow">configs/res_ldap.conf.sample</a> for a configuration file sample.<br />
+See contrib/scripts for the LDAP <a href="http://svn.asterisk.org/svn/asterisk/trunk/contrib/scripts/asterisk.ldap-schema" class="external-link" rel="nofollow">schema</a> and <a href="http://svn.asterisk.org/svn/asterisk/trunk/contrib/scripts/asterisk.ldif" class="external-link" rel="nofollow">ldif</a> files needed for the LDAP server.</p>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>To use static realtime with certain core configuration files the realtime backend you wish to use must be preloaded in <code>modules.conf</code>.</p>
+                    </div>
+    </div>
+
+
+<p>From within your Asterisk source directory:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+cd contrib/scripts
+sudo cp asterisk.ldap-schema /etc/ldap/schema/
+sudo service slapd restart
+sudo ldapadd -Y EXTERNAL -H ldapi:/// -f ./asterisk.ldif
+</pre>
+</div></div>
+<p>Let's edit the extconfig.conf file to specify LDAP as our realtime storage engine and where Asterisk will look for data.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+sippeers = ldap,&quot;ou=sip,dc=example,dc=domain&quot;,sip
+sipusers = ldap,&quot;ou=sip,dc=example,dc=domain&quot;,sip
+extensions = ldap,&quot;ou=extensions,dc=example,dc=domain&quot;,extensions
+</pre>
+</div></div>
+
+    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>You'll want to reference the Asterisk res_ldap.conf file which holds the LDAP mapping configuration when building your own record schema.</p>
+                    </div>
+    </div>
+
+<p><strong>Basic</strong> sip users record layout which will need to be saved to a file (we'll use 'createduser.ldif' here as an example). This example record is for sip user '1000'.  This example record is for sip user '1000'. </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+dn: cn=1000,ou=sip,dc=digium,dc=internal
+objectClass: AsteriskAccount
+objectClass: AsteriskExtension
+objectClass: AsteriskSIPUser
+objectClass: top
+AstAccountName: sip user
+cn: 1000
+AstAccountDefaultUser: 0
+AstAccountExpirationTimestamp: 0
+AstAccountFullContact: 0
+AstAccountHost: dynamic
+AstAccountIPAddress: 0
+AstAccountLastQualifyMilliseconds: 0
+AstAccountPort: 0
+AstAccountRegistrationServer: 0
+AstAccountType: 0
+AstAccountUserAgent: 0
+AstExtension: 1000
+</pre>
+</div></div>
+
+<p>Let's add the record to the LDAP server:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+sudo ldapadd -D &quot;cn=admin,dc=example,dc=domain&quot; -x -W -f createduser.ldif
+</pre>
+</div></div>
+
+<p>When creating your own record schema, you'll obviously want to incorporate authentication. Asterisk + LDAP requires that the user secrets be stored as an MD5 hash. MD5 hashes can be created using 'md5sum'.</p>
+
+<p>For AstAccountRealmedPassword authentication use this.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+printf &quot;&lt;secret composed of username, realm, and password goes here&gt;&quot; | md5sum
+</pre>
+</div></div>
+
+<p>For AstMD5secret authentication use this.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+printf &quot;password&quot; | md5sum
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-22085959"></a>
+                                    <font class="smallfont"><p>echo &quot;&lt;secret goes here&gt;&quot; | md5sum <br />
+must be</p>
+
+<p>echo -n &quot;$username:$realm:$password&quot; | md5sum</p>
+
+<p>otherwise you will not able to login LDAP.</p>
+
+<p>Also, If you do not use cnc=config OpenLDAP feature, you do not have to issue the following command:</p>
+
+<p>sudo ldapadd -Y EXTERNAL -H ldapi:/// -f ./asterisk.ldif</p>
+
+<p>Instead add include path/to/schema/asterisk.ldap-schema<br />
+to your slapd.conf</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ismail.yenigul at Dec 31, 2012 15:03
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22085960"></a>
+                                    <font class="smallfont"><p>Can you confirm the platforms that this applies to?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Dec 31, 2012 15:40
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22085964"></a>
+                                    <font class="smallfont"><p>Asterisk 11.1.0<br />
+Centos 6.3 x86_64<br />
+OpenLDAP 2.4</p>
+
+<p>If you want to use objectclass person/inetOrgPerson with Asterisk objectclasses</p>
+
+<p>You have to change objectclass types from STRUCTURAL to AUXILIARY like following.<br />
+Otherwise you will get &quot; invalid structural object class chain &gt; (AsteriskAccount/person)&quot; error message.</p>
+
+
+<p>objectClass (<br />
+AsteriskDialplan<br />
+NAME 'AsteriskDialplan'<br />
+DESC 'Asterisk Dialplan Information'<br />
+SUP top <strong>AUXILIARY</strong><br />
+MUST ( AstExtension ) )</p>
+
+<p>objectClass (<br />
+AsteriskAccount<br />
+NAME 'AsteriskAccount'<br />
+DESC 'Asterisk Account Information'<br />
+SUP top <strong>AUXILIARY</strong><br />
+MUST ( AstAccountName ) )</p>
+
+<p>objectClass (<br />
+AsteriskMailbox<br />
+NAME 'AsteriskMailbox'<br />
+DESC 'Asterisk Mailbox Information'<br />
+SUP top <strong>AUXILIARY</strong><br />
+MUST ( AstVoicemailMailbox ) )</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ismail.yenigul at Jan 01, 2013 02:06
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22085972"></a>
+                                    <font class="smallfont"><p>This is a full user ldiff to login asterisk successfully with user 110 and password mypass</p>
+
+<p>To generate a password for<br />
+user: 110<br />
+realm:172.16.45.90 (change with your realm value in sip.conf)<br />
+password: mypass<br />
+$ echo -n &quot;110:172.16.45.90:mypass&quot;| md5sum<br />
+<span style="color: rgb(255,0,0);"><strong>cf570c6603b8567e3138357423ee266c</strong></span> -</p>
+
+<p>Please note this note this is only to login asterisk. I will give more update about dial plan, context etc.</p>
+
+
+<p>dn: uid=ismail@surgatelabs.com,ou=surgatelabs.com,o=mail,dc=surmail<br />
+objectClass: top<br />
+objectClass: AsteriskAccount<br />
+objectClass: AsteriskExtension<br />
+objectClass: AsteriskSIPUser<br />
+objectClass: inetOrgPerson<br />
+objectClass: person<br />
+sn:ismail<br />
+mail: ismail@surgatelabs.com<br />
+cn: ismail yenigul<br />
+uid: ismail@surgatelabs.com<br />
+AstAccountName: 110<br />
+AstAccountDefaultUser: 0<br />
+AstAccountExpirationTimestamp: 0<br />
+AstAccountFullContact: 0<br />
+AstAccountHost: dynamic<br />
+AstAccountIPAddress: 0<br />
+AstAccountLastQualifyMilliseconds: 0<br />
+AstAccountPort: 0<br />
+AstAccountRegistrationServer: 0<br />
+AstAccountType: 0<br />
+AstAccountUserAgent: 0<br />
+AstExtension: 110<br />
+AstAccountRealmedPassword: {md5}<span style="color: rgb(255,0,0);"><strong>cf570c6603b8567e3138357423ee266c</strong></span></p>
+
+<p>sip.conf:</p>
+
+<p>realm=172.16.45.90</p>
+
+<p>---</p>
+
+<p>extconfig.conf</p>
+
+<p>sippeers =&gt; ldap,&quot;dc=surmail&quot;,<span style="color: rgb(0,0,128);"><strong>sip</strong></span><br />
+sipusers =&gt; ldap,&quot;dc=surmail&quot;,<span style="color: rgb(0,0,128);"><strong>sip</strong></span></p>
+
+<p>--</p>
+
+
+<p>res_ldap.conf file:</p>
+
+<p>[<span style="color: rgb(0,0,128);"><strong>sip</strong></span>]<br />
+name = <span style="color: rgb(255,0,0);"><strong>AstAccountName      </strong></span> ; We use the &quot;cn&quot; as the default value for name on the line above<br />
+                ; because objectClass=AsteriskSIPUser does not include a uid as an allowed field<br />
+                ; If your entry combines other objectClasses and uid is available, you may<br />
+                ; prefer to change the line to be name = uid, especially if your LDAP entries<br />
+                ; contain spaces in the cn field.<br />
+                ; You may also find it appropriate to use something completely different.<br />
+                ; This is possible by changing the line above to name = AstAccountName (or whatever you<br />
+                ; prefer).<br />
+                ;<br />
+amaflags = AstAccountAMAFlags<br />
+callgroup = AstAccountCallGroup<br />
+callerid = AstAccountCallerID<br />
+directmedia = AstAccountDirectMedia<br />
+context = AstAccountContext<br />
+dtmfmode = AstAccountDTMFMode<br />
+fromuser = AstAccountFromUser<br />
+fromdomain = AstAccountFromDomain<br />
+fullcontact = AstAccountFullContact<br />
+fullcontact = gecos<br />
+host = AstAccountHost<br />
+insecure = AstAccountInsecure<br />
+mailbox = AstAccountMailbox</p>
+
+<p>md5secret = AstAccountRealmedPassword          ; Must be an MD5 hash. Field value can start with{md5} but it is not required.<br />
+                                                ; Generate the password via the md5sum command, e.g.<br />
+                                                ; echo &quot;my_password&quot; | md5sum</p>
+
+<p>nat = AstAccountNAT<br />
+deny = AstAccountDeny<br />
+permit = AstAccountPermit<br />
+pickupgroup = AstAccountPickupGroup<br />
+port = AstAccountPort<br />
+qualify = AstAccountQualify<br />
+restrictcid = AstAccountRestrictCID<br />
+rtptimeout = AstAccountRTPTimeout<br />
+rtpholdtimeout = AstAccountRTPHoldTimeout<br />
+type = AstAccountType<br />
+disallow = AstAccountDisallowedCodec<br />
+allow = AstAccountAllowedCodec<br />
+MusicOnHold = AstAccountMusicOnHold<br />
+regseconds = AstAccountExpirationTimestamp<br />
+regcontext = AstAccountRegistrationContext<br />
+regexten = AstAccountRegistrationExten<br />
+CanCallForward = AstAccountCanCallForward<br />
+ipaddr = AstAccountIPAddress<br />
+defaultuser = AstAccountDefaultUser<br />
+regserver = AstAccountRegistrationServer<br />
+lastms = AstAccountLastQualifyMilliseconds<br />
+additionalFilter=(objectClass=AsteriskSIPUser)</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ismail.yenigul at Jan 01, 2013 12:25
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22085978"></a>
+                                    <font class="smallfont"><p>Asterisk is changing the following ldap attr.<br />
+So you must define this attrs while you are creating a user account on LDAP. If you dont define this attrs you will get a log message about updating account info in asterisk logs.</p>
+
+<p>attr=AstAccountIPAddress AstAccountPort AstAccountExpirationTimestamp AstAccountDefaultUser AstAccountUserAgent AstAccountLastQualifyMilliseconds AstAccountFullContact</p>
+
+
+<p>Another problem is with default res_ldap.conf  You  have to disable fullcontact = gecos line<br />
+and add useragent ldap mapping like following.</p>
+
+<p>fullcontact = AstAccountFullContact<br />
+<span style="color: rgb(255,0,0);"><strong>;fullcontact = gecos</strong></span><br />
+<span style="color: rgb(51,153,102);"><strong>useragent = AstAccountUserAgent</strong></span></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ismail.yenigul at Jan 02, 2013 06:58
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22085982"></a>
+                                    <font class="smallfont"><p>Also the following lines in res_ldap.conf.example is wrong. the attrs in red do not exist in asterisk.ldap-schema file.</p>
+
+
+<p>; Extensions Table<br />
+;<br />
+[extensions]<br />
+context  = <span style="color: rgb(255,0,0);"><strong>AstExtensionContext</strong></span><br />
+exten  = <span style="color: rgb(255,0,0);"><strong>AstExtensionExten</strong></span><br />
+priority = <span style="color: rgb(255,0,0);"><strong>AstExtensionPriority</strong></span><br />
+app = <span style="color: rgb(255,0,0);"><strong>AstExtensionApplication</strong></span><br />
+appdata = <span style="color: rgb(255,0,0);"><strong>AstExtensionApplicationData</strong></span><br />
+additionalFilter=(objectClass=<span style="color: rgb(255,0,0);"><strong>AstExtension</strong></span>)</p>
+
+
+
+<p>The correct values:</p>
+
+
+<p>[extensions]<br />
+context  =  AstContext<br />
+exten  =  AstExtension<br />
+priority = AstPriority<br />
+app = AstApplication<br />
+appdata = AstApplicationData<br />
+additionalFilter=(objectClass=AsteriskExtension)</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ismail.yenigul at Jan 02, 2013 16:57
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22086045"></a>
+                                    <font class="smallfont"><p>any definitive installation guide there?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by cguzmana@gmail.com at Jan 07, 2013 08:00
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

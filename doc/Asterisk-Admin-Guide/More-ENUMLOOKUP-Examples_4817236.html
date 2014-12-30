@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : More ENUMLOOKUP Examples</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="4817225.html">E.164 NUmber Mapping (ENUM)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="The-ENUMLOOKUP-Dialplan-Function_4817227.html">The ENUMLOOKUP Dialplan Function</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : More ENUMLOOKUP Examples
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  seanbright  on May 15, 2012
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>All examples below except where noted use &quot;e164.arpa&quot; as the referenced domain, which is the default domain name for ENUMLOOKUP. All numbers are assumed to not have a leading &quot;+&quot; as dialed by the inbound channel, so that character is added where necessary during ENUMLOOKUP function calls.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: plain; gutter: false" style="font-size:12px;">
+; example 1
+;
+; Assumes North American international dialing (011) prefix.
+; Look up the first SIP result and send the call there, otherwise
+; send the call out a PRI. This is the most simple possible
+; ENUM example, but only uses the first SIP reply in the list of
+; NAPTR(s).
+;
+exten =&gt; _011.,1,Set(enumresult=${ENUMLOOKUP(${EXTEN:3})})
+exten =&gt; _011.,n,Dial(SIP/${enumresult})
+exten =&gt; _011.,n,Dial(DAHDI/g1/${EXTEN})
+
+;
+; example 2
+;
+; Assumes North American international dialing (011) prefix.
+; Check to see if there are multiple SIP NAPTRs returned by
+; the lookup, and dial each in order. If none work (or none
+; exist) then send the call out a PRI, group 1.
+;
+exten =&gt; _011.,1,Set(sipcount=${ENUMLOOKUP(${EXTEN:3},sip,c)}|counter=0)
+exten =&gt; _011.,n,While($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;])
+exten =&gt; _011.,n,Set(counter=$[${counter}+1])
+exten =&gt; _011.,n,Dial(SIP/${ENUMLOOKUP(${EXTEN:3},sip,,${counter})})
+exten =&gt; _011.,n,EndWhile
+exten =&gt; _011.,n,Dial(DAHDI/g1/${EXTEN})
+
+;
+; example 3
+;
+; This example expects an ${EXTEN} that is an e.164 number (like
+; 14102241145 or 437203001721)
+; Search through e164.arpa and then also search through e164.org
+; to see if there are any valid SIP or IAX termination capabilities.
+; If none, send call out via DAHDI channel 1.
+;
+; Start first with e164.arpa zone...
+;
+exten =&gt; _X.,1,Set(sipcount=${ENUMLOOKUP(${EXTEN},sip,c)}|counter=0)
+exten =&gt; _X.,2,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?3:6)
+exten =&gt; _X.,3,Set(counter=$[${counter}+1])
+exten =&gt; _X.,4,Dial(SIP/${ENUMLOOKUP(${EXTEN},sip,,${counter})})
+exten =&gt; _X.,5,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?3:6)
+;
+exten =&gt; _X.,6,Set(iaxcount=${ENUMLOOKUP(${EXTEN},iax2,c)}|counter=0)
+exten =&gt; _X.,7,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?8:11)
+exten =&gt; _X.,8,Set(counter=$[${counter}+1])
+exten =&gt; _X.,9,Dial(IAX2/${ENUMLOOKUP(${EXTEN},iax2,,${counter})})
+exten =&gt; _X.,10,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?8:11)
+;
+exten =&gt; _X.,11,NoOp(&quot;No valid entries in e164.arpa for ${EXTEN} - checking in e164.org&quot;)
+;
+; ...then also try e164.org, and look for SIP and IAX NAPTRs...
+;
+exten =&gt; _X.,12,Set(sipcount=${ENUMLOOKUP(${EXTEN},sip,c,,e164.org)}|counter=0)
+exten =&gt; _X.,13,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?14:17)
+exten =&gt; _X.,14,Set(counter=$[${counter}+1])
+exten =&gt; _X.,15,Dial(SIP/${ENUMLOOKUP(${EXTEN},sip,,${counter},e164.org)})
+exten =&gt; _X.,16,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?14:17)
+;
+exten =&gt; _X.,17,Set(iaxcount=${ENUMLOOKUP(${EXTEN},iax2,c,,e164.org)}|counter=0)
+exten =&gt; _X.,18,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?19:22)
+exten =&gt; _X.,19,Set(counter=$[${counter}+1])
+exten =&gt; _X.,20,Dial(IAX2/${ENUMLOOKUP(${EXTEN},iax2,,${counter},e164.org)})
+exten =&gt; _X.,21,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?19:22)
+;
+; ...then send out PRI.
+;
+exten =&gt; _X.,22,NoOp(&quot;No valid entries in e164.org for ${EXTEN} - sending out via DAHDI&quot;)
+exten =&gt; _X.,23,Dial(DAHDI/g1/${EXTEN})
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-12550598"></a>
+                                    <font class="smallfont"><p>I tried example 3 under Asterisk 1.8.2.3 and it generated some errors due to outdated syntax, I have corrected the errors in the below dialplan if it helps anyone.</p>
+<div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>example 3</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+;
+; This example expects an ${EXTEN} that is an e.164 number (like
+; 14102241145 or 437203001721)
+; Search through e164.arpa and then also search through e164.org
+; to see if there are any valid SIP or IAX termination capabilities.
+; If none, send call out via DAHDI channel 1.
+;
+; Start first with e164.arpa zone...
+;
+exten =&gt; _X.,1,Set(sipcount=${ENUMLOOKUP(${EXTEN},sip,c)})
+exten =&gt; _X.,2,Set(counter=0)
+exten =&gt; _X.,3,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?4:7)
+exten =&gt; _X.,4,Set(counter=${MATH(${counter}+1,int)})
+exten =&gt; _X.,5,Dial(SIP/${ENUMLOOKUP(${EXTEN},sip,,${counter})})
+exten =&gt; _X.,6,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?4:7)
+;
+exten =&gt; _X.,7,Set(iaxcount=${ENUMLOOKUP(${EXTEN},iax2,c)})
+exten =&gt; _X.,8,Set(counter=0)
+exten =&gt; _X.,9,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?10:13)
+exten =&gt; _X.,10,Set(counter=$[${counter}+1])
+exten =&gt; _X.,11,Dial(IAX2/${ENUMLOOKUP(${EXTEN},iax2,,${counter})})
+exten =&gt; _X.,12,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?10:13)
+;
+exten =&gt; _X.,13,NoOp(&quot;No valid entries in e164.arpa for ${EXTEN} - checking in e164.org&quot;)
+;
+; ...then also try e164.org, and look for SIP and IAX NAPTRs...
+;
+exten =&gt; _X.,14,Set(sipcount=${ENUMLOOKUP(${EXTEN},sip,c,,e164.org)})
+exten =&gt; _X.,15,Set(counter=0)
+exten =&gt; _X.,16,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?17:20)
+exten =&gt; _X.,17,Set(counter=${MATH(${counter}+1,int)})
+exten =&gt; _X.,18,Dial(SIP/${ENUMLOOKUP(${EXTEN},sip,,${counter},e164.org)})
+exten =&gt; _X.,19,GotoIf($[&quot;${counter}&quot;&lt;&quot;${sipcount}&quot;]?17:20)
+;
+exten =&gt; _X.,20,Set(iaxcount=${ENUMLOOKUP(${EXTEN},iax2,c,,e164.org)})
+exten =&gt; _X.,21,Set(counter=0)
+exten =&gt; _X.,22,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?24:26)
+exten =&gt; _X.,23,Set(counter=${MATH(${counter}+1,int)})
+exten =&gt; _X.,24,Dial(IAX2/${ENUMLOOKUP(${EXTEN},iax2,,${counter},e164.org)})
+exten =&gt; _X.,25,GotoIf($[&quot;${counter}&quot;&lt;&quot;${iaxcount}&quot;]?24:26)
+;
+; ...then send out PRI.
+;
+exten =&gt; _X.,26,NoOp(&quot;No valid entries in e164.org for ${EXTEN} - sending out via DAHDI&quot;)
+exten =&gt; _X.,27,Dial(DAHDI/g1/${EXTEN})
+; end example 3 for Asterisk 1.8
+</pre>
+</div></div> </font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by johnkiniston at Mar 08, 2011 09:35
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Validating Your AsteriskNOW Installation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk_4817553.html">Installing Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-AsteriskNOW_4817551.html">Installing AsteriskNOW</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Validating Your AsteriskNOW Installation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  mdavenport  on Nov 22, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Before continuing on, let's check a few things to make sure your system is in good working order. First, let's make sure the DAHDI drivers are loaded. After logging in as the <strong>root</strong> user you can use the <strong>lsmod</strong> under Linux to list all of the loaded kernel modules, and the <strong>grep</strong> command to filter the input and only show the modules that have dahdi in their name.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server asterisk-1.6.X.Y]# lsmod | grep dahdi</pre>
+</div></div><p>If the command returns nothing, then DAHDI has not been started. Start DAHDI by running:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server asterisk-1.6.X.Y]# service dadhi start</pre>
+</div></div><p>If you have DAHDI running, the output of lsmod | grep dahdi should look something like the output below. (The exact details may be different, depending on which DAHDI modules have been built, and so forth.)</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# lsmod | grep dahdi
+
+dahdi_dummy          4288   0
+
+dahdi_transcode      7928   1 wctc4xxp
+
+dahdi_voicebus       40464  2 wctdm24xxp,wcte12xp
+
+dahdi                196544 12 dahdi_dummy,wctdm24xxp,wcte11xp,wct1xxp,wcte12xp,wct4xxp
+
+crc_ccitt            2096   1 dahdi</pre>
+</div></div><p>Now that DAHDI is running, you can run <strong>dahdi_hardware</strong> to list any DAHDI-compatible devices in your system. You can also run the <strong>dahdi_tool</strong> utility to show the various DAHDI-compatible devices, and their current state.</p><p>To check if Asterisk is running, you can use the Asterisk initscript.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# service asterisk status
+asterisk is stopped</pre>
+</div></div><p>To start Asterisk, we'll use the initscript again, this time giving it the start action:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# service asterisk start
+Starting asterisk:</pre>
+</div></div><p>When Asterisk starts, it runs as a background service (or daemon), so you typically won't see any response on the command line. We can check the status of Asterisk and see that it's running by using the command below. (The process identifier, or pid, will obviously be different on your system.)</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# service asterisk status
+asterisk (pid 32117) is running...</pre>
+</div></div><p>And there you have it... you have an Asterisk system up and running! You should now continue on in <a href="Getting-Started-with-Asterisk_4817533.html">Getting Started with Asterisk</a>.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Creating SIP Accounts</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Basic-PBX-Functionality_4817469.html">Basic PBX Functionality</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Creating SIP Accounts
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Apr 28, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>In order for our two phones to communicate with each other, we need to configure an account for each phone in the channel driver which corresponds to the protocol they'll be using. Since both the phones are using the SIP protocol, we'll configure accounts in the SIP channel driver configuration file, called <strong>sip.conf</strong>. (This file resides in the Asterisk configuration directory, which is typically <strong>/etc/asterisk</strong>.) Let's name your phones <strong>Alice</strong> and <strong>Bob</strong>, so that we can easily differentiate between them.</p>
+
+<p>Open <strong>sip.conf</strong> with your favorite text editor, and spend a minute or two looking at the file. (Don't let it overwhelm you — the sample <strong>sip.conf</strong> has a <strong>lot</strong> of data in it, and can be overwhelming at first glance.) Notice that there are a couple of sections at the top of the configuration, such as [general] and [authentication], which control the overall functionality of the channel driver. Below those sections, there are sections which correspond to SIP accounts on the system. Scroll to the bottom of the file, and add a section for Alice and Bob. You'll need to choose your own unique password for each account, and change the <strong>permit</strong> line to match the settings for your local network.</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">[demo-alice]
+type=friend
+host=dynamic
+secret=verysecretpassword ; put a strong, unique password here instead
+context=users
+deny=0.0.0.0/0
+permit=192.168.5.0/255.255.255.0 ; replace with your network settings
+
+[demo-bob]
+type=friend
+host=dynamic
+secret=othersecretpassword ; put a strong, unique password here instead
+context=users
+deny=0.0.0.0/0
+permit=192.168.5.0/255.255.255.0 ; replace with your network settings</pre>
+</div></div>
+
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            
+<h5 id="CreatingSIPAccounts-BeSeriousAboutAccountSecurity">Be Serious About Account Security</h5>
+<p>We can't stress enough how important it is for you to pick a strong password for all accounts on Asterisk, and to only allow access from trusted networks. Unfortunately, we've found many instances of people exposing their Asterisk to the internet at large with easily-guessable passwords, or no passwords at all. You could be at risk of toll fraud, scams, and other malicious behavior.</p>
+
+<p>For more information on Asterisk security and how you can protect yourself, check out <a href="http://www.asterisk.org/security/webinar/" class="external-link" rel="nofollow">http://www.asterisk.org/security/webinar/</a>.</p>
+                    </div>
+    </div>
+
+
+<p>After adding the two sections above to your <strong>sip.conf</strong> file, go to the Asterisk command-line interface and run the <strong>sip reload</strong> command to tell Asterisk to re-read the <strong>sip.conf</strong> configuration file.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; sip reload
+
+Reloading SIP
+
+server*CLI&gt;
+</pre>
+</div></div>
+
+    <div class="aui-message hint shadowed information-macro">
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<h5 id="CreatingSIPAccounts-ReloadingConfigurationFiles">Reloading Configuration Files</h5>
+
+<p>Don't forget to reload the appropriate Asterisk configuration files after you have made changes to them.</p>
+                    </div>
+    </div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-10650121"></a>
+                                    <font class="smallfont"><p>With the default freepbx install for 1.6, the sip.conf file is not located in /etc/asterisk anymore.</p>
+
+<p>I show it at :<br />
+/usr/src/freepbx-2.7.0/amp_conf/htdocs/admin/modules/core/etc/sip.conf</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by dawaves at Jan 04, 2011 22:58
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10650123"></a>
+                                    <font class="smallfont"><p>Read the part: &quot;<em>which</em> <em>is</em> <em>typically</em> <em>/etc/asterisk</em>&quot;</p>
+
+<p>FreePBX is a Linux Distribution that includes many pieces of software.  Asterisk supports having its config files in many different places.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Jan 05, 2011 05:00
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-16547853"></a>
+                                    <font class="smallfont"><p>why are we using type=friend for the phones ?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by obeliks at Jun 15, 2011 03:52
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

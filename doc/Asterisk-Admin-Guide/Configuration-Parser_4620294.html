@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Configuration Parser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Configuration_4620290.html">Asterisk Configuration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="General-Configuration-Information_4620292.html">General Configuration Information</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Configuration Parser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  russell  on Aug 30, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h5 id="ConfigurationParser-Introduction">Introduction</h5>
+
+<p>The Asterisk configuration parser in the 1.2 version and beyond series has been improved in a number of ways. In addition to the realtime architecture, we now have the ability to create templates in configuration files, and use these as templates when we configure phones, voicemail accounts and queues. <br />
+These changes are general to the configuration parser, and works in all configuration files.</p>
+
+<h5 id="ConfigurationParser-Generalsyntax">General syntax</h5>
+
+<p>Asterisk configuration files are defined as follows:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section]
+label = value
+label2 = value
+</pre>
+</div></div>
+
+<p>In some files, (e.g. mgcp.conf, dahdi.conf and agents.conf), the syntax is a bit different. In these files the syntax is as follows:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section]
+label1 = value1
+label2 = value2
+object =&gt; name
+label3 = value3
+label2 = value4
+object2 =&gt; name2
+</pre>
+</div></div>
+
+<p>In this syntax, we create objects with the settings defined above the object creation. Note that settings are inherited from the top, so in the example above object2 has inherited the setting for &quot;label1&quot; from the first object. <br />
+For template configurations, the syntax for defining a section is changed to:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section](options)
+label = value
+</pre>
+</div></div>
+
+<p>The options field is used to define templates, refer to templates and hide templates. Any object can be used as a template. <br />
+No whitespace is allowed between the closing &quot;]&quot; and the parenthesis &quot;(&quot;.</p>
+
+<h5 id="ConfigurationParser-Comments">Comments</h5>
+
+<p>All lines that starts with semi-colon &quot;;&quot; is treated as comments and is not parsed. <br />
+The &quot;;<span style="text-decoration: line-through;">&quot; is a marker for a multi-line comment. Everything after that marker will be treated as a comment until the end-marker &quot;</span>;&quot; is found. Parsing begins directly after the end-marker.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+;This is a comment
+label = value
+;-- This is
+a comment -;
+;- Comment --; exten=&gt; 1000,1,dial(SIP/lisa)
+</pre>
+</div></div>
+
+<h5 id="ConfigurationParser-Includingotherfiles">Including other files</h5>
+
+<p>In all of the configuration files, you may include the content of another file with the #include statement. The content of the other file will be included at the row that the #include statement occurred.</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+#include myusers.conf
+</pre>
+</div></div>
+
+<p>You may also include the output of a program with the #exec directive, if you enable it in asterisk.conf </p>
+
+<p>In asterisk.conf, add the execincludes = yes statement in the options section:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[options] 
+execincludes=yes
+</pre>
+</div></div>
+
+<p>The exec directive is used like this:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+#exec /usr/local/bin/myasteriskconfigurator.sh
+</pre>
+</div></div>
+
+<h5 id="ConfigurationParser-Addingtoanexistingsection">Adding to an existing section</h5>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section]
+label = value
+
+[section](+)
+label2 = value2
+</pre>
+</div></div>
+
+<p>In this case, the plus sign indicates that the second section (with the same name) is an addition to the first section. The second section can be in another file (by using the #include statement). If the section name referred to before the plus is missing, the configuration will fail to load.</p>
+
+<h5 id="ConfigurationParser-Definingatemplate-onlysection">Defining a template-only section</h5>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section](!)
+label = value
+</pre>
+</div></div>
+
+<p>The exclamation mark indicates to the config parser that this is a only a template and should not itself be used by the Asterisk module for configuration. The section can be inherited by other sections (see section &quot;Using templates&quot; below) but is not used by itself.</p>
+
+<h5 id="ConfigurationParser-Usingtemplates%28orotherconfigurationsections%29">Using templates (or other configuration sections)</h5>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[section](name[,name])
+label = value
+</pre>
+</div></div>
+
+<p>The name within the parenthesis refers to other sections, either templates or standard sections. The referred sections are included before the configuration engine parses the local settings within the section as though their entire contents (and anything they were previously based upon) were included in the new section. For example consider the following:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[foo]
+disallow=all
+allow=ulaw
+allow=alaw
+
+[bar]
+allow=gsm
+allow=g729
+permit=192.168.2.1
+
+[baz](foo,bar)
+type=friend
+permit=192.168.3.1
+context=incoming host=bnm
+</pre>
+</div></div>
+
+<p>The [baz] section will be processed as though it had been written in the following way:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[baz]
+disallow=all
+allow=ulaw
+allow=alaw
+allow=gsm
+allow=g729
+permit=192.168.2.1
+type=friend
+permit=192.168.3.1
+context=incoming host=bnm
+</pre>
+</div></div>
+
+<p>It should also be noted that there are no guaranteed overriding semantics, meaning that if you define something in one template, you should not expect to be able to override it by defining it again in another template.</p>
+
+<p>Additional Examples<br />
+(in top-level sip.conf)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[defaults]
+type=friend
+nat=yes
+qualify=on
+dtmfmode=rfc2833
+disallow=all
+allow=alaw
+#include accounts/*/sip.conf
+</pre>
+</div></div>
+
+<p>(in accounts/customer1/sip.conf)</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[def-customer1](!,defaults)
+secret=this_is_not_secret
+context=from-customer1
+callerid=Customer 1 &lt;300&gt;
+accountcode=0001
+
+[phone1](def-customer1)
+mailbox=phone1@customer1
+
+[phone2](def-customer1)
+mailbox=phone2@customer1
+</pre>
+</div></div>
+
+<p>This example defines two phones - phone1 and phone2 with settings inherited from &quot;def-customer1&quot;. The &quot;def-customer1&quot; is a template that inherits from &quot;defaults&quot;, which also is a template.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

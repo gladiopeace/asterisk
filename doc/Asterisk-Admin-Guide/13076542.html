@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : SIP Realtime, MySQL table structure</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Configuration_4620290.html">Asterisk Configuration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Database-Support-Configuration_4620315.html">Database Support Configuration</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : SIP Realtime, MySQL table structure
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on May 06, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="SIPRealtime%2CMySQLtablestructure-HereisthetablestructureusedbyMySQLforRealtimeSIPfriends">Here is the table structure used by MySQL for Realtime SIP friends</h1>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>#
+# Table structure for table `sipfriends`
+#
+
+CREATE TABLE IF NOT EXISTS `sipfriends` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `name` varchar(10) NOT NULL,
+      `ipaddr` varchar(15) DEFAULT NULL,
+      `port` int(5) DEFAULT NULL,
+      `regseconds` int(11) DEFAULT NULL,
+      `defaultuser` varchar(10) DEFAULT NULL,
+      `fullcontact` varchar(35) DEFAULT NULL,
+      `regserver` varchar(20) DEFAULT NULL,
+      `useragent` varchar(20) DEFAULT NULL,
+      `lastms` int(11) DEFAULT NULL,
+      `host` varchar(40) DEFAULT NULL,
+      `type` enum(&#39;friend&#39;,&#39;user&#39;,&#39;peer&#39;) DEFAULT NULL,
+      `context` varchar(40) DEFAULT NULL,
+      `permit` varchar(40) DEFAULT NULL,
+      `deny` varchar(40) DEFAULT NULL,
+      `secret` varchar(40) DEFAULT NULL,
+      `md5secret` varchar(40) DEFAULT NULL,
+      `remotesecret` varchar(40) DEFAULT NULL,
+      `transport` enum(&#39;udp&#39;,&#39;tcp&#39;,&#39;udp,tcp&#39;,&#39;tcp,udp&#39;) DEFAULT NULL,
+      `dtmfmode` enum(&#39;rfc2833&#39;,&#39;info&#39;,&#39;shortinfo&#39;,&#39;inband&#39;,&#39;auto&#39;) DEFAULT NULL,
+      `directmedia` enum(&#39;yes&#39;,&#39;no&#39;,&#39;nonat&#39;,&#39;update&#39;) DEFAULT NULL,
+      `nat` enum(&#39;yes&#39;,&#39;no&#39;,&#39;never&#39;,&#39;route&#39;) DEFAULT NULL,
+      `callgroup` varchar(40) DEFAULT NULL,
+      `pickupgroup` varchar(40) DEFAULT NULL,
+      `language` varchar(40) DEFAULT NULL,
+      `allow` varchar(40) DEFAULT NULL,
+      `disallow` varchar(40) DEFAULT NULL,
+      `insecure` varchar(40) DEFAULT NULL,
+      `trustrpid` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `progressinband` enum(&#39;yes&#39;,&#39;no&#39;,&#39;never&#39;) DEFAULT NULL,
+      `promiscredir` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `useclientcode` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `accountcode` varchar(40) DEFAULT NULL,
+      `setvar` varchar(40) DEFAULT NULL,
+      `callerid` varchar(40) DEFAULT NULL,
+      `amaflags` varchar(40) DEFAULT NULL,
+      `callcounter` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `busylevel` int(11) DEFAULT NULL,
+      `allowoverlap` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `allowsubscribe` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `videosupport` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `maxcallbitrate` int(11) DEFAULT NULL,
+      `rfc2833compensate` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `mailbox` varchar(40) DEFAULT NULL,
+      `session-timers` enum(&#39;accept&#39;,&#39;refuse&#39;,&#39;originate&#39;) DEFAULT NULL,
+      `session-expires` int(11) DEFAULT NULL,
+      `session-minse` int(11) DEFAULT NULL,
+      `session-refresher` enum(&#39;uac&#39;,&#39;uas&#39;) DEFAULT NULL,
+      `t38pt_usertpsource` varchar(40) DEFAULT NULL,
+      `regexten` varchar(40) DEFAULT NULL,
+      `fromdomain` varchar(40) DEFAULT NULL,
+      `fromuser` varchar(40) DEFAULT NULL,
+      `qualify` varchar(40) DEFAULT NULL,
+      `defaultip` varchar(40) DEFAULT NULL,
+      `rtptimeout` int(11) DEFAULT NULL,
+      `rtpholdtimeout` int(11) DEFAULT NULL,
+      `sendrpid` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `outboundproxy` varchar(40) DEFAULT NULL,
+      `callbackextension` varchar(40) DEFAULT NULL,
+      `registertrying` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `timert1` int(11) DEFAULT NULL,
+      `timerb` int(11) DEFAULT NULL,
+      `qualifyfreq` int(11) DEFAULT NULL,
+      `constantssrc` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `contactpermit` varchar(40) DEFAULT NULL,
+      `contactdeny` varchar(40) DEFAULT NULL,
+      `usereqphone` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `textsupport` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `faxdetect` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `buggymwi` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `auth` varchar(40) DEFAULT NULL,
+      `fullname` varchar(40) DEFAULT NULL,
+      `trunkname` varchar(40) DEFAULT NULL,
+      `cid_number` varchar(40) DEFAULT NULL,
+      `callingpres` enum(&#39;allowed_not_screened&#39;,&#39;allowed_passed_screen&#39;,&#39;allowed_failed_screen&#39;,&#39;allowed&#39;,&#39;prohib_not_screened&#39;,&#39;prohib_passed_screen&#39;,&#39;prohib_failed_screen&#39;,&#39;prohib&#39;) DEFAULT NULL,
+      `mohinterpret` varchar(40) DEFAULT NULL,
+      `mohsuggest` varchar(40) DEFAULT NULL,
+      `parkinglot` varchar(40) DEFAULT NULL,
+      `hasvoicemail` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `subscribemwi` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `vmexten` varchar(40) DEFAULT NULL,
+      `autoframing` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `rtpkeepalive` int(11) DEFAULT NULL,
+      `call-limit` int(11) DEFAULT NULL,
+      `g726nonstandard` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `ignoresdpversion` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `allowtransfer` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      `dynamic` enum(&#39;yes&#39;,&#39;no&#39;) DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `name` (`name`),
+      KEY `ipaddr` (`ipaddr`,`port`),
+      KEY `host` (`host`,`port`)
+) ENGINE=MyISAM;
+</pre>
+</div></div> 
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-22086021"></a>
+                                    <font class="smallfont"><p>Anyone know where can I find the sippers for Postgres?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ghepeath at Jan 04, 2013 19:11
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22088295"></a>
+                                    <font class="smallfont"><p>The archive of the source, in the folder contrib/realtime/postgresql, no?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by v.koqep@gmail.com at Mar 03, 2013 12:50
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773835"></a>
+                                    <font class="smallfont"><p>Where can I get table structure or table view for <strong>sipregs</strong>?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by v.koqep@gmail.com at Mar 20, 2013 05:14
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773841"></a>
+                                    <font class="smallfont"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE VIEW `sipregs` AS SELECT
+    `id`
+    ,`name`
+    ,`ipaddr`
+    ,`port`
+    ,`regseconds`
+    ,`defaultuser`
+    ,`fullcontact`
+    ,`regserver`
+    ,`useragent`
+    ,`lastms`
+FROM `sippeers`;
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by v.koqep@gmail.com at Mar 21, 2013 02:07
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773842"></a>
+                                    <font class="smallfont"><p>Thank you</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ghepeath at Mar 21, 2013 10:49
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773843"></a>
+                                    <font class="smallfont"><p>I been comparing the real-time tables for MySQL and PostgreSQL.<br />
+Can anyone advise me why in the real time folder of the source code not there is more tables for MySQL, and not the same tables for postgress?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ghepeath at Mar 21, 2013 12:13
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773866"></a>
+                                    <font class="smallfont"><p>Yeah, the docs and config samples sucks.</p>
+
+<p>voip-info, this wiki, the confs in src... all have differences with each other.</p>
+
+<p>One example, I want to create a realtime table for queues, but I just found the table structure in voip-info, and I don't trust 100% in that information.</p>
+
+<p>I think the docs team should have more attention on this fragmentation and lack of information.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by thiagoc at Mar 28, 2013 13:57
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-25919821"></a>
+                                    <font class="smallfont"><p>Hi,</p><p>in which database do we create this table, what about sip.conf ? why this tutors so weak ? </p><p> </p><p>thanks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by seyazar at Jul 17, 2013 01:56
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478158"></a>
+                                    <font class="smallfont"><p>Please give for Asterisk 11 and Postgres sql code for create tables - sip_conf and queue_member. In source code sucks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by axonaro at Sep 06, 2013 08:15
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

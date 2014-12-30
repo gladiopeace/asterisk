@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Configuration_res_ari</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Module-Configuration_26476700.html">Asterisk 12 Module Configuration</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Configuration_res_ari
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Dec 05, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Configuration_res_ari-HTTPbindingfortheStasisAPI">HTTP binding for the Stasis API</h1>
+
+<p>This configuration documentation is for functionality provided by <code>res_ari</code>.</p>
+
+<h2 id="Asterisk12Configuration_res_ari-ari.conf">ari.conf</h2>
+
+<h3 id="Asterisk12Configuration_res_ari-general">general</h3>
+
+<p>General configuration settings</p>
+
+<h4 id="Asterisk12Configuration_res_ari-ConfigurationOptionReference">Configuration Option Reference</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Option Name </p></th>
+<th class="confluenceTh"><p> Type </p></th>
+<th class="confluenceTh"><p> Default Value </p></th>
+<th class="confluenceTh"><p> Regular Expression </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>enabled</code> </p></td>
+<td class="confluenceTd"><p> <code>Boolean</code> </p></td>
+<td class="confluenceTd"><p> <code>yes</code> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Enable/disable the ARI module </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>pretty</code> </p></td>
+<td class="confluenceTd"><p> <code>Custom</code> </p></td>
+<td class="confluenceTd"><p> <code>no</code> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Responses from ARI are formatted to be human readable </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>auth_realm</code> </p></td>
+<td class="confluenceTd"><p> <code>String</code> </p></td>
+<td class="confluenceTd"><p> <code>Asterisk REST Interface</code> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Realm to use for authentication. Defaults to Asterisk REST Interface. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>allowed_origins</code> </p></td>
+<td class="confluenceTd"><p> <code>String</code> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Comma separated list of allowed origins, for Cross-Origin Resource Sharing. May be set to * to allow all origins. </p></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="Asterisk12Configuration_res_ari-user">user</h3>
+
+<p>Per-user configuration settings</p>
+
+<h4 id="Asterisk12Configuration_res_ari-ConfigurationOptionReference.1">Configuration Option Reference</h4>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p> Option Name </p></th>
+<th class="confluenceTh"><p> Type </p></th>
+<th class="confluenceTh"><p> Default Value </p></th>
+<th class="confluenceTh"><p> Regular Expression </p></th>
+<th class="confluenceTh"><p> Description </p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <a href="Asterisk-12-Configuration_res_ari_27198130.html"><code>type</code></a> </p></td>
+<td class="confluenceTd"><p> <code>None</code> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Define this configuration section as a user. </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>read_only</code> </p></td>
+<td class="confluenceTd"><p> <code>Boolean</code> </p></td>
+<td class="confluenceTd"><p> <code>no</code> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> When set to yes, user is only authorized for read-only requests </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>password</code> </p></td>
+<td class="confluenceTd"><p> <code>String</code> </p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> Crypted or plaintext password (see password_format) </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> <code>password_format</code> </p></td>
+<td class="confluenceTd"><p> <code>Custom</code> </p></td>
+<td class="confluenceTd"><p> <code>plain</code> </p></td>
+<td class="confluenceTd"><p> <code>false</code> </p></td>
+<td class="confluenceTd"><p> password_format may be set to plain (the default) or crypt. When set to crypt, crypt(3) is used to validate the password. A crypted password can be generated using mkpasswd -m sha-512. When set to plain, the password is in plaintext </p></td>
+</tr>
+</tbody></table></div>
+
+<h4 id="Asterisk12Configuration_res_ari-ConfigurationOptionDescriptions">Configuration Option Descriptions</h4>
+
+<p><span class="confluence-anchor-link" id="Asterisk12Configuration_res_ari-user_type"></span></p>
+<h5 id="Asterisk12Configuration_res_ari-type">type</h5>
+
+<ul>
+	<li><code>user</code> - Configure this section as a <em>user</em></li>
+</ul>
+
+
+
+<h3 id="Asterisk12Configuration_res_ari-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version SVN-branch-12-r403342</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

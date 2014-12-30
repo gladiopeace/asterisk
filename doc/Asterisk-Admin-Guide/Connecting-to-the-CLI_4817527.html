@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Connecting to the CLI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started-with-Asterisk_4817533.html">Getting Started with Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Connecting to the CLI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  mjordan  on Feb 26, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>First, let's show you how to connect to the Asterisk command-line interface. As you should recall from the installation, Asterisk typically runs in the background as a service or daemon. If the Asterisk service is already running, type the command below to connect to its command-line interface.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# asterisk -r
+</pre>
+</div></div>
+
+
+<p>The -r parameter tells the system that you want to re-connect to the Asterisk service. If the reconnection is successful, you'll see something like this:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# asterisk -r
+Asterisk version, Copyright (C) 1999 - 2010 Digium, Inc. and others.
+Created by Mark Spencer &lt;markster@digium.com&gt;
+Asterisk comes with ABSOLUTELY NO WARRANTY; type &#39;core show warranty&#39; for details.
+This is free software, with components licensed under the GNU General Public
+License version 2 and other licenses; you are welcome to redistribute it under
+certain conditions. Type &#39;core show license&#39; for details.
+=========================================================================
+Connected to Asterisk version currently running on server (pid = 11187)
+server*CLI&gt;
+</pre>
+</div></div>
+
+<p>Notice the <strong>*CLI&gt;</strong> text? That's your Asterisk command-line prompt. All of the Asterisk CLI commands take the form of <strong>module action parameters....</strong> For example, type <strong>core show uptime</strong> to see how long Asterisk has been running.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; core show uptime
+System uptime: 1 hour, 34 minutes, 17 seconds
+Last reload: 1 hour, 34 minutes, 17 seconds
+</pre>
+</div></div>
+
+<p>You can use the built-in help to get more information about the various commands. Simply type <strong>core show help</strong> at the Asterisk prompt for a full list of commands, or <strong>core show help command</strong> for help on a particular command.</p>
+
+<p>If you'd like to exit the Asterisk console and return to your shell, just use the <strong>quit</strong> command from the CLI. Such as:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; quit
+</pre>
+</div></div>
+
+
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Executing Command Outside Of CLI</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>You can execute an Asterisk command from outside the CLI:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+$ asterisk -rx &quot;core reload&quot;
+</pre>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+$ asterisk -rx &quot;core show help&quot; | grep -i &quot;sip&quot;
+</pre>
+</div></div>
+                    </div>
+    </div>
+ 
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

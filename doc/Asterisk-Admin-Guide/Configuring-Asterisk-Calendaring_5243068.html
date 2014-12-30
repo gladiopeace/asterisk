@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Configuring Asterisk Calendaring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Calendaring_5243066.html">Asterisk Calendaring</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Configuring Asterisk Calendaring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Aug 31, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>All asterisk calendaring modules are configured through calender.conf. Each calendar module can define its own set of required parameters in addition to the parameters available to all calendar types. An effort has been made to keep all options the same in all calendaring modules, but some options will diverge over time as features are added to each module. <br />
+An example calendar.conf might look like:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[calendar_joe]
+type = ical 
+url = https://example.com/home/jdoe/Calendar 
+user = jdoe 
+secret = mysecret 
+refresh = 15 
+timeframe = 600 
+autoreminder = 10 
+channel = SIP/joe 
+context = calendar_event_notify 
+extension = s 
+waittime = 30
+</pre>
+</div></div>
+
+<h3 id="ConfiguringAsteriskCalendaring-Module-independentsettings">Module-independent settings</h3>
+
+<p>The settings related to calendar event notification are handled by the core calendaring API. These settings are: </p>
+
+<ul>
+	<li>autoreminder - This allows the overriding of any alarms that may or may not be set for a calendar event. It is specified in minutes.</li>
+</ul>
+
+
+<ul>
+	<li>refresh - How often to refresh the calendar data; specified in minutes.</li>
+</ul>
+
+
+<ul>
+	<li>timeframe - How far into the future each calendar refresh should look. This is the amount of data that will be visible to queries from the dialplan. This setting should always be greater than or equal to the refresh setting or events may be missed. It is specified in minutes.</li>
+</ul>
+
+
+<ul>
+	<li>channel - The channel that should be used for making the notification attempt.</li>
+</ul>
+
+
+<ul>
+	<li>waittime - How long to wait, in seconds, for the channel to answer a notification attempt.  There are two ways to specify how to handle a notification. One option is providing a context and extension, while the other is providing an application and the arguments to that application. One (and only one) of these options should be provided.</li>
+</ul>
+
+
+<ul>
+	<li>context - The context of the extension to connect to the notification channel</li>
+</ul>
+
+
+<ul>
+	<li>extension - The extension to connect to the notification. Note that the priority will always be 1.</li>
+</ul>
+
+
+<ul>
+	<li>app  - The dialplan application to execute upon the answer of a notification</li>
+</ul>
+
+
+<ul>
+	<li>appdata - The data to pass to the notification dialplan application</li>
+</ul>
+
+
+<h3 id="ConfiguringAsteriskCalendaring-Module-dependentsettings">Module-dependent settings</h3>
+
+<p>Connection-related options are specific to each module. Currently, all modules take a url, user, and secret for configuration and no other module-specific settings have been implemented. At this time, no support for HTTP redirects has been implemented, so it is important to specify the correct URL-paying attention to any trailing slashes that may be necessary.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

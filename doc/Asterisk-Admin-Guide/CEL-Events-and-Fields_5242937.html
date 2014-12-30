@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : CEL Events and Fields</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5242932.html">Channel Event Logging (CEL)</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : CEL Events and Fields
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  rmudgett  on Jan 13, 2012
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>While CDRs and the Manager are basically both event tracking mechanisms, CEL tries to track only those events that might pertain to billing issues. </p>
+
+<h5 id="CELEventsandFields-TableofCELEvents">Table of CEL Events</h5>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p>Event</p></th>
+<th class="confluenceTh"><p>Description</p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CHAN_START</p></td>
+<td class="confluenceTd"><p>The time a channel was created</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CHAN_END</p></td>
+<td class="confluenceTd"><p>The time a channel was terminated</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ANSWER</p></td>
+<td class="confluenceTd"><p>The time a channel was answered (ie, phone taken off-hook)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>HANGUP</p></td>
+<td class="confluenceTd"><p>The time at which a hangup occurred</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CONF_ENTER</p></td>
+<td class="confluenceTd"><p>The time a channel was connected into a conference room</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CONF_EXIT</p></td>
+<td class="confluenceTd"><p>The time a channel was removed from a conference room</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CONF_START</p></td>
+<td class="confluenceTd"><p>The time the first person enters a conference room</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>CONF_END</p></td>
+<td class="confluenceTd"><p>The time the last person left a conference room (and turned out the lights?)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>APP_START</p></td>
+<td class="confluenceTd"><p>The time a tracked application was started</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>APP_END</p></td>
+<td class="confluenceTd"><p>the time a tracked application ended</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>PARK_START</p></td>
+<td class="confluenceTd"><p>The time a call was parked</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>PARK_END</p></td>
+<td class="confluenceTd"><p>Unpark event</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>BRIDGE_START</p></td>
+<td class="confluenceTd"><p>The time a bridge is started</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>BRIDGE_END</p></td>
+<td class="confluenceTd"><p>The time a bridge is ended</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>BRIDGE_UPDATE</p></td>
+<td class="confluenceTd"><p>This is a replacement channel (Masquerade)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>3WAY_START</p></td>
+<td class="confluenceTd"><p>When a 3-way conference starts (usually via attended transfer)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>3WAY_END</p></td>
+<td class="confluenceTd"><p>When one or all exit a 3-way conference</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>BLINDTRANSFER</p></td>
+<td class="confluenceTd"><p>When a blind transfer is initiated</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ATTENDEDTRANSFER</p></td>
+<td class="confluenceTd"><p>When an attended transfer is initiated</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>TRANSFER</p></td>
+<td class="confluenceTd"><p>Generic transfer initiated; not used yet...?</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>PICKUP</p></td>
+<td class="confluenceTd"><p>This channel picked up the peer channel</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>FORWARD</p></td>
+<td class="confluenceTd"><p>This channel is being forwarded somewhere else</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>HOOKFLASH</p></td>
+<td class="confluenceTd"><p>So far, when a hookflash event occurs on a DAHDI interface</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>LINKEDID_END</p></td>
+<td class="confluenceTd"><p>The last channel with the given linkedid is retired</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>USER_DEFINED</p></td>
+<td class="confluenceTd"><p>Triggered from the dialplan, and has a name given by the user</p></td>
+</tr>
+</tbody></table></div>
+
+
+<h5 id="CELEventsandFields-TableofCELEventFields">Table of CEL Event Fields</h5>
+
+
+<p>Table 11.2: List of CEL Event Fields</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<th class="confluenceTh"><p>Field</p></th>
+<th class="confluenceTh"><p>Description</p></th>
+</tr>
+<tr>
+<td class="confluenceTd"><p>eventtype</p></td>
+<td class="confluenceTd"><p>The name of the event; see the above list.</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>eventtime</p></td>
+<td class="confluenceTd"><p>The time the event happened</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>cid_name</p></td>
+<td class="confluenceTd"><p>CID name field</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>cid_num</p></td>
+<td class="confluenceTd"><p>CID number field</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>cid_ani</p></td>
+<td class="confluenceTd"><p>CID ANI field</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>cid_rdnis</p></td>
+<td class="confluenceTd"><p>CID RDNIS field</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>cid_dnid</p></td>
+<td class="confluenceTd"><p>CID DNID field</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>exten</p></td>
+<td class="confluenceTd"><p>The extension in the dialplan</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>context</p></td>
+<td class="confluenceTd"><p>The context in the dialplan</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>channame</p></td>
+<td class="confluenceTd"><p>The name assigned to the channel in which the event took place</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>appname</p></td>
+<td class="confluenceTd"><p>The name of the current application</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>appdata</p></td>
+<td class="confluenceTd"><p>The arguments that will be handed to that application</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>amaflags</p></td>
+<td class="confluenceTd"><p>The AMA flags associated with the event; user assignable.</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>accountcode</p></td>
+<td class="confluenceTd"><p>A user assigned datum (string)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>peeraccount</p></td>
+<td class="confluenceTd"><p>A user assigned datum (string) on the peer.</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>uniqueid</p></td>
+<td class="confluenceTd"><p>Each Channel instance gets a unique ID associated with it.</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>linkedid</p></td>
+<td class="confluenceTd"><p>the per-call id, spans several events, possibly.</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>userfield</p></td>
+<td class="confluenceTd"><p>A user assigned datum (string)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>peer</p></td>
+<td class="confluenceTd"><p>For bridge or other 2-channel events, this would be the other channel name</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>userdeftype</p></td>
+<td class="confluenceTd"><p>User defined event name</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>extra</p></td>
+<td class="confluenceTd"><p>Extra information associated with the event.</p></td>
+</tr>
+</tbody></table></div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Calling using Google</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Calling using Google
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  rnewton  on Jun 03, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570677380 {padding: 0px;}
+div.rbtoc1387570677380 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1387570677380 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570677380'>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-Prerequisites'>Prerequisites</a>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-RTPconfiguration'>RTP configuration</a></li>
+<li><a href='#CallingusingGoogle-Motifconfiguration'>Motif configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-ExampleMotifConfiguration'>Example Motif Configuration</a></li>
+</ul>
+</li>
+<li><a href='#CallingusingGoogle-XMPPConfiguration'>XMPP Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-ExampleXMPPConfiguration'>Example XMPP Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-MoreaboutPriorities'>More about Priorities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#CallingusingGoogle-Phoneconfiguration'>Phone configuration</a></li>
+<li><a href='#CallingusingGoogle-Dialplanconfiguration'>Dialplan configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#CallingusingGoogle-Incomingcalls'>Incoming calls</a></li>
+<li><a href='#CallingusingGoogle-Outgoingcalls'>Outgoing calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></p>    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>This new page replaces the <a href="Old-Calling-using-Google_20189120.html">old page</a>. The old page documents behavior that is not functional or supported going forward. This new page documents behavior as of Asterisk 11. For more information, please see the blog posting <a href="http://blogs.digium.com/2012/07/24/asterisk-11-development-the-motive-for-motif/" class="external-link" rel="nofollow">http://blogs.digium.com/2012/07/24/asterisk-11-development-the-motive-for-motif/</a></p>
+                    </div>
+    </div>
+<h1 id="CallingusingGoogle-Prerequisites">Prerequisites</h1><p>Asterisk communicates with Google Voice and Google Talk using the chan_motif Channel Driver and the res_xmpp Resource module. Before proceeding, please ensure that both are compiled and part of your installation. Compilation of res_xmpp and chan_motif for use with Google Talk / Voice are dependant on the iksemel library files as well as the OpenSSL development libraries presence on your system.</p><p>Calling using Google Voice or via the Google Talk web client requires the use of Asterisk 11.0 or greater. Older versions of Asterisk will not work.</p><p>For basic calling between Google Talk web clients, you need a Google Mail account.</p><p>For calling to and from the PSTN, you will need a Google Voice account.</p><p>In your Google account, you'll want to change the Chat setting from the default of &quot;Automatically allow people that I communicate with often to chat with me and see when I'm online&quot; to the second option of &quot;Only allow people that I've explicitly approved to chat with me and see when I'm online.&quot;</p><p>IPv6 is currently not supported. Use of IPv4 is required.</p><p>Google Voice can now be used with Google Apps accounts.</p><h2 id="CallingusingGoogle-RTPconfiguration">RTP configuration</h2><p>ICE support is required for chan_motif to operate. It is disabled by default and must be explicitly enabled in the RTP configuration file rtp.conf as follows.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[general]
+icesupport=yes
+</pre>
+</div></div><p>If this option is not enabled you will receive the following error message.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Unable to add Google ICE candidates as ICE support not available or no candidates available
+</pre>
+</div></div><h2 id="CallingusingGoogle-Motifconfiguration">Motif configuration</h2><p>The Motif channel driver is configured with the motif.conf configuration file, typically located in /etc/asterisk. What follows is an example configuration for successful operation.</p><h3 id="CallingusingGoogle-ExampleMotifConfiguration">Example Motif Configuration</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[google]
+context=incoming-motif
+disallow=all
+allow=ulaw
+connection=google
+</pre>
+</div></div><p>This general section of this configuration specifies several items.</p><ol><li>That calls will terminate to or originate from the <strong>incoming-motif</strong> context; context=incoming-motif</li><li>That all codecs are first explicitly disallowed</li><li>That G.711 ulaw is allowed</li><li>The an XMPP connection called &quot;google&quot; is to be used</li></ol><p>Google lists supported audio codecs on this page - <a href="https://developers.google.com/talk/open_communications" class="external-link" rel="nofollow">https://developers.google.com/talk/open_communications</a></p><p>Per section, 5, the supported codecs are:</p><ol><li>PCMA</li><li>PCMU</li><li>G.722</li><li>GSM</li><li>iLBC</li><li>Speex</li></ol><p>Our experience shows this not to be the case. Rather, the codecs, supported by Asterisk, and seen in an invite from Google Chat are:</p><ol><li>PCMA</li><li>PCMU</li><li>G.722</li><li>iLBC</li><li>Speex 16kHz</li><li>Speex 8kHz</li></ol><p>It should be noted that calling using Google Voice requires the G.711 ulaw codec. So, if you want to make sure Google Voice calls work, allow G.711 ulaw, at a minimum.</p><h2 id="CallingusingGoogle-XMPPConfiguration">XMPP Configuration</h2><p>The res_xmpp Resource is configured with the xmpp.conf configuration file, typically located in /etc/asterisk. What follows is an example configuration for successful operation.</p><h3 id="CallingusingGoogle-ExampleXMPPConfiguration">Example XMPP Configuration</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[general]
+[google]
+type=client
+serverhost=talk.google.com
+username=example@gmail.com
+secret=examplepassword
+priority=25
+port=5222
+usetls=yes
+usesasl=yes
+status=available
+statusmessage=&quot;I am available&quot;
+timeout=5
+</pre>
+</div></div><p>The default general section does not need any modification.</p><p>The google section of this configuration specifies several items.</p><ol><li>The type is set to client, as we're connecting to Google as a service; type=client</li><li>The serverhost is Google's talk server; serverhost=talk.google.com</li><li>Our username is configured as your_google_username@gmail.com; username=your_google_username@gmail.com</li><li>Our password is configured using the secret option; secret=your_google_password</li><li>Google's talk service operates on port 5222; port=5222</li><li>Our priority is set to 25; priority=25</li><li>TLS encryption is required by Google; usetls=yes</li><li>Simple Authentication and Security Layer (SASL) is used by Google; usesasl=yes</li><li>We set a status message so other Google chat users can see that we're an Asterisk server; statusmessage=&quot;I am available&quot;</li><li>We set a timeout for receiving message from Google that allows for plenty of time in the event of network delay; timeout=5</li></ol><h4 id="CallingusingGoogle-MoreaboutPriorities">More about Priorities</h4><p>As many different connections to Google are possible simultaneously via different client mechanisms, it is important to understand the role of priorities in the routing of inbound calls. Proper usage of the priority setting can allow use of a Google account that is not otherwise entirely dedicated to voice services.</p><p>With priorities, the higher the setting value, the more any client using that value is preferred as a destination for inbound calls, in deference to any other client with a lower priority value. Known values of commonly used clients include the Gmail chat client, which maintains a priority of <strong>20</strong>, and the Windows GTalk client, which uses a priority of <strong>24</strong>. The maximum allowable value is <strong>127</strong>. Thus, setting one's <strong>priority</strong> option for the XMPP peer in res_xmpp.conf to a value higher than 24 will cause inbound calls to flow to Asterisk, even while one is logged into either Gmail or the Windows GTalk client.</p><p>Outbound calls are unaffected by the priority setting.</p><h2 id="CallingusingGoogle-Phoneconfiguration">Phone configuration</h2><p>Now, let's create a phone. The configuration of a SIP device for this purpose would, in sip.conf, typically located in /etc/asterisk, look something like:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[malcolm]
+type=peer
+secret=my_secure_password
+host=dynamic
+context=local
+</pre>
+</div></div><h2 id="CallingusingGoogle-Dialplanconfiguration">Dialplan configuration</h2><h3 id="CallingusingGoogle-Incomingcalls">Incoming calls</h3><p>Next, let's configure our dialplan to receive an incoming call from Google and route it to the SIP phone we created. To do this, our dialplan, extensions.conf, typically located in /etc/asterisk, would look like:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[incoming-motif]
+exten =&gt; s,1,NoOp()
+ same =&gt; n,Wait(1)
+ same =&gt; n,Answer()
+ same =&gt; n,SendDTMF(1)
+ same =&gt; n,Dial(SIP/malcolm,20)
+</pre>
+</div></div>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Did you know that the Google Chat client does this same thing; it waits, and then sends a DTMF 1. Really.</p>
+                    </div>
+    </div>
+<p>This example uses the &quot;s&quot; unmatched extension, because we're only configuring one client connection in this example.</p><p>In this example, we're Waiting 1 second, answering the call, sending the DTMF &quot;1&quot; back to Google, and <strong>then</strong> dialing the call.<br /> We do this, because inbound calls from Google enable, even if it's disabled in your Google Voice control panel, call screening.<br /> Without this SendDTMF event, you'll have to confirm with Google whether or not you want to answer the call.</p>    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Using Google&#39;s voicemail</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>Another method for accomplishing the sending of the DTMF event is to use Dial option &quot;D.&quot; The D option tells Asterisk to send a specified DTMF string after the called party has answered. DTMF events specified before a colon are sent to the <strong>called</strong> party. DTMF events specified after a colon are sent to the <strong>calling</strong> party.</p><p>In this example then, one does not need to actually answer the call first, though one should still wait at least a second for things, like STUN setup, to finish. This means that if the called party doesn't answer, Google will resort to sending the call to one's Google Voice voicemail box, instead of leaving it at Asterisk.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">exten =&gt; s,1,Dial(SIP/malcolm,20,D(:1))
+</pre>
+</div></div>
+                    </div>
+    </div>
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Filtering Caller ID</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>The inbound CallerID from Google is going to look a bit nasty, e.g.:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>+15555551212@voice.google.com/srvres-MTAuMjE4LjIuMTk3Ojk4MzM=
+</pre>
+</div></div><p>Your VoIP client (SIPDroid) might not like this, so let's simplify that Caller ID a bit, and make it more presentable for your phone's display. Here's the example that we'll step through:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; s,1,NoOp()
+ same =&gt; n,Set(crazygooglecid=${CALLERID(name)})
+ same =&gt; n,Set(stripcrazysuffix=${CUT(crazygooglecid,@,1)})
+ same =&gt; n,Set(CALLERID(all)=${stripcrazysuffix})
+ same =&gt; n,Dial(SIP/malcolm,20,D(:1))
+</pre>
+</div></div><p>First, we set a variable called <strong>crazygooglecid</strong> to be equal to the name field of the CALLERID function. Next, we use the CUT function to grab everything that's before the @ symbol, and save it in a new variable called <strong>stripcrazysuffix.</strong> We'll set this new variable to the CALLERID that we're going to use for our Dial. Finally, we'll actually Dial our internal destination.</p>
+                    </div>
+    </div>
+<h3 id="CallingusingGoogle-Outgoingcalls">Outgoing calls</h3><p>Outgoing calls to Google Talk users take the form of:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; 100,1,Dial(Motif/google/mybuddy@gmail.com,,r)
+</pre>
+</div></div><p>Where the technology is &quot;Motif,&quot; the dialing peer is &quot;google&quot; as defined in xmpp.conf, and the dial string is the Google account name.</p><p>We use the Dial option &quot;r&quot; because Google doesn't provide ringing indications.</p><p>Outgoing calls made to Google Voice take the form of:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; _1XXXXXXXXXX,1,Dial(Motif/google/${EXTEN}@voice.google.com,,r)
+</pre>
+</div></div><p>Where the technology is &quot;Motif,&quot; the dialing peer is &quot;google&quot; as defined in motif.conf, and the dial string is a full E.164 number, sans the plus character.</p><p>Again, we use Dial option &quot;r&quot; because Google doesn't provide ringing indications.</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-21464238"></a>
+                                    <font class="smallfont"><p>Can you clarify which configuration file the icesupport=yes directive belongs in? Thanks!</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by tim.savage at Nov 02, 2012 03:06
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21464241"></a>
+                                    <font class="smallfont"><p>Done!</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Nov 02, 2012 06:05
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21464256"></a>
+                                    <font class="smallfont"><p>Thanks for the quick reply, Joshua. I was able to get it working with very little trouble. Another question, are there any Motif specific channel variables, and if so, is there a list available? I do realize this was just released, and the documentation may not be complete yet, so I'll try my best to be patient.</p>
+
+<p>What I'm trying to accomplish is having multiple Google Voice accounts configured, and be able to route inbound calls accordingly. I was able to do this with the gtalk driver by parsing the associated Google account name from the extension variable (with a wildcard match in the dialplan), but that info doesn't appear to be passed along with the new Motif driver, or at least not in the same fashion as the gtalk driver. Using a channel variable would seem like much less of a kludge than my previous solution.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by tim.savage at Nov 02, 2012 11:46
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21464258"></a>
+                                    <font class="smallfont"><p>It doesn't expose any channel variables right now, unfortunately. To accomplish what you are referring to you'd have to create separate contexts.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Nov 02, 2012 11:48
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21464263"></a>
+                                    <font class="smallfont"><p>Of course! That's so obvious, I can't believe I didn't think of that in the first place. Still looking forward to having channel variables for other trickery, but I'm good to go for now. Thanks again for your help, and let me say, I am really pleased with the new driver. Here's hoping the moving target that was gtalk is now finally pinned down.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by tim.savage at Nov 02, 2012 12:30
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22087899"></a>
+                                    <font class="smallfont"><p>The Caller ID filtering code doesn't work on certain telephone services:<br />
+First off, in my area we dial 7 digits for in-State calls and all 10 digits for out-of-state calls.</p>
+
+<p>If I call from my home landline, I get one ring, then it hangs up on me. Destination extension never rings.<br />
+If I call from my cell phone, same thing.<br />
+If I call from my home landline and dial all ten digits, the same thing happened.</p>
+
+<p>If my friend in CA calls long distance, it works perfectly fine for him.<br />
+Same for a client I have in another state.</p>
+
+<p>I commented out lines, one at a time, and determined that the second and third lines of the Caller ID code are causing Asterisk to drop the call if it is in a local area code. Has something to do with the variables or something.</p>
+
+<p>After several forum searches, here is what I did instead for the dial plan:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+exten =&gt; s,1,NoOp()
+ same =&gt; n,Wait(1)
+ same =&gt; n,Answer()
+ same =&gt; n,SendDTMF(1)
+ same =&gt; n,Set(CALLERID(number)=${CALLERID(name):2:10})
+ same =&gt; n,Set(CALLERID(name)=External Line)
+ same =&gt; n,Dial(SIP/100,30)
+ same =&gt; n,Voicemail(100@internal)
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by newageserver at Jan 21, 2013 13:11
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22087987"></a>
+                                    <font class="smallfont"><p>The caller ID tricks above are not working for incoming calls that block their caller ID. </p>
+
+<p>If a calls comes with blocked ID, the solution above from Andrew will present the call as +@voice.go</p>
+
+<p>The solution is to use the CUT function.</p>
+
+<p>Below is the solution I have for my home system using Google voice, and digium phones. </p>
+
+<p>If a call comes, I strip out the @voice.google.com , this is so I can use the function CALL BACK correctly. </p>
+
+<p>If a call comes with blocked ID, I make the caller ID an empty string and call the function PrivacyManager(), which will ask the caller to enter their phone number.</p>
+
+<p>On my phone, the call will then have the number they entered (which could be false), and Privacy Manager as a name.</p>
+
+<p>You do not need to use the PrivacyManager, but it's a cool feature to play with. </p>
+
+
+
+<p>The code below picks up the phone, strip whatever is after the @ when the caller id comes (xxxxx@voice.google.com), and sets the name to External so I know it's an external call (vs internal):</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exten =&gt; youraccount@gmail.com,1,Answer()
+	same =&gt; n,Wait(1)
+	same =&gt; n,SendDTMF(1)
+	same =&gt; n,Set(CALLERID(num)=${CUT(CALLERID(name),@,1)})
+	same =&gt; n,Set(CALLERID(name)=External)
+</pre>
+</div></div>
+
+<p>The code below check if there is only 1 char in the num (which would mean it's blocked). If yes, then I remove the char to make an empty string, if not I keep it as is. Then the PrivacyManager is called. If there is a caller ID, it does not do anything. If there is none, it will catch it. Finally, I checked the caller id against my blacklist. </p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>same =&gt; n,Set(CALLERID(num)=${IF($[${LEN(${CALLERID(num)})}=1]?:${CALLERID(num)})})
+	same =&gt; n,Set(CALLERID(name)=${IF($[${LEN(${CALLERID(num)})}=0]?Anonymous:${CALLERID(name)})})
+	same =&gt; n,PrivacyManager()
+</pre>
+</div></div>
+
+
+<p>After that, you can handle the call the way you want. <br />
+IE: same =&gt; n,Dial(...)</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by simon templar at Feb 03, 2013 20:33
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478142"></a>
+                                    <font class="smallfont"><p>Is it possible to set GV up like any other trunk so that I can take advantage of the DID &amp; CID. In other words, I would like to have a inbound route based on DID and CID info....</p><p>If so how would I go about doing that with this setup you have listed above?</p><p> </p><p>Thanks</p><p>aphibian</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by amphibian at Aug 30, 2013 22:36
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478156"></a>
+                                    <font class="smallfont"><p>Hi!  There are Forums, Mailing lists and IRC chat rooms where you could ask that sort of question. It is unlikely to get answered here.</p><p>Look at <a href="http://www.asterisk.org/community" class="external-link" rel="nofollow">http://www.asterisk.org/community</a> for links to all the various resources.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Sep 05, 2013 16:20
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478244"></a>
+                                    <font class="smallfont"><p>I don't think ice support is needed any more. I just set up 2 11.5.1 servers without enabling ice in rtp.conf. stun support was enabled. And motif worked.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by seandarcy at Sep 23, 2013 20:12
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478537"></a>
+                                    <font class="smallfont"><p>I'm having a heck of a time with this using 11.6.0.  I have set icesupport=yes in both rtp.conf and sip.conf (where it also exists in the sample file) and set the stunaddr to a wide variety of servers from various public lists. </p><p>Here's what I get with &quot;stun show status&quot;</p><p>CLI&gt; stun show status <br />Hostname Port Period Retries Status ExternAddr ExternPort<br />(null) 0 30 3 INIT 0.0.0.0 0</p><p>Everything else seems to be working; if I call my GV number from my cell phone here's what I see:</p><p>[Oct 24 15:18:41] ERROR[2866]: chan_motif.c:2035 jingle_interpret_google_transport: Received Google transport information on session 'SIP1883622057@10.229.193.197' but ICE support not available</p><p>Google hasn't been any help on this.  I set &quot;stun set debug on&quot; but nothing, NOTHING shows up at any time.</p><p>I'm stuck and don't know where to turn (yes, punny).</p><p> </p><p> </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 24, 2013 14:20
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478538"></a>
+                                    <font class="smallfont"><p>res_rtp_asterisk uses the pjproject library for ICE/STUN/TURN support and local address discovery. This library has a dependency on libuuid-dev on some systems and in previous versions of Asterisk was a hard dependency. Due to community feedback this dependency was made optional, thus making pjproject building optional. I'd suggest installing the libuuid-dev package, or the equivalent within your distribution, rerunning the Asterisk configure script, and rebuilding Asterisk. This should build it with ICE support.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Oct 24, 2013 14:47
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478539"></a>
+                                    <font class="smallfont"><p>It looks like it found libuuid and the headers, etc., originally, but I fetched the sources and built the latest (uuid-1.6.2) sources.  Reconfigured Asterisk --with-uuid, but the make didn't build anything new.  Is the pjproject library part of the Asterisk source?  </p><p>stun show status didn't change, so I don't think I'm there yet.  Am I correct that if ICE is enabled and up that should show something other than a &quot;null&quot; hostname?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 24, 2013 15:11
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478540"></a>
+                                    <font class="smallfont"><p>It's bundled with Asterisk. The &quot;stun show status&quot; command is for the internal STUN functionality outside of res_rtp_asterisk.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Oct 24, 2013 15:14
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478541"></a>
+                                    <font class="smallfont"><p>Sorry for my thread-nesting gaffe a minute<span style="background-color: transparent;line-height: 1.4285715;">ago.  How can I tell if the proper libraries (particularly pjproject) are built and installed?  I'm sort of flying blind in terms of being able to discover what I'm doing wrong.  There ain't much out there on this, and I'm sorry to be a bother.</span></p><p>The biggest questions right now are: a) How can I determine if the build contains the proper components, and b) how can I tell from the CLI whether they're being invoked?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 24, 2013 15:18
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478542"></a>
+                                    <font class="smallfont"><p>pjproject is build and embedded into res_rtp_asterisk - not installed as a shared library. If you do a make clean and then make you should see it being built right before res_rtp_asterisk is. There is no real CLI way to know whether it's invoked or not - you just won't get &quot;ICE support not available&quot; when it's used by chan_motif.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Oct 24, 2013 15:20
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478543"></a>
+                                    <font class="smallfont"><p>Still no joy:</p><ul><li>I have uuid libs (old and new) installed</li><li>--with-uuid in Asterisk configure</li></ul><p>But the code in ~res/pjproject remains unbuilt:</p><p>[CC] res_config_curl.c -&gt; res_config_curl.o<br /> [LD] res_config_curl.o -&gt; res_config_curl.so<br /> [CC] res_rtp_asterisk.c -&gt; res_rtp_asterisk.o<br /> [LD] res_rtp_asterisk.o -&gt; res_rtp_asterisk.so</p><p>And it also looks like the configure scripts found the uuid libs.  From config.log:</p><p><a href="http://configure:28481" class="external-link" rel="nofollow">configure:28481</a>: checking for uuid_generate_random in -luuid<br /><a href="http://configure:28506" class="external-link" rel="nofollow">configure:28506</a>: gcc -o conftest -g -O2 conftest.c -luuid -lm &gt;&amp;5<br /><a href="http://configure:28540" class="external-link" rel="nofollow">configure:28540</a>: checking uuid/uuid.h usability<br /><a href="http://configure:28540" class="external-link" rel="nofollow">configure:28540</a>: checking uuid/uuid.h presence<br /><a href="http://configure:28540" class="external-link" rel="nofollow">configure:28540</a>: checking for uuid/uuid.h<br />ac_cv_header_uuid_uuid_h=yes<br />ac_cv_lib_uuid_uuid_generate_random=yes<br />UUID_LIB=' -luuid '</p><p>Not sure where to go next–perhaps something I'm missing in menuselect?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 24, 2013 15:31
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478544"></a>
+                                    <font class="smallfont"><p>I got nothin'</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by jcolp at Oct 24, 2013 15:32
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478545"></a>
+                                    <font class="smallfont"><p>One last hope: do you know what in particular triggers the building of the pjproject code?  I know I can't just go in there and do it manually. . . . </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 24, 2013 15:39
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478547"></a>
+                                    <font class="smallfont"><p>Capouch why are you using both icesupport and stun? Although mine is setup a little differently than what is listed above I have no issues using GV numbers (5 of them) with Version 11.04 just having icesupport=yes within rtp.conf. There is no need to add it within sip.conf and don't see a need for stun.</p><p> </p><p> </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by amphibian at Oct 25, 2013 00:05
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478552"></a>
+                                    <font class="smallfont"><p>I just upgraded to 11.6 from 11.4 and can't get Google dialing working either... I get &quot;Unable to add Google ICE candidates as ICE support not available or no candidates available&quot;... no luck with 12 beta either... Guess I'm stuck on 11.4 for a while yet.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by bromont at Oct 25, 2013 14:31
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478553"></a>
+                                    <font class="smallfont"><p>Actually after having hassling several times getting the pjproject libraries to build, I ditched 11.6 and started with a fresh VM instance, then installed the pjproject code (from the github sources).  I configured it using the same configuration as I found in the Asterisk source tree in the Makefile in the ~/res directory.  I had to add --withouts for video and v4l2 to get it to build.  </p><p>Once I completed that I did a fresh install of Asterisk 12.0.0-beta1, and now have a working (albeit with some WebSockets bugs) version now talking to Google Voice just fine.</p><p>I think the Asterisk configure scripts will let it build it without warnings or errors even if you don't build pjproject as shared libraries, but then it crashes in odd and mysterious ways.  From the best I can tell, that's what was plaguing my earlier V12-beta build attempts.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Oct 25, 2013 15:19
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26480006"></a>
+                                    <font class="smallfont"><p>Thanks  capouch, pjproject was the dependencies that I was missing to fix the &quot;<span>Unable to add Google ICE candidates as ICE support not available or no candidates available&quot;</span> . Been trying to figure this out for about 2 weeks now that I was able to compile asterisk with pjproject support, everything seems smooth.. Few outgoing call issues with dropped calls after 5 seconds, but i'll probably figure that one out here soon</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by dmt010 at Nov 06, 2013 12:03
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26480008"></a>
+                                    <font class="smallfont"><p>I am seeing that too, if you mean: totally normal conversation for ~5 seconds, then suddenly a fatal error report (transmission limit exceeded, IIRC) on the CLI, and then call is torn down, even though the two parties were having a swimmingly good, clear, conversation. .  </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by capouch at Nov 06, 2013 16:09
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

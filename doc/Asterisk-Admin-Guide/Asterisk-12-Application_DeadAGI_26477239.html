@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Application_DeadAGI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Dialplan-Applications_26476696.html">Asterisk 12 Dialplan Applications</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Application_DeadAGI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Aug 29, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Application_DeadAGI-DeadAGI%28%29">DeadAGI()</h1>
+
+<h3 id="Asterisk12Application_DeadAGI-Synopsis">Synopsis</h3>
+
+<p>Executes AGI on a hungup channel.</p>
+
+<h3 id="Asterisk12Application_DeadAGI-Description">Description</h3>
+
+<p>Executes an Asterisk Gateway Interface compliant program on a channel. AGI allows Asterisk to launch external programs written in any language to control a telephony channel, play audio, read DTMF digits, etc. by communicating with the AGI protocol on <strong>stdin</strong> and <strong>stdout</strong>. As of <code>1.6.0</code>, this channel will not stop dialplan execution on hangup inside of this application. Dialplan execution will continue normally, even upon hangup until the AGI application signals a desire to stop (either by exiting or, in the case of a net script, by closing the connection). A locally executed AGI script will receive SIGHUP on hangup from the channel except when using DeadAGI. A fast AGI server will correspondingly receive a HANGUP inline with the command dialog. Both of theses signals may be disabled by setting the <code>AGISIGHUP</code> channel variable to <code>no</code> before executing the AGI application. Alternatively, if you would like the AGI application to exit immediately after a channel hangup is detected, set the <code>AGIEXITONHANGUP</code> variable to <code>yes</code>.</p>
+
+<p>Use the CLI command <code>agi show commands</code> to list available agi commands.</p>
+
+<p>This application sets the following channel variable upon completion:</p>
+
+<ul>
+	<li><code>AGISTATUS</code> - The status of the attempt to the run the AGI script text string, one of:
+	<ul>
+		<li>SUCCESS</li>
+		<li>FAILURE</li>
+		<li>NOTFOUND</li>
+		<li>HANGUP</li>
+	</ul>
+	</li>
+</ul>
+
+
+<h3 id="Asterisk12Application_DeadAGI-Syntax">Syntax</h3>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>DeadAGI(commandarg1arg2[...])</pre>
+</div></div>
+
+<h5 id="Asterisk12Application_DeadAGI-Arguments">Arguments</h5>
+
+<ul>
+	<li><code>command</code></li>
+	<li><code>args</code>
+	<ul>
+		<li><code>arg1</code></li>
+		<li><code>arg2</code></li>
+	</ul>
+	</li>
+</ul>
+
+
+<h3 id="Asterisk12Application_DeadAGI-SeeAlso">See Also</h3>
+
+<ul>
+	<li><a href="Asterisk-12-Application_AGI_26477237.html">Asterisk 12 Application_AGI</a></li>
+	<li><a href="Asterisk-12-Application_EAGI_26477238.html">Asterisk 12 Application_EAGI</a></li>
+</ul>
+
+
+
+<h3 id="Asterisk12Application_DeadAGI-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version Unknown</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:16</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

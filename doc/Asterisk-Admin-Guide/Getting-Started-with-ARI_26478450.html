@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Getting Started with ARI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Getting Started with ARI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  dlee , edited by  dlee  on Oct 21, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Asterisk 12 introduces the <a class="unresolved" href="#">Asterisk REST Interface</a>, a set of RESTful API's for building Asterisk based applications. This article will walk you though getting ARI up and running.</p><p>Before you begin, you will need to <a href="Installing-Asterisk_4817553.html">install Asterisk</a>. This article also assumes that you are familiar with </p><p>You can find some historical documents <a href="https://wiki.asterisk.org/wiki/display/AST/Asterisk+12+API+Improvements">on the wiki</a> about the development and architecture of ARI.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570470537 {padding: 0px;}
+div.rbtoc1387570470537 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1387570470537 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570470537'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#GettingStartedwithARI-Overview'>Overview</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#GettingStartedwithARI-Configuration'>Configuration</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#GettingStartedwithARI-http.conf'>http.conf</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#GettingStartedwithARI-ari.conf'>ari.conf</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#GettingStartedwithARI-extensions.conf'>extensions.conf</a></li>
+<li><span class='TOCOutline'>2.4</span> <a href='#GettingStartedwithARI-Phoneconfiguration'>Phone configuration</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#GettingStartedwithARI-AuthenticatingRequests'>Authenticating Requests</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#GettingStartedwithARI-UsingSwagger-UI'>Using Swagger-UI</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#GettingStartedwithARI-ConnectingtheWebSocket'>Connecting the WebSocket</a></li>
+<li><span class='TOCOutline'>6</span> <a href='#GettingStartedwithARI-Doingstuff'>Doing stuff</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>6.1</span> <a href='#GettingStartedwithARI-Manipulatingthechannel'>Manipulating the channel</a></li>
+<li><span class='TOCOutline'>6.2</span> <a href='#GettingStartedwithARI-Asynchronousoperations'>Asynchronous operations</a></li>
+<li><span class='TOCOutline'>6.3</span> <a href='#GettingStartedwithARI-Bridging'>Bridging</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>7</span> <a href='#GettingStartedwithARI-RecommendedPractices'>Recommended Practices</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>7.1</span> <a href='#GettingStartedwithARI-Don%27taccessARIdirectlyfromawebpage'>Don't access ARI directly from a web page</a></li>
+<li><span class='TOCOutline'>7.2</span> <a href='#GettingStartedwithARI-Useanabstractionlayer'>Use an abstraction layer</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>8</span> <a href='#GettingStartedwithARI-WebSocketclientlibraries'>WebSocket client libraries</a></li>
+</ul>
+</div></p><h1 id="GettingStartedwithARI-Overview">Overview</h1><p>There are three main components to building an ARI application.</p><p>The first, obviously, is <strong>the RESTful API</strong> itself. The API is documented using <a href="https://developers.helloreverb.com/swagger/" class="external-link" rel="nofollow">Swagger</a>, a lightweight specification for documenting RESTful API's. The Swagger API docs are used to generated validations and boilerplate in Asterisk itself, along with <a href="Asterisk-12-ARI_22773909.html">static wiki documentation</a>, and interactive documentation using <a href="https://github.com/wordnik/swagger-ui" class="external-link" rel="nofollow">Swagger-UI</a>.</p><p>Then, Asterisk needs to send asynchronous events to the application (new channel, channel left a bridge, channel hung up, etc). This is done using a <strong>WebSocket on /ari/events</strong>. Events are sent as JSON messages, and are documented on the <a href="Asterisk-12-REST-Data-Models_22773915.html">REST Data Models page</a>. (See the list of subtypes for the <a href="Asterisk-12-REST-Data-Models_22773915.html#Asterisk12RESTDataModels-Message"><code>Message</code> data model</a>.)</p><p>Finally, connecting the dialplan to your application is the <a href="Asterisk-12-Application_Stasis_26476960.html"> <code>Stasis()</code> dialplan application</a>. From within the dialplan, you can send a channel to <code>Stasis()</code>, specifying the name of the external application, along with optional arguments to pass along to the application.</p><h1 id="GettingStartedwithARI-Configuration">Configuration</h1><p>The sample configuration files, along with the config show help command, give full details of the Asterisk configuration files. Here's a sample set of file one might use to build a simple ARI application.</p><h2 id="GettingStartedwithARI-http.conf">http.conf</h2><p>In order to use ARI, Asterisk's HTTP server must be enabled. You should also consider the security of your interface when configuring the HTTP server.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>http.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: true" style="font-size:12px;">[general]
+enabled=yes
+bindaddr=127.0.0.1 ; For applications to run on a different machine, use
+                   ; 0.0.0.0 or specify an address
+;
+; When running applications on a different machine, consider using TLS for
+; your HTTP connections
+;
+;tlsenable=yes                  ; enable tls - default no.
+;tlsbindaddr=0.0.0.0:8089       ; address and port to bind to - default is
+                                ; bindaddr and port 8089.
+;tlscertfile=&lt;/path/to/certificate.pem&gt;    ; path to the certificate file
+                                           ; (*.pem) only.
+;tlsprivatekey=&lt;/path/to/private.pem&gt;      ; path to private key file
+                                           ; (*.pem) only.
+</pre>
+</div></div><h2 id="GettingStartedwithARI-ari.conf">ari.conf</h2><p>ARI itself is configured in the <code>ari.conf</code> file. For this example, we don't need pretty printing, so that's disabled.</p><p>We will be accessing the API from the Swagger-UI app hosted on <a href="http://ari.asterisk.org" class="external-link" rel="nofollow">ari.asterisk.org</a>. The requires the <code>allowed_origins</code> option to be set, in order to access the API in a cross-origin sort of manner.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ari.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: true" style="font-size:12px;">[general]
+enabled=yes
+;pretty=yes     ; we don&#39;t need pretty-printing of the JSON responses in this
+                ; example, but you might if you use curl a lot.
+;
+; In this example, we are going to use the version of Swagger-UI that is hosted
+; at ari.asterisk.org. In order to get past CORS restrictions in the browser,
+; That origin needs to be added to the allowed_origins list.
+;
+allowed_origins=ari.asterisk.org
+
+[hey]
+type=user
+password=peekaboo
+;read_only=no   ; Set to yes for read-only applications
+
+;
+; For the security concious, you probably don&#39;t want to put plaintext passwords
+; in the configuration file. ARI supports the use of crypt(3) for password
+; storage. You can encrypt a password using the &#39;ari mkpasswd&#39; command line
+; command. Note that the protocols supported by crypt(3) are system specific,
+; so check &#39;man 3 crypt&#39; to see what&#39;s available on your system.
+;
+
+;password_format=crypt
+;password=$6$u8RH5kQma8DV5$M0gydWzRGv/vuxtRXl306qpfi81Kr13F.QbqellcGARTFZ7GUWgERJ/OjD8cPAwItR/VMApo7bsHALqDPVnJX0</pre>
+</div></div><h2 id="GettingStartedwithARI-extensions.conf">extensions.conf</h2><p>If you would like to accept calls into your application, they need to be sent to the <code>Stasis()</code> application in the dialplan.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>extensions.conf</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: text; gutter: true" style="font-size:12px;">[default]
+exten =&gt; 7000,1,Noop()
+      same =&gt; n,Stasis(hello,world) ; hello is the name of the application
+                                    ; world is its argument list
+      same =&gt; n,Hangup()</pre>
+</div></div><h2 id="GettingStartedwithARI-Phoneconfiguration">Phone configuration</h2><p>Configuring phones is outside the scope of this walk through. I recommend configuring a SIP smart phone, simply because it makes things easier when dealing with multiple calls.</p><h1 id="GettingStartedwithARI-AuthenticatingRequests">Authenticating Requests</h1><p>ARI requests (both the RESTful API and the WebSocket) must be authenticated. Two authentication schemes are support.</p><ol><li><code>?api_key</code> query parameter. This is the default method supported by Swagger-UI<ol><li>The api_key is &quot;username:password&quot;</li></ol></li><li>HTTP Basic authentication</li></ol><h1 id="GettingStartedwithARI-UsingSwagger-UI">Using Swagger-UI</h1><p>One of the advantages of documenting our RESTful API using Swagger is the ability to generate interactive documentation.</p><p><a href="https://github.com/wordnik/swagger-ui" class="external-link" rel="nofollow">Swagger-UI</a> is a pure HTML+JavaScript application which can download Swagger api-docs, and generate an interactive web page which allows you to view resources, their operations, and submit API requests directly from the documentation.</p><p>A fork of Swagger-UI is hosted on <a href="http://ari.asterisk.org" class="external-link" rel="nofollow">ari.asterisk.org</a>, which enables DELETE operations (which are disabled by default in Swagger-UI), and sets the default URL to what it would be running Asterisk on your local system.</p><p>In order to access ARI, you have to populate the <code>api_key</code> field with a <code>username:password</code> configured in <code>ari.conf</code>. You should also set <code>allowed_origins</code> in <code>ari.conf</code> to allow the site hosting Swagger-UI to access ARI.</p><p><img class="confluence-embedded-image" alt="Swagger-UI Screenshot" width="300" src="attachments/26478450/26902563.png" data-image-src="attachments/26478450/26902563.png" title="Screenshot"></p><h1 id="GettingStartedwithARI-ConnectingtheWebSocket">Connecting the WebSocket</h1><p>When Asterisk is running, your application will need to connect to the WebSocket in order to receive events from Asterisk. There are several <a href="Getting-Started-with-ARI_26478450.html">WebSocket client libraries</a> available, covering most platforms and languages.</p><p>For this example, we will simply use the <a href="https://raw.github.com/leedm777/wscat-py/master/wscat/wscat.py" class="external-link" rel="nofollow">wscat.py script</a>. This script requires the <a href="https://pypi.python.org/pypi/websocket-client/" class="external-link" rel="nofollow">websocket-client library</a>, so be sure to <code>pip install websocket-client</code> first.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ wscat.py &#39;ws://localhost:8088/ari/events?app=hello&amp;api_key=hey&#39;</pre>
+</div></div><p>The WebSocket is now connected. As events are received, <code>wscat</code> will print them to stdout. Every recieved event will have:</p><ul><li><code>type</code> - text string naming the event. This is the model id from the <code>/ari/api-docs/events.json</code> API doc.</li><li><code>application</code> - The name of the application receiving the event. In our example, the name is <code>hello</code>.</li><li><code style="line-height: 1.4285715;">timestamp</code><span style="line-height: 1.4285715;"> - Time of the event. Most events have a timestamp field, but not all.</span></li></ul><h1 id="GettingStartedwithARI-Doingstuff">Doing stuff</h1><p>Okay, first try something simple. Let's just dial the application. Use whatever telephony device you've configured with Asterisk to dial extension <code>7000</code>. You should see this message come from the WebSocket:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>"type": "StasisStart"</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: js; gutter: true" style="font-size:12px;">{
+  &quot;application&quot;: &quot;hello&quot;,
+  &quot;args&quot;: [
+    &quot;world&quot;
+  ],
+  &quot;channel&quot;: {
+    &quot;accountcode&quot;: &quot;&quot;,
+    &quot;caller&quot;: {
+      &quot;name&quot;: &quot;blink&quot;,
+      &quot;number&quot;: &quot;blink&quot;
+    },
+    &quot;connected&quot;: {
+      &quot;name&quot;: &quot;&quot;,
+      &quot;number&quot;: &quot;&quot;
+    },
+    &quot;creationtime&quot;: &quot;2013-10-15T15:54:12.625-0500&quot;,
+    &quot;dialplan&quot;: {
+      &quot;context&quot;: &quot;default&quot;,
+      &quot;exten&quot;: &quot;7000&quot;,
+      &quot;priority&quot;: 2
+    },
+    &quot;id&quot;: &quot;1381870452.0&quot;,
+    &quot;name&quot;: &quot;SIP/blink-00000000&quot;,
+    &quot;state&quot;: &quot;Ring&quot;
+  },
+  &quot;timestamp&quot;: &quot;2013-10-15T15:54:12.626-0500&quot;,
+  &quot;type&quot;: &quot;StasisStart&quot;
+}</pre>
+</div></div><p>The <code>StasisStart</code> event shows that a channel has entered into the <code>Stasis</code> dialplan application. This application is <code>hello</code>, and the arguments passed to the application are <code>[&quot;world&quot;]</code>. You also recieve a <code>channel</code> object with detailed information about the channel. The channel's <code>id</code> field is how the channel is identified via the REST API.</p><h2 id="GettingStartedwithARI-Manipulatingthechannel">Manipulating the channel</h2>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>Currently, Asterisk only parses query parameters, even with POST requests. See <a href="https://issues.asterisk.org/jira/browse/ASTERISK-22685" class="external-link" rel="nofollow">ASTERISK-22685</a> for more details.</p>
+                    </div>
+    </div>
+<p> </p><p>There are <a href="Asterisk-12-Channels-REST-API_22773912.html">lots of things you can do with channels</a>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ CHAN=1381870452.0
+$ curl -v -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN/answer&quot;
+# &lt;snip/&gt;
+&lt; HTTP/1.1 204 No Content
+&lt; Server: Asterisk/SVN-dlee-playback-events-hack-URL:-r400821M
+&lt; Date: Tue, 15 Oct 2013 21:10:33 GMT
+&lt; Connection: close
+&lt; Cache-Control: no-cache, no-store
+&lt; Content-Length: 0
+&lt; 
+* Closing connection #0</pre>
+</div></div><p>The <code>/answer</code> operation simply returns <code>204 No Content</code> to indicate success. You will also see a <code>ChannelStateChange</code> message on the WebSocket, indicating that the channel is now <code>&quot;state&quot;: &quot;Up&quot;</code>. If you press DTMF keys on the phone, you will also see <code>ChannelDtmfReceived</code> events on the WebSocket.</p><h2 id="GettingStartedwithARI-Asynchronousoperations">Asynchronous operations</h2><p>Most operations you perform via ARI are asynchronous. This means that the API call returns immediately, and work is queued up to happen in the background. For some operations (like <code>/answer</code>) this is fairly transparent. For others (like <code>/play</code> and <code>/record</code>), this is apparent in the API.</p><p>Let's look at how playback works.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ curl -v -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN/play?media=sound:hello-world&quot; | jsonpp
+# &lt;snip/&gt;
+&lt; HTTP/1.1 201 Created
+&lt; Server: Asterisk/SVN-dlee-playback-events-hack-URL:-r400821M
+&lt; Date: Tue, 15 Oct 2013 21:14:56 GMT
+&lt; Connection: close
+&lt; Cache-Control: no-cache, no-store
+&lt; Content-Length: 146
+&lt; Location: /playback/9315bf40-ac65-4cbe-83ae-b4e4355f585e
+&lt; Content-type: application/json
+&lt; 
+{ [data not shown]
+100   146  100   146    0     0  34515      0 --:--:-- --:--:-- --:--:--  142k
+* Closing connection #0
+{
+  &quot;id&quot;: &quot;9315bf40-ac65-4cbe-83ae-b4e4355f585e&quot;,
+  &quot;media_uri&quot;: &quot;sound:hello-world&quot;,
+  &quot;target_uri&quot;: &quot;channel:1381871629.2&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;state&quot;: &quot;queued&quot;
+}</pre>
+</div></div><p>POST'ing to the <code>/play</code> resource returns a <code>201 Created</code>, because it creates a <code>/playback</code> resource. The URI is given in the <code>Location:</code> header, and the <code>id</code> is given in the response.</p><p>We're now done with the channel. We can hangup with an HTTP DELETE</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ curl -v -u hey:peekaboo -X DELETE &quot;http://localhost:8088/ari/channels/$CHAN&quot;
+# &lt;snip/&gt;
+&lt; HTTP/1.1 204 No Content
+&lt; Server: Asterisk/SVN-dlee-playback-events-hack-URL:-r400821M
+&lt; Date: Tue, 15 Oct 2013 21:23:12 GMT
+&lt; Connection: close
+&lt; Cache-Control: no-cache, no-store
+&lt; Content-Length: 0</pre>
+</div></div><p>Once again, since there's nothing more to say than 'success', the response is <code>204 No Content</code>.</p><h2 id="GettingStartedwithARI-Bridging">Bridging</h2><p>One of the more powerful features in ARI is the ability to create your own bridges, and move channels into and out of those bridges. Let's see some of that now. First, we'll create a holding bridge. This is a bridge which plays music on hold to all participants, and they cannot hear one another.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ curl -v -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/bridges?type=holding&quot;
+{
+  &quot;channels&quot;: [],
+  &quot;id&quot;: &quot;5b55d1f0-2edf-4b94-a07c-d841e25bba1e&quot;,
+  &quot;technology&quot;: &quot;holding_bridge&quot;,
+  &quot;bridge_class&quot;: &quot;base&quot;,
+  &quot;bridge_type&quot;: &quot;holding&quot;
+}
+$ BRIDGE=&quot;5b55d1f0-2edf-4b94-a07c-d841e25bba1e&quot;</pre>
+</div></div><p>There you go, a brand new bridge with no channels in it. If you issue a GET on <code>/bridges</code>, or <code>/bridges/$BRIDGE</code>,  you can see the details of the bridge, including the ids of all the channels currently in the bridge.</p><p>Now dial the 7000 extension a couple of times to get a few channels.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Received events</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; collapse: true; gutter: false" style="font-size:12px;">{
+  &quot;application&quot;: &quot;hello&quot;,
+  &quot;args&quot;: [
+    &quot;world&quot;
+  ],
+  &quot;channel&quot;: {
+    &quot;accountcode&quot;: &quot;&quot;,
+    &quot;caller&quot;: {
+      &quot;name&quot;: &quot;blink&quot;,
+      &quot;number&quot;: &quot;blink&quot;
+    },
+    &quot;connected&quot;: {
+      &quot;name&quot;: &quot;&quot;,
+      &quot;number&quot;: &quot;&quot;
+    },
+    &quot;creationtime&quot;: &quot;2013-10-15T16:42:28.808-0500&quot;,
+    &quot;dialplan&quot;: {
+      &quot;context&quot;: &quot;default&quot;,
+      &quot;exten&quot;: &quot;7000&quot;,
+      &quot;priority&quot;: 2
+    },
+    &quot;id&quot;: &quot;1381873348.4&quot;,
+    &quot;name&quot;: &quot;SIP/blink-00000004&quot;,
+    &quot;state&quot;: &quot;Ring&quot;
+  },
+  &quot;timestamp&quot;: &quot;2013-10-15T16:42:28.809-0500&quot;,
+  &quot;type&quot;: &quot;StasisStart&quot;
+}
+{
+  &quot;application&quot;: &quot;hello&quot;,
+  &quot;args&quot;: [
+    &quot;world&quot;
+  ],
+  &quot;channel&quot;: {
+    &quot;accountcode&quot;: &quot;&quot;,
+    &quot;caller&quot;: {
+      &quot;name&quot;: &quot;blink&quot;,
+      &quot;number&quot;: &quot;blink&quot;
+    },
+    &quot;connected&quot;: {
+      &quot;name&quot;: &quot;&quot;,
+      &quot;number&quot;: &quot;&quot;
+    },
+    &quot;creationtime&quot;: &quot;2013-10-15T16:42:40.572-0500&quot;,
+    &quot;dialplan&quot;: {
+      &quot;context&quot;: &quot;default&quot;,
+      &quot;exten&quot;: &quot;7000&quot;,
+      &quot;priority&quot;: 2
+    },
+    &quot;id&quot;: &quot;1381873360.5&quot;,
+    &quot;name&quot;: &quot;SIP/blink-00000005&quot;,
+    &quot;state&quot;: &quot;Ring&quot;
+  },
+  &quot;timestamp&quot;: &quot;2013-10-15T16:42:40.573-0500&quot;,
+  &quot;type&quot;: &quot;StasisStart&quot;
+}</pre>
+</div></div><p>Answer the channels, and add them to the bridge</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ CHAN1=1381873348.4
+$ CHAN2=1381873360.5
+$ curl -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN1/answer&quot;
+$ curl -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN2/answer&quot;
+$ curl -v -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/bridges/$BRIDGE/addChannel?channel=$CHAN1,$CHAN2&quot;
+# &lt;snip/&gt;
+&lt; HTTP/1.1 204 No Content</pre>
+</div></div><p>You should now hear music-on-hold on each channel. Even while in the bridge, you can play media to the channels. Media may be played individually, or to the entire bridge. The music-on-hold will resume when the playback has ended.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;"># Play to the channels individually
+$ curl -s -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN1/play?media=sound:hello-world&quot;
+$ curl -s -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/channels/$CHAN2/play?media=sound:hello-world&quot;
+# Play to the bridge
+$ curl -s -u hey:peekaboo -X POST &quot;http://localhost:8088/ari/bridges/$BRIDGE/play?media=sound:hello-world&quot;</pre>
+</div></div><p> </p><h1 id="GettingStartedwithARI-RecommendedPractices">Recommended Practices</h1><h2 id="GettingStartedwithARI-Don%27taccessARIdirectlyfromawebpage">Don't access ARI directly from a web page</h2><p>It's very convenient to use ARI directly from a web page for development, such as using Swagger-UI, or even abusing the <a href="http://www.websocket.org/echo.html" class="external-link" rel="nofollow">WebSocket echo demo</a> to get at the ARI WebSocket.</p><p>But, <em>please</em>, do not do this in your production applications. This would be akin to accessing your database directly from a web page. You need to hide Asterisk behind your own application server, where you can handle security, logging, multi-tenancy and other concerns that really don't belong in a communications engine.</p><h2 id="GettingStartedwithARI-Useanabstractionlayer">Use an abstraction layer</h2><p>One of the beautiful things about ARI is that it's so easy to just bang out a request. But what's good for development isn't necessarily what's good for production.</p><p>Please don't spread lots of direct HTTP calls throughout your application. There are cross-cutting concerns with accessing the API that you'll want to deal with in a central location. Today, the only concern is authentication. But as the API evolves, other concerns (such as versioning) will also be important.</p><p>Note that the abstraction layer doesn't (and shouldn't) be complicated. Your client side API can even be something as simple wrapper around GET, POST and DELETE that addresses the cross-cutting concerns. The Asterisk TestSuite has a very simple abstraction library that can be used like this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: py; gutter: false" style="font-size:12px;">ari = ARI(&#39;localhost&#39;, (&#39;username&#39;, &#39;password&#39;))
+ 
+# Hang up all channels
+channels = ari.get(&#39;channels&#39;)
+for channel in channels:
+    ari.delete(&#39;channels&#39;, channel[&#39;id&#39;])</pre>
+</div></div><p>Higher level abstractions would also be good, but require a more complicated client library. ARI is still very new, but these are <a href="https://github.com/kickstandproject/python-ari" class="external-link" rel="nofollow">coming</a> <a href="https://github.com/asterisk/asterisk_rest_libraries" class="external-link" rel="nofollow">along</a>.</p><h1 id="GettingStartedwithARI-WebSocketclientlibraries">WebSocket client libraries</h1><ul><li>Python<ul><li><a href="https://pypi.python.org/pypi/websocket-client/" class="external-link" rel="nofollow">websocket-client</a></li></ul></li><li>Java<ul><li><a href="http://www.eclipse.org/jetty/documentation/current/jetty-websocket-client-api.html" class="external-link" rel="nofollow">Jetty WebSocket Client API</a></li></ul></li><li>Ruby<ul><li><a href="https://github.com/faye/faye-websocket-ruby" class="external-link" rel="nofollow">faye-websocket</a></li></ul></li><li>JavaScript<ul><li><a href="http://einaros.github.io/ws/" class="external-link" rel="nofollow">ws</a> (includes a wscat implementation)</li></ul></li><li>Perl<ul><li><span><span><span><span><span style="background-color: transparent;line-height: 1.4285715;"><a href="http://search.cpan.org/dist/Net-Async-WebSocket/lib/Net/Async/WebSocket/Client.pm" class="external-link" rel="nofollow">Net::Async::WebSocket::Client</a></span><br /></span></span></span></span></li></ul></li></ul><p> </p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/26478450/26902563.png">swagger-ui-screenshot.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:14</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

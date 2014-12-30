@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Application_GotoIfTime</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Dialplan-Applications_26476696.html">Asterisk 12 Dialplan Applications</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Application_GotoIfTime
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Aug 29, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Application_GotoIfTime-GotoIfTime%28%29">GotoIfTime()</h1>
+
+<h3 id="Asterisk12Application_GotoIfTime-Synopsis">Synopsis</h3>
+
+<p>Conditional Goto based on the current time.</p>
+
+<h3 id="Asterisk12Application_GotoIfTime-Description">Description</h3>
+
+<p>This application will set the context, extension, and priority in the channel structure based on the evaluation of the given time specification. After this application completes, the pbx engine will continue dialplan execution at the specified location in the dialplan. If the current time is within the given time specification, the channel will continue at <em>labeliftrue</em>. Otherwise the channel will continue at <em>labeliffalse</em>. If the label chosen by the condition is omitted, no jump is performed, and execution passes to the next instruction. If the target jump location is bogus, the same actions would be taken as for <code>Goto</code>. Further information on the time specification can be found in examples illustrating how to do time-based context includes in the dialplan.</p>
+
+
+<h3 id="Asterisk12Application_GotoIfTime-Syntax">Syntax</h3>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>GotoIfTime(timesweekdaysmdaysmonths[timezone]labeliftrue:labeliffalse)</pre>
+</div></div>
+
+<h5 id="Asterisk12Application_GotoIfTime-Arguments">Arguments</h5>
+
+<ul>
+	<li><code>condition</code>
+	<ul>
+		<li><code>times</code></li>
+		<li><code>weekdays</code></li>
+		<li><code>mdays</code></li>
+		<li><code>months</code></li>
+		<li><code>timezone</code></li>
+	</ul>
+	</li>
+	<li><code>destination</code>
+	<ul>
+		<li><code>labeliftrue</code> - Continue at <em>labeliftrue</em> if the condition is true. Takes the form similar to Goto() of [[context,]extension,]priority.</li>
+		<li><code>labeliffalse</code> - Continue at <em>labeliffalse</em> if the condition is false. Takes the form similar to Goto() of [[context,]extension,]priority.</li>
+	</ul>
+	</li>
+</ul>
+
+
+<h3 id="Asterisk12Application_GotoIfTime-SeeAlso">See Also</h3>
+
+<ul>
+	<li><a href="Asterisk-12-Application_GotoIf_26477168.html">Asterisk 12 Application_GotoIf</a></li>
+	<li><a href="Asterisk-12-Application_Goto_26477167.html">Asterisk 12 Application_Goto</a></li>
+	<li><a href="Asterisk-12-Function_IFTIME_26477049.html">Asterisk 12 Function_IFTIME</a></li>
+	<li><a href="Asterisk-12-Function_TESTTIME_26477189.html">Asterisk 12 Function_TESTTIME</a></li>
+</ul>
+
+
+
+<h3 id="Asterisk12Application_GotoIfTime-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version Unknown</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:16</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

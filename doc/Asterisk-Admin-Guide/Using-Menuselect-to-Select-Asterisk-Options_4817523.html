@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Using Menuselect to Select Asterisk Options</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk_4817553.html">Installing Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk-From-Source_4817561.html">Installing Asterisk From Source</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Using Menuselect to Select Asterisk Options
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  chazzam  on Aug 09, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The next step in the build process is to tell Asterisk which modules[docs:1] to compile and install, as well as set various compiler options. These settings are all controlled via a menu-driven system called <strong>menuselect</strong>. To access the menuselect system, type:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server asterisk-1.8.X.Y]# make menuselect
+</pre>
+</div></div>
+
+    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">Terminal Window</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<p>Your terminal window size must be at least eighty characters wide and twenty-one lines high, or menuselect will not work. Instead, you'll get an error message stating</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Terminal must be at least 80 x 21.</pre>
+</div></div>
+                    </div>
+    </div>
+
+
+    <div class="aui-message warning shadowed information-macro">
+                    <p class="title">Asterisk 1.8+</p>
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Terminal must be at least 80 x 27.</pre>
+</div></div>
+                    </div>
+    </div>
+
+
+<p>The menuselect menu should look like the screen-shot below. On the left-hand side, you have a list of categories, such as <strong>Applications</strong>, <strong>Channel</strong> <strong>Drivers</strong>, and <strong>PBX</strong> <strong>Modules</strong>. On the right-hand side, you'll see a list of modules that correspond with the select category. At the bottom of the screen you'll see two buttons. You can use the <strong>Tab</strong> key to cycle between the various sections, and press the <strong>Enter</strong> key to select or unselect a particular module. If you see [docs:<strong>] next to a module name, it signifies that the module has been selected. If you see *XXX</strong> next to a module name, it signifies that the select module cannot be built, as one of its dependencies is missing. In that case, you can look at the bottom of the screen for the line labeled <strong>Depends</strong> <strong>upon</strong>: for a description of the missing dependency.</p>
+
+<p>When you're first learning your way around Asterisk on a test system, you'll probably want to stick with the default settings in menuselect. If you're building a production system, however, you may not wish to build all of the various modules, and instead only build the modules that your system is using.</p>
+
+<p>﻿ <img class="confluence-embedded-image" src="attachments/4817523/4980750.png" data-image-src="attachments/4817523/4980750.png"></p>
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+
+
+<p>Easier Debugging of Asterisk Crashes</p>
+
+<p>If you're finding that Asterisk is crashing on you, there's a setting in menuselect that will help provide additional information to the Asterisk developers. Go into menuselect, select the the Compiler Flags section (you'll need to scroll down in the left-hand list), and select the DONT_OPTIMIZE setting. Then rebuild Asterisk as shown below. While the Asterisk application will be slightly larger, it will provide additional debugging symbols in the event of a crash.</p>
+                    </div>
+    </div>
+
+
+
+<p>We should also inform people that the sound prompts are selected in menuselect as well</p>
+
+<p>When you are finished selecting the modules and options you'd like in <strong>menuselect</strong>, press <strong>F12</strong> to save and exit, or highlight the <strong>Save</strong> <strong>and</strong> <strong>Exit</strong> button and press enter.</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817523/4980750.png">menuselect.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-13076646"></a>
+                                    <font class="smallfont">    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Using menuselect within a script</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+
+<p>If you would like to use menuselect from within a script in order to enable/disable some option (e.g. for automating compilation/installation process) you can use:
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+$ make menuselect.makeopts
+$ menuselect/menuselect --enable [your-option-here] menuselect.makeopts
+</pre>
+</div></div>
+
+<p>For a list of available options and menuselect usage, see:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">$ menuselect/menuselect --list-options</pre>
+</div></div>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+$ menuselect/menuselect --help
+</pre>
+</div></div>
+
+                    </div>
+    </div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by khratos at May 16, 2011 14:23
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-17793474"></a>
+                                    <font class="smallfont"><p>To activate MySQL Addons (as an example):</p>
+
+
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">menuselect/menuselect --enable app_mysql --enable cdr_mysql --enable res_config_mysql menuselect.makeopts</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by ollii at Aug 24, 2011 07:51
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Secure Calling Tutorial</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Secure-Calling_11338110.html">Secure Calling</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Secure Calling Tutorial
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Jan 24, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="SecureCallingTutorial-Overview">Overview</h2>
+
+<p>So you'd like to make some secure calls.</p>
+
+<p>Here's how to do it, using <a href="http://www.icanblink.com/" class="external-link" rel="nofollow">Blink</a>, a SIP soft client for Mac OS X, Windows, and Linux.</p>
+
+<p>These instructions assume that you're running as the root user (sudo su -).</p>
+
+<h3 id="SecureCallingTutorial-Part1%28TLS%29">Part 1 (TLS)</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Transport_Layer_Security" class="external-link" rel="nofollow">Transport Layer Security</a> (TLS) provides encryption for call signaling.  It's a practical way to prevent people who aren't Asterisk from knowing who you're calling.  Setting up TLS between Asterisk and a SIP client involves creating key files, modifying Asterisk's SIP configuration to enable TLS, creating a SIP peer that's capable of TLS, and modifying the SIP client to connect to Asterisk over TLS.</p>
+
+<h5 id="SecureCallingTutorial-Keys">Keys</h5>
+
+<p>First, let's make a place for our keys.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>mkdir /etc/asterisk/keys
+</pre>
+</div></div>
+
+
+<p>Next, use the &quot;ast_tls_cert&quot; script in the &quot;contrib/scripts&quot; Asterisk source directory to make a self-signed certificate authority and an Asterisk certificate.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>./ast_tls_cert -C pbx.mycompany.com -O &quot;My Super Company&quot; -d /etc/asterisk/keys
+</pre>
+</div></div>
+
+<ul class="alternate">
+	<li>The &quot;-C&quot; option is used to define our host - DNS name or our IP address.</li>
+	<li>The &quot;-O&quot; option defines our organizational name.</li>
+	<li>The &quot;-d&quot; option is the output directory of the keys.</li>
+</ul>
+
+
+<ol>
+	<li>You'll be asked to enter a pass phrase for /etc/asterisk/keys/ca.key, put in something that you'll remember for later.</li>
+	<li>This will create the /etc/asterisk/keys/ca.crt file.</li>
+	<li>You'll be asked to enter the pass phrase again, and then the /etc/asterisk/keys/asterisk.key file will be created.</li>
+	<li>The /etc/asterisk/keys/asterisk.crt file will be automatically generated.</li>
+	<li>You'll be asked to enter the pass phrase a third time, and the /etc/asterisk/keys/asterisk.pem will be created, a combination of the asterisk.key and asterisk.crt files.</li>
+</ol>
+
+
+<p>Next, we generate a client certificate for our SIP device.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>./ast_tls_cert -m client -c /etc/asterisk/keys/ca.crt -k /etc/asterisk/keys/ca.key -C phone1.mycompany.com -O &quot;My Super Company&quot; -d /etc/asterisk/keys -o malcolm
+</pre>
+</div></div>
+
+<ul class="alternate">
+	<li>The &quot;-m client&quot; option tells the script that we want a client certificate, not a server certificate.</li>
+	<li>The &quot;-c /etc/asterisk/keys/ca.crt&quot; option specifies which Certificate Authority (ourselves) that we're using.</li>
+	<li>The &quot;-k /etc/asterisk/keys/ca.key&quot; provides the key for the above-defined Certificate Authority.</li>
+	<li>The &quot;-C&quot; option, since we're defining a client this time, is used to define the hostname or IP address of our SIP phone</li>
+	<li>The &quot;-O&quot; option defines our organizational name.</li>
+	<li>The &quot;-d&quot; option is the output directory of the keys.&quot;</li>
+	<li>The &quot;-o&quot; option is the name of the key we're outputting.</li>
+</ul>
+
+
+<ol>
+	<li>You'll be asked to enter the pass phrase from before to unlock /etc/asterisk/keys/ca.key.</li>
+</ol>
+
+
+<p>Now, let's check the keys directory to see if all of the files we've built are there.  You should have:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>asterisk.crt
+asterisk.csr
+asterisk.key
+asterisk.pem
+malcolm.crt
+malcolm.csr
+malcolm.key
+malcolm.pem
+ca.cfg
+ca.crt
+ca.key
+tmp.cfg
+</pre>
+</div></div>
+
+<p>Next, copy the malcolm.pem and ca.crt files to the computer running the Blink soft client.</p>
+
+<h5 id="SecureCallingTutorial-TheAsteriskSIPconfiguration">The Asterisk SIP configuration</h5>
+
+<p>Now, let's configure Asterisk to use TLS.</p>
+
+<p>In the <strong>sip.conf</strong> configuration file, set the following:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>tlsenable=yes
+tlsbindaddr=0.0.0.0
+tlscertfile=/etc/asterisk/keys/asterisk.pem
+tlscafile=/etc/asterisk/keys/ca.crt
+tlscipher=ALL
+tlsclientmethod=tlsv1 ;none of the others seem to work with Blink as the client
+</pre>
+</div></div>
+
+<p>Here, we're enabling TLS support.<br />
+We're binding it to our local IPv4 wildcard (the port defaults to 5061 for TLS).<br />
+We've set the TLS certificate file to the one we created above.<br />
+We've set the Certificate Authority to the one we created above.<br />
+TLS Ciphers have been set to ALL, since it's the most permissive.<br />
+And we've set the TLS client method to TLSv1, since that's the preferred one for RFCs and for most clients.</p>
+
+<h5 id="SecureCallingTutorial-ConfiguringaTLS-enabledSIPpeerwithinAsterisk">Configuring a TLS-enabled SIP peer within Asterisk</h5>
+
+<p>Next, you'll need to configure a SIP peer within Asterisk to use TLS as a transport type.  Here's an example:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[malcolm]
+type=peer
+secret=malcolm ;note that this is NOT a secure password
+host=dynamic
+context=local
+dtmfmode=rfc2833
+disallow=all
+allow=g722
+transport=tls
+context=local
+</pre>
+</div></div>
+
+<p>Notice the <strong>transport</strong> option.  The Asterisk SIP channel driver supports three types: udp, tcp and tls.  Since we're configuring for TLS, we'll set that.  It's also possible to list several supported transport types for the peer by separating them with commas.</p>
+
+<h5 id="SecureCallingTutorial-ConfiguringaTLS-enabledSIPclienttotalktoAsterisk">Configuring a TLS-enabled SIP client to talk to Asterisk</h5>
+
+<p>Next, we'll configure Blink.</p>
+
+<p>First, let's add a new account.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632659.png" data-image-src="attachments/8127019/11632659.png"></p>
+
+<p>Then, we need to modify the Account Preferences, and under the SIP Settings, we need to set the outbound proxy to connect to the TLS port and transport type on our Asterisk server.  In this case, there's an Asterisk server running on port 5061 on host 10.24.13.233.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632654.png" data-image-src="attachments/8127019/11632654.png"></p>
+
+<p>Now, we need to point the TLS account settings to the client certificate (malcolm.pem) that we copied to our computer.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632655.png" data-image-src="attachments/8127019/11632655.png"></p>
+
+<p>Then, we'll point the TLS server settings to the ca.crt file that we copied to our computer.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632658.png" data-image-src="attachments/8127019/11632658.png"></p>
+
+<p>Press &quot;close,&quot; and you should see Blink having successfully registered to Asterisk.</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632657.png" data-image-src="attachments/8127019/11632657.png"></p>
+
+<p>Depending on your Asterisk CLI logging levels, you should see something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  -- Registered SIP &#39;malcolm&#39; at 10.24.250.178:5061
+     &gt; Saved useragent &quot;Blink 0.22.2 (MacOSX)&quot; for peer malcolm
+</pre>
+</div></div>
+
+<p>Notice that we registered on port 5061, the TLS port.</p>
+
+<p>Now, make a call.  You should see a small secure lockbox in your Blink calling window to indicate that the call was made using secure (TLS) signaling:</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632656.png" data-image-src="attachments/8127019/11632656.png"></p>
+
+<h3 id="SecureCallingTutorial-Part2%28SRTP%29">Part 2 (SRTP)</h3>
+
+<p>Now that we've got TLS enabled, our signaling is secure - so no one knows what extensions on the PBX we're dialing.  But, our media is still not secure - so someone can snoop our RTP conversations from the wire.  Let's fix that.</p>
+
+<p>SRTP support is provided by libsrtp.  libsrtp has to be installed on the machine before Asterisk is compiled, otherwise you're going to see something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[Jan 24 09:29:16] ERROR[10167]: chan_sip.c:27987 setup_srtp: No SRTP module loaded, can&#39;t setup SRTP session.
+</pre>
+</div></div>
+
+<p>on your Asterisk CLI.  If you do see that, install libsrtp (and the development headers), and then reinstall Asterisk (./configure; make; make install).</p>
+
+<p>With that complete, let's first go back into our peer definition in <strong>sip.conf.</strong> We're going to add a new encryption line, like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[malcolm]
+type=peer
+secret=malcolm ;note that this is NOT a secure password
+host=dynamic
+context=local
+dtmfmode=rfc2833
+disallow=all
+allow=g722
+transport=tls
+encryption=yes
+context=local
+</pre>
+</div></div>
+
+<p>Next, we'll set Blink to use SRTP:</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/22937664.png" data-image-src="attachments/8127019/22937664.png"></p>
+
+
+<p>Reload Asterisk's SIP configuration (sip reload), make a call, and voilà:</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632661.png" data-image-src="attachments/8127019/11632661.png"></p>
+
+<p>We're making secure calls with TLS (signaling) and SRTP (media).</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632654.png">BlinkAccountPrefs.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632655.png">BlinkTLSAccount.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632656.png">BlinkTLSCall.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632657.png">BlinkTLSRegistered.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632658.png">BlinkTLSServer.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632659.png">BlinkAddNewAccount.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632661.png">BlinkTLSSRTP.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/11632665.png">ZoiperTLSCert.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8127019/22937664.png">BlinkEnableSRTP.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-11338128"></a>
+                                    <font class="smallfont"><p>Thanks for this doc!<br />
+But one point remains unclear,<br />
+while the <strong>ca.crt</strong> has been automatically handled by windows, where should I put the <strong>user.pem</strong> file (using zoiper biz on a windows machine) ?</p>
+
+<p>Gilles</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by gilles at Jan 24, 2011 20:29
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-11338143"></a>
+                                    <font class="smallfont"><p>I don't have Zoiper Biz or Windows.  My best guess, by looking at the Free version for Mac, which does not support TLS or SRTP, says it should probably go in the box here:</p>
+
+<p><img class="confluence-embedded-image confluence-content-image-border" src="attachments/8127019/11632665.png" data-image-src="attachments/8127019/11632665.png"></p>
+
+<p>You might have to watch the port number configured there as well; TLS runs, by default, on 5061, <strong>not</strong> 5060.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Jan 25, 2011 09:07
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-11338315"></a>
+                                    <font class="smallfont"><p>I tried my registered biz version (2.30) and the free version of Zoipper (2.36) for Windows, in both this TLS Certificate file option isn't there. However, I can see it disabled in the Linux version (1.18). So I'm now using PhonerLite where I could find it. Thanks for that.</p>
+
+<p>But, by default, TLS works fine without the user certificate.<br />
+And I can't see any client certificate request from the server in Wireshark, should I set it somewhere ?<br />
+I couldn't find anything in sip.conf or in Asterisk 1.8 doc about it.</p>
+
+<p>Also, when my client registers, I get something like :<br />
+    – Registered SIP 'phonerlite' at 10.100.5.61:49296<br />
+But in Wireshark, I can see that, on the server side, the signaling goes through port 5061.</p>
+
+<p>Many people use the following variables in their dialplan when setting sRTP :<br />
+_SIP_SRTP_SDES=1<br />
+_SIPSRTP=enable<br />
+_SIPSRTP_CRYPTO=enable<br />
+Why don't you use it ? Are they unnecessary ?<br />
+Do you know if they are documented somewhere ?</p>
+
+<p>When I set SRTP (both on clients and server sides), the only difference I can see with TLS is that the media goes through the server and not straight to the other client. Like with TLS only, for the media, I don't see the UDP/RTP layer anymore, but UDP/Data. Also, with or without sRTP set, UDP/Data begins with 800 hex code, like with UDP, that makes me think sRTP doesn't work for me. Also, I always get this error message :<br />
+<a class="unresolved" href="#">29:14</a> WARNING<a class="createlink" href="/wiki/pages/createpage.action?spaceKey=AST&amp;title=9646">9646</a>: res_srtp.c:338 ast_srtp_unprotect: SRTP unprotect: authentication failure<br />
+What does it mean ? What do I need to do to make it work ?</p>
+
+<p>Thanks for your help,<br />
+Gilles</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by gilles at Jan 27, 2011 21:18
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-11338331"></a>
+                                    <font class="smallfont"><p>The asterisk-users list is a great place for long discussions and lots of questions.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[Jan 28 17:29:14] WARNING9646: res_srtp.c:338 ast_srtp_unprotect: SRTP unprotect: authentication failure
+What does it mean ? What do I need to do to make it work ?
+</pre>
+</div></div>
+
+<p>It probably means your client isn't capable of AES_CM_128_HMAC_SHA1_80, but instead only AES_CM_128_HMAC_SHA1_32.  Asterisk invites back to the client only with AES_CM_128_HMAC_SHA1_80 currently.  See:</p>
+
+<p><a class="external-link" href="https://issues.asterisk.org/view.php?id=18674" rel="nofollow">https://issues.asterisk.org/view.php?id=18674</a></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Jan 28, 2011 08:23
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550320"></a>
+                                    <font class="smallfont"><p>Hi Malcolm,<br />
+I work with Elastix but i don't find the &quot;ast_tls_cert&quot; script in the &quot;contrib/scripts&quot; Asterisk source directory!!!<br />
+Can you post it in this forum please?</p>
+
+<p>Thank you!</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by azzouzi.marwane@hotmail.fr at Feb 25, 2011 09:33
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550322"></a>
+                                    <font class="smallfont"><p>Hi,</p>
+
+<p>It's only in the contrib/scripts directory for Asterisk 1.8, it's not present for older releases.  You can download 1.8 to get it, check 1.8 out of SVN, or see it here:</p>
+
+<p><a class="external-link" href="http://svn.digium.com/view/asterisk/branches/1.8/contrib/scripts/ast_tls_cert?view=log" rel="nofollow">http://svn.digium.com/view/asterisk/branches/1.8/contrib/scripts/ast_tls_cert?view=log</a></p>
+
+<p>Cheers.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Feb 25, 2011 09:51
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550341"></a>
+                                    <font class="smallfont"><p>Hi,<br />
+Thank you Malcolm!<br />
+I'll try it!</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by azzouzi.marwane@hotmail.fr at Feb 28, 2011 04:06
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550405"></a>
+                                    <font class="smallfont"><p>Hi Malcolm,<br />
+can you  tell me please how to install the libsrtp? and if i reinstall Asterisk, i'll loose all my configurations??</p>
+
+<p>Thank you </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by azzouzi.marwane@hotmail.fr at Mar 02, 2011 04:17
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550406"></a>
+                                    <font class="smallfont"><p>Hi,</p>
+
+<p>Tutorials on how to install packages are beyond the scope of this Wiki.  Google may be of some use, depending on your base Linux distribution.  You said you were using Elastix.  I do not think Elastix supports Asterisk 1.8, thus you can't use SRTP with Elastix until it does.  Then, presumably, Palo Santo will have packaged Asterisk in a way that it is linked against the libsrtp dependency, so use of SRTP would then be simple.  I cannot provide a tutorial here for how to repackage Asterisk for Elastix. <img class="emoticon emoticon-sad" src="images/icons/emoticons/sad.png" data-emoticon-name="sad" alt="(sad)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Mar 02, 2011 07:53
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550408"></a>
+                                    <font class="smallfont"><p>Hi,<br />
+it's ok with my Elastix! i could download and install libsrtp!<br />
+Now my problem is with Blink which said : &quot;Not acceptable Here&quot;, when i try to make a call with SRTP.<br />
+do you have an idea?</p>
+
+<p>Thank you very much</p>
+
+<p>AZZOUZI</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by azzouzi.marwane@hotmail.fr at Mar 02, 2011 09:23
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550499"></a>
+                                    <font class="smallfont"><p>Hi,</p>
+
+<p>Please take that question to the asterisk-users mailing list.</p>
+
+<p>Cheers.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Mar 04, 2011 09:36
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-12550886"></a>
+                                    <font class="smallfont"><p>Hi,</p>
+
+<p>Does anybody have tutorial for Aastra phones with TLS and Asterisk?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by aless at Mar 16, 2011 06:44
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-16547958"></a>
+                                    <font class="smallfont"><p> Hi Azzouzi,<br />
+your client have not the same audio codec used by asterisk,<br />
+add it to allow order list in yoyr sip account settings.<br />
+Regards Andrea</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by andrea.cristofanini@privatewave.com at Jun 27, 2011 09:27
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-17203491"></a>
+                                    <font class="smallfont"><p>Hi,</p>
+
+<p>Great how-to, really!! I've tested with blink softphone and it works. But, I'd like to get working tls on Aastra phones (6755i particulary). Did you test this? Anyone here have tried to get TLS working in Aastra phones? I have a doubt. I fill the TLS Support blanks with the files names which I had put in my /tftpboot but it's not working, and the tftp server is working in my asterisk server (Debian 6.0, Asterisk 1.8). Any ideas? Any screenshot?</p>
+
+<p>Thanks so much.</p>
+
+<p>Alejandro.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by alejandro at Jul 26, 2011 10:28
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-17203493"></a>
+                                    <font class="smallfont"><p>Hi <strong>Ales Silar</strong>, <br />
+did you find a Aastra phones TLS tutorial?</p>
+
+<p>Thanks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by alejandro at Jul 26, 2011 10:34
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-17203518"></a>
+                                    <font class="smallfont"><p>Hi Andrea, but it works without SRTP! I tested blink without (TLS/SRTP) and it can make calls!</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by azzouzi.marwane@hotmail.fr at Jul 29, 2011 04:30
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21463333"></a>
+                                    <font class="smallfont"><p>Dear Malcolm, thanks for this great tutorial.<br />
+One thing is unclear to me, and I believe it's worth an additional line.</p>
+
+<p>If the client is a mobile device (e.g. an iPhone running Bria hooked up to a mobile network or a wlan) how can anyone generate a certificate? The -C option requires an IP or a DNS name, but in the case I outlined above the IP is STRONGLY dynamic and the DNS doesn't exist...</p>
+
+<p>Must I assume that TLS is available only for on-lan, static clients? Or there is something I don't know?</p>
+
+<p>Thanks</p>
+
+<p>Carlo</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rogermac at Sep 14, 2012 09:37
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22086090"></a>
+                                    <font class="smallfont"><p>Great !!<br />
+Thank you, Malcolm..</p>
+
+<p>What type of SRTP here? Is it SDES, DTLS, or MIKEY ?<br />
+How can i see (debug) the type of this SRTP in terminal?</p>
+
+<p>Thanks <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by umpan at Jan 09, 2013 21:39
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22086174"></a>
+                                    <font class="smallfont"><p>thanks malcolm for tutorial,,</p>
+
+<p>i'm trying to set up TLS in asterisk 1.8.4.3 and ubuntu 10.04. and blink as client in windows.<br />
+I've done all the steps as you told, but when i'm trying to call, always error: TRANSPORT ERROR in blink.</p>
+
+<p>any ideas?<br />
+thanks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by insanlaksana at Jan 12, 2013 07:05
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22087911"></a>
+                                    <font class="smallfont"><p>I'm running the latest freepbx with (*)1.8.19.1. I downloaded the script from SVN 1.8.19.1 tag and executed the instruction above. I'm getting the following error when I perform a 'sip reload'</p>
+
+<p><code>SSL error loading cert file. &lt;/etc/asterisk/keys/asterisk.pem&gt;</code></p>
+
+<p>I made sure that the file is accessible and the contents of the file seem correct.</p>
+
+<p>cat /etc/asterisk/keys/asterisk.pem returns:</p>
+
+<p>----- BEGIN RSA PRIVATE KEY -----<br />
+&lt;hidden&gt;<br />
+----- END RSA PRIVATE KEY -----<br />
+----- BEGIN CERTIFICATE -----<br />
+&lt;hidden&gt;<br />
+----- END CERTIFICATE -----</p>
+
+<p>Any ideas on what the problem might be?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by hoisinboi at Jan 22, 2013 14:56
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22087964"></a>
+                                    <font class="smallfont"><p>Nope, and you'll want to ask that on the asterisk-users list, or the FreePBX mailing list, as the wiki is not a support forum.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Jan 30, 2013 18:29
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773871"></a>
+                                    <font class="smallfont"><p>Does selecting &quot;use SRTP without TLS&quot; mean SRTP key exchange happens in clear text? If so this not good. Is this the only way to get asterisk to work when using SRTP? This option is not available anyway in recent versions of blink.</p>
+
+<p>Can you give a snippet of dial-plan code you used to make this work? I had to use:</p>
+
+<p>CHANNEL(secure_bridge_signaling)=1</p>
+
+<p>Before calling Dial() to make TLS work. This isn't mentioned above.</p>
+
+<p>I tried the following in a similar fashion to get SRTP to work, unfortunately it didn't.</p>
+
+<p>CHANNEL(secure_bridge_media)=1</p>
+
+<p>The module is loaded. I've followed the guide above. Is there anything else to be done? Thanks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by gnuday at Mar 31, 2013 21:26
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773879"></a>
+                                    <font class="smallfont"><p> I noticed you took down the picture with selecting &quot;use SRTP without TLS&quot; enabled. Have you tested this configuration with and without the option selected? What was the result? Can asterisk only exchange SRTP keys in clear text? Thanks again.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by gnuday at Apr 02, 2013 11:04
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-22773880"></a>
+                                    <font class="smallfont"><p>If you're configured for TCP then they'll be exchanged in clear text.  If you're configured for TLS then they're only exchanged in the secured TLS.</p>
+
+<p>Since in this guide we were already doing TLS, things were fine.  I changed the image to remove any ambiguity.  </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Apr 02, 2013 12:06
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-25919945"></a>
+                                    <font class="smallfont"><p><span>Hello,</span><br /><span style="line-height: 1.4285715;">I have been able to create the certificates but I am having alot of issues on the client end. I have tried Blink as suggested in the tutorial but I cannot import the client certificate to Blink as the column where the certificate is to be imported does not highlight. I have tried Jitsi, Microsip, 3cx, phone and phonerlite as well as so many other clients but I am still having difficulties as Asterisk keeps on generating an error message about the certificates.</span><br /><br /><span>As much as I enjoy asterisk I would really appreciate any help as I have spent so much time on this particular stage and I would really like to get a move on.</span><br /><br /><span>Cheers!</span></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by Ameer at Aug 03, 2013 12:30
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26476596"></a>
+                                    <font class="smallfont"><p>Ameer, Digium hosts several places for the community to ask questions and help each other out. You might try your question on the asterisk-users list or #asterisk IRC channel: <a href="http://www.asterisk.org/community/discuss" class="external-link" rel="nofollow">http://www.asterisk.org/community/discuss</a> or the forums at <a href="http://forums.asterisk.org/" class="external-link" rel="nofollow">http://forums.asterisk.org/</a></p><p>Very few users will see your question here, as most users don't watch or subscribe to particular wiki pages (like this one).</p><p> </p><p> </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Aug 07, 2013 11:30
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478487"></a>
+                                    <font class="smallfont"><p>Hi i do all the steps, i installed blink on my Win 7 Ultimate 64 bits, when i tried to import the ca.crt i receive and error saying: The certificate file is invalid: Base64 unexpected error, what could be the error?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by voipsystems at Oct 17, 2013 01:59
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478488"></a>
+                                    <font class="smallfont"><p>I don't know. You can go to <a href="http://projects.ag-projects.com/projects/blinkc/wiki/Help_For_Blink_Pro" class="external-link" rel="nofollow">http://projects.ag-projects.com/projects/blinkc/wiki/Help_For_Blink_Pro</a> to find help resources for Blink.</p><p> </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Oct 17, 2013 09:27
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478498"></a>
+                                    <font class="smallfont"><p>Hi Rusty, i will try with grandstream gxp2124 because i used eyebearm softphone and don't work, i will let you know, thanks for the reply</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by voipsystems at Oct 17, 2013 17:09
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478520"></a>
+                                    <font class="smallfont"><p>It'll be more useful to bring your questions up on the<a href="http://lists.digium.com/mailman/listinfo/asterisk-users" class="external-link" rel="nofollow"> asterisk-users mailing list</a>. That is the primary place for community support at the moment. Thanks.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Oct 21, 2013 13:49
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478521"></a>
+                                    <font class="smallfont"><p>Thanks Rusty, im trying to be more proactive, best regards <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by voipsystems at Oct 21, 2013 16:58
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478522"></a>
+                                    <font class="smallfont"><p>Thanks Rusty, im trying to be more proactive, best regards <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by voipsystems at Oct 21, 2013 16:58
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26479761"></a>
+                                    <font class="smallfont"><p>Just a comment regarding the secure signalling part and a solution to an issue I have encountered. If you are using a device with a static IP (and probably a fixed hostname), the CN field in the certificate should be set to that IP or hostname and everything will work fine.</p><p> </p><p>However, should you use a device with dynamic IP (roaming users), and you want to leverage TLS signalling, Asterisk will throw errors and terminate sessions if the CN on the certificate does not match the originating IP or hostname. An easy fix is to go into the tcptls.c file, remove the part on line 243 that returns a false if the hostname does not match the originating address and voila. I am not sure how that affects security (if at all) since I assume Asterisk checks whenever the signature on the certificate is the CA's (which is really the only cryptographic parameter that matters); but that's just my opinion. </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by f_sidok at Oct 30, 2013 09:39
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

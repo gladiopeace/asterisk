@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Changing the Verbose and Debug Levels</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started-with-Asterisk_4817533.html">Getting Started with Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Changing the Verbose and Debug Levels
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on May 17, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Asterisk has two different classes of messages that appear in the command-line interface. The first class is called <strong>verbose</strong> messages. Verbose messages give information about the calls on the system, as well as notices, warnings, and errors. Verbose messages are intended for Asterisk administrators to be able to better manage their systems.</p>
+
+<p>Asterisk allows you to control the verbosity level of the command-line interface. At a verbosity level of zero, you'll receive minimal information about calls on your system. As you increase the verbosity level, you'll see more and more information about the calls. For example, if you set the verbosity level to three or higher, you'll see each step a call takes as it makes its way through the dialplan. There are very few messages that only appear at verbosity levels higher than three.</p>
+
+<p>To change the verbosity level, use the CLI command <strong>core set verbose</strong>, as shown below:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; core set verbose 3
+Verbosity was 0 and is now 3
+</pre>
+</div></div>
+
+
+<p>You can also increase (but not decrease) the verbosity level when you connect to the Asterisk CLI from the Linux prompt, by using one or more <strong>-v</strong> parameters to the <strong>asterisk</strong> application. For example, this would connect to the Asterisk CLI and set the verbosity to three (if it wasn't already three or higher), because we added three -v parameters:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# asterisk -vvvr﻿</pre>
+</div></div>
+
+
+<p>The second class of system messages is known as <strong>debug</strong> messages. These messages are intended for Asterisk developers, to give information about what's happening in the Asterisk program itself. They're often used by developers when trying to track down problems in the code, or to understand why Asterisk is behaving in a certain manner.</p>
+
+<p>To change the debugging level, use the CLI command <strong>core set debug</strong>, as shown below:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>server*CLI&gt; core set debug 4
+Core debug was 0 and is now 4
+</pre>
+</div></div>
+
+
+<p>You can also increase (but not decrease) the debugging level when you connect to the Asterisk CLI from the Linux prompt. Simply add one or more <strong>-d</strong> parameters to the <strong>asterisk</strong> application.﻿</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server ~]# asterisk \-ddddr
+</pre>
+</div></div>
+
+    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">Verbose and Debug Levels</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>Please note that the verbose and debug levels are global settings, and apply to all of Asterisk, not just your command-line interface.</p>
+
+<p>We recommend that you set your verbosity level to three while learning Asterisk, so that you can get a feel for what is happening as calls are processed. On a busy production system, however, you'll want to set the verbosity level lower. We also recommend that you use debug messages sparingly, as they tend to be quite verbose and can affect call volume on busy systems.</p>
+                    </div>
+    </div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

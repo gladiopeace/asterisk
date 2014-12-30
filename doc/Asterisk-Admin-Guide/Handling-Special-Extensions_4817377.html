@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Handling Special Extensions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Auto-attendant-and-IVR-Menus_4817391.html">Auto-attendant and IVR Menus</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Handling Special Extensions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Feb 24, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>We have the basics of an auto-attendant created, but now let's make it a bit more robust. We need to be able to handle special situations, such as when the caller enters an invalid extension, or doesn't enter an extension at all. Asterisk has a set of special extensions for dealing with situations like there. They all are named with a single letter, so we recommend you don't create any other extensions named with a single letter. The most common special extensions include:</p>
+
+<h4 id="HandlingSpecialExtensions-i%3Atheinvalidentryextension">i: the invalid entry extension</h4>
+
+<p>If Asterisk can't find an extension in the current context that matches the digits dialed during the <strong>Background()</strong> or <strong>WaitExten()</strong> applications, it will send the call to the <strong>i</strong> extension. You can then handle the call however you see fit.</p>
+
+<h4 id="HandlingSpecialExtensions-t%3Athereponsetimeoutextension">t: the reponse timeout extension</h4>
+
+<p>When the caller waits too long before entering a response to the <strong>Background()</strong> or <strong>WaitExten()</strong> applications, and there are no more priorities in the current extension, the call is sent to the t extension.</p>
+
+<h4 id="HandlingSpecialExtensions-s%3Athestartextension">s: the start extension</h4>
+
+<p>When an analog call comes into Asterisk, the call is sent to the <strong>s</strong> extension. The s extension is also used in macros.</p>
+
+<p>Please note that the <strong>s</strong> extension is <strong>not</strong> a catch-all extension. It's simply the location that analog calls and macros begin. In our example above, it simply makes a convenient extension to use that can't be easily dialed from the <strong>Background()</strong> and <strong>WaitExten()</strong> applications.</p>
+
+<h4 id="HandlingSpecialExtensions-h%3Athehangupextension">h: the hangup extension</h4>
+
+<p>When a call is hung up, Asterisk executes the <strong>h</strong> extension in the current context. This is typically used for some sort of clean-up after a call has been completed.</p>
+
+<h4 id="HandlingSpecialExtensions-o%3Atheoperatorextension">o: the operator extension</h4>
+
+<p>If a caller presses the zero key on their phone keypad while recording a voice mail message, and the <strong>o</strong> extension exists, the caller will be redirected to the o extension. This is typically used so that the caller can press zero to reach an operator.</p>
+
+<h4 id="HandlingSpecialExtensions-a%3Atheassistantextension">a: the assistant extension</h4>
+
+<p>This extension is similar to the <strong>o</strong> extension, only it gets triggered when the caller presses the asterisk (*) key while recording a voice mail message. This is typically used to reach an assistant.</p>
+
+<hr />
+<p>Let's add a few more lines to our <strong>[docs:demo-menu]</strong> context, to handle invalid entries and timeouts. Modify your <strong>[docs:demo-menu]</strong> context so that it matches the one below:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[demo-menu]
+exten =&gt; s,1,Answer(500)
+   same =&gt; n(loop),Background(press-1&amp;or&amp;press-2)
+   same =&gt; n,WaitExten()
+
+exten =&gt; 1,1,Playback(you-entered)
+   same =&gt; n,SayNumber(1)
+   same =&gt; n,Goto(s,loop)
+
+exten =&gt; 2,1,Playback(you-entered)
+   same =&gt; n,SayNumber(2)
+   same =&gt; n,Goto(s,loop)
+
+exten =&gt; i,1,Playback(option-is-invalid)
+   same =&gt; n,Goto(s,loop)
+
+exten =&gt; t,1,Playback(are-you-still-there)
+   same =&gt; n,Goto(s,loop)</pre>
+</div></div>
+<p>Now dial your auto-attendant menu again (by dialing extension <strong>6598</strong>), and try entering an invalid option (such as <strong>3</strong>) at the auto-attendant menu. If you watch the Asterisk command-line interface while you dial and your verbosity level is three or higher, you should see something similar to the following:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>-- Executing [6598@users:1] Goto(&quot;SIP/demo-alice-00000008&quot;, &quot;demo-menu,s,1&quot;) in new stack
+-- Goto (demo-menu,s,1)
+-- Executing [s@demo-menu:1] Answer(&quot;SIP/demo-alice-00000008&quot;, &quot;500&quot;) in new stack
+-- Executing [s@demo-menu:2] BackGround(&quot;SIP/demo-alice-00000008&quot;, &quot;press-1&amp;or&amp;press-2&quot;) in new stack
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;press-1.gsm&#39; (language &#39;en&#39;)
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;or.gsm&#39; (language &#39;en&#39;)
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;press-2.gsm&#39; (language &#39;en&#39;)
+-- Invalid extension &#39;3&#39; in context &#39;demo-menu&#39; on SIP/demo-alice-00000008
+-- Executing [i@demo-menu:1] Playback(&quot;SIP/demo-alice-00000008&quot;, &quot;option-is-invalid&quot;) in new stack
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;option-is-invalid.gsm&#39; (language &#39;en&#39;)
+-- Executing [i@demo-menu:2] Goto(&quot;SIP/demo-alice-00000008&quot;, &quot;s,loop&quot;) in new stack
+-- Goto (demo-menu,s,2)
+-- Executing [s@demo-menu:2] BackGround(&quot;SIP/demo-alice-00000008&quot;, &quot;press-1&amp;or&amp;press-2&quot;) in new stack
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;press-1.gsm&#39; (language &#39;en&#39;)
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;or.gsm&#39; (language &#39;en&#39;)
+-- &lt;SIP/demo-alice-00000008&gt; Playing &#39;press-2.gsm&#39; (language &#39;en&#39;)</pre>
+</div></div>
+<p>If you don't enter anything at the auto-attendant menu and instead wait approximately ten seconds, you should hear (and see) Asterisk go to the <strong>t</strong> extension as well.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

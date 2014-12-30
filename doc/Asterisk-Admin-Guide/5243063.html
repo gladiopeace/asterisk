@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Phone Provisioning, Putting it all together</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Phone-Provisioning-in-Asterisk_5243047.html">Phone Provisioning in Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Phone Provisioning, Putting it all together
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Aug 31, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Make sure that manager.conf has:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[general]
+enabled = yes
+webenabled = yes
+</pre>
+</div></div>
+
+<p>and that http.conf has:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[general]
+enabled = yes
+bindaddr = 192.168.1.1 ; Your IP here
+bindport = 8088 ; Or port 80 if it is the only http server running on the machine
+</pre>
+</div></div>
+
+<p>With phoneprov.conf and users.conf in place, start Astersik. From the CLI, type &quot;http show status&quot;. An example output:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>HTTP Server Status: 
+Prefix: /asterisk 
+Server Enabled and Bound to 192.168.1.1:8088 
+
+Enabled URI&#39;s:
+/asterisk/httpstatus =&gt; Asterisk HTTP General Status
+/asterisk/phoneprov/... =&gt; Asterisk HTTP Phone Provisioning Tool
+/asterisk/manager =&gt; HTML Manager Event Interface 
+/asterisk/rawman =&gt; Raw HTTP Manager Event Interface 
+/asterisk/static/... =&gt; Asterisk HTTP Static Delivery 
+/asterisk/mxml =&gt; XML Manager Event Interface 
+Enabled Redirects: 
+ None. 
+POST mappings:
+ None.
+</pre>
+</div></div>
+
+<p>There should be a phoneprov URI listed. Next, from the CLI, type &quot;phoneprov show routes&quot; and verify that the information there is correct. An example output for Polycom phones woud look like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Static routes
+
+Relative URI Physical location
+sip.ver configs/sip.ver
+sip.ld configs/sip.ld
+bootrom.ver configs/bootrom.ver
+sip.cfg configs/sip.cfg
+bootrom.ld configs/bootrom.ld
+custom.cfg configs/custom.cfg
+Dynamic routes
+Relative URI Template
+deadbeef4dad.cfg 000000000000.cfg
+deadbeef4dad-directory.xml
+000000000000-directory.xml
+deadbeef4dad-phone.cfg
+000000000000-phone.cfg
+config/deadbeef4dad polycom.xml
+</pre>
+</div></div>
+
+<p>With the above examples, the phones would be pointed to:</p>
+
+<p><a class="external-link" href="http://192.168.1.1:8080/asterisk/phoneprov" rel="nofollow">http://192.168.1.1:8080/asterisk/phoneprov</a> </p>
+
+<p>for pulling config files. </p>
+
+<p>Templates would all be placed in AST_DATA_DIR/phoneprov and static files would be placed in AST_DATA_DIR/phoneprov/configs. Examples of valid URIs would be:</p>
+
+<ul>
+	<li><a class="external-link" href="http://192.168.1.1:8080/asterisk/phoneprov/sip.cfg" rel="nofollow">http://192.168.1.1:8080/asterisk/phoneprov/sip.cfg</a></li>
+	<li><a class="external-link" href="http://192.168.1.1:8080/asterisk/phoneprov/deadbeef4dad.cfg" rel="nofollow">http://192.168.1.1:8080/asterisk/phoneprov/deadbeef4dad.cfg</a></li>
+	<li><a class="external-link" href="http://192.168.1.1:8080/asterisk/phoneprov/config/deadbeef4dad" rel="nofollow">http://192.168.1.1:8080/asterisk/phoneprov/config/deadbeef4dad</a></li>
+</ul>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/5243063/18350089.html">list.html</a> (text/html)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/5243063/18350088.html">list.html</a> (text/html)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-10649984"></a>
+                                    <font class="smallfont"><p>I made a complete demonstration for the res_phoneprov on the <a href="https://issues.asterisk.org/view.php?id=18530" class="external-link" rel="nofollow">issues.asterisk.org</a> that may be a good demonstration of how things work.  It will also show users of phones like the snom series about building complex config files for single file provisioning.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Dec 25, 2010 12:56
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10650084"></a>
+                                    <font class="smallfont"><p>Drop that demonstration into your personal space here on the Wiki and ping Leif, Russell or myself and we'll get it moved into the mainline content - we'll have something going in the future to make this easier. <img class="emoticon emoticon-laugh" src="images/icons/emoticons/biggrin.png" data-emoticon-name="laugh" alt="(big grin)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Jan 03, 2011 14:38
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10650085"></a>
+                                    <font class="smallfont"><p>Cool, I (we cjacobsen) have hacked up some more stuff like this so I will get it all in order on the ticket too.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Jan 03, 2011 14:44
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10650100"></a>
+                                    <font class="smallfont"><p>Cool <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Jan 04, 2011 09:20
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-18415662"></a>
+                                    <font class="smallfont"><p>Added as an attachment the user list.html file.  I think it will take me some time to learn how to use Confluence.  I have a history with mediawiki.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Sep 06, 2011 14:43
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-18415664"></a>
+                                    <font class="smallfont"><p>Very low learning curve for Confluence.  Ping us on IRC if you run into any trouble.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Sep 06, 2011 16:00
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : ENUMLOOKUP Usage Notes and Subtle Features</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="4817225.html">E.164 NUmber Mapping (ENUM)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="The-ENUMLOOKUP-Dialplan-Function_4817227.html">The ENUMLOOKUP Dialplan Function</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : ENUMLOOKUP Usage Notes and Subtle Features
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Aug 31, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <ul>
+	<li>The use of &quot;&quot; in lookups is confusing, and warrants further explanation. All E.164 numbers (&quot;global phone numbers&quot;) by definition need a leading &quot;&quot; during ENUM lookup. If you neglect to add a leading &quot;&quot;, you may discover that numbers that seem to exist in the DNS aren't getting matched by the system or are returned with a null string result. This is due to the NAPTR reply requiring a &quot;&quot; in the regular expression matching sequence. Older versions of Asterisk add a &quot;&quot; from within the code, which may confuse administrators converting to the new function. Please ensure that all ENUM (e164.arpa) lookups contain a leading &quot;&quot; before lookup, so ensure your lookup includes the leading plus sign. Other DNS trees may or may not require a leading &quot;&quot; - check before using those trees, as it is possible the parsed NAPTRs will not provide correct results unless you have the correct dialed string. If you get console messages like &quot;WARNING[24907]: enum.c:222 parse_naptr: NAPTR Regex match failed.&quot; then it is very possible that the returned NAPTR expects a leading &quot;&quot; in the search string (or the returned NAPTR is mis-formed.)</li>
+</ul>
+
+
+
+<ul>
+	<li>If a query is performed of type &quot;c&quot; (&quot;count&quot;) and let's say you get back 5 records and then some seconds later a query is made against record 5 in the list, it may not be the case that the DNS resolver has the same answers as it did a second or two ago - maybe there are only 4 records in the list in the newest query. The resolver should be the canonical storage location for DNS records, since that is the intent of ENUM. However, some obscure future cases may have wildly changing NAPTR records within several seconds. This is a corner case, and probably only worth noting as a very rare circumstance. (note: I do not object to Asterisk's dnsmgr method of locally caching DNS replies, but this method needs to honor the TTL given by the remote zone master. Currently, the ENUMLOOKUP function does not use the dnsmgr method of caching local DNS replies.)</li>
+</ul>
+
+
+<ul>
+	<li>If you want strict NAPTR value ordering, then it will be necessary to use the &quot;ALL&quot; method to incrementally step through the different returned NAPTR pointers. You will need to use string manipulation to strip off the returned method types, since the results will look like &quot;sip:12125551212&quot; in the returned value. This is a non-trivial task, though it is required in order to have strict RFC compliance and to comply with the desires of the remote party who is presenting NAPTRs in a particular order for a reason.</li>
+</ul>
+
+
+<ul>
+	<li>Default behavior for the function (even in event of an error) is to move to the next priority, and the result is a null value. Most ENUM lookups are going to be failures, and it is the responsibility of the dialplan administrator to manage error conditions within their dialplan. This is a change from the old app_enumlookup method and it's arbitrary priority jumping based on result type or failure.</li>
+</ul>
+
+
+<ul>
+	<li>Anything other than digits will be ignored in lookup strings. Example: a search string of &quot;+4372030blah01721&quot; will turn into 1.2.7.1.0.0.3.0.2.7.3.4.e164.arpa. for the lookup. The NAPTR parsing may cause unexpected results if there are strings inside your NAPTR lookups.<br />
+If there exist multiple records with the same weight and order as a result of your query, the function will RANDOMLY select a single NAPTR from those equal results.</li>
+</ul>
+
+
+<ul>
+	<li>Currently, the function ignores the settings in enum.conf as the search zone name is now specified within the function, and the H323 driver can be chosen by the user via the dialplan. There were no other values in this file, and so it becomes deprecated.</li>
+</ul>
+
+
+<ul>
+	<li>The function will digest and return NAPTRs which use older (deprecated) style, reversed method strings such as &quot;sip+E2U&quot; instead of the more modern &quot;E2U+sip&quot;</li>
+</ul>
+
+
+<ul>
+	<li>There is no provision for multi-part methods at this time. If there are multiple NAPTRs with (as an example) a method of &quot;E2U+voice:sip&quot; and then another NAPTR in the same DNS record with a method of &quot;&quot;E2U+sip&quot;, the system will treat these both as method &quot;sip&quot; and they will be separate records from the perspective of the function. Of course, if both records point to the same URI and have equal priority/weight (as is often the case) then this will cause no serious difficulty, but it bears mentioning.</li>
+</ul>
+
+
+<ul>
+	<li>ISN (ITAD Subscriber Number) usage: If the search number is of the form ABC*DEF (where ABC and DEF are at least one numeric digit) then perform an ISN-style lookup where the lookup is manipulated to C.B.A.DEF.domain.tld (all other settings and options apply.) See <a class="external-link" href="http://www.freenum.org/" rel="nofollow">http://www.freenum.org/</a> for more details on ISN lookups. In the unlikely event you wish to avoid ISN re-writes, put an &quot;n&quot; as the first digit of the search string - the &quot;n&quot; will be ignored for the search.</li>
+</ul>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

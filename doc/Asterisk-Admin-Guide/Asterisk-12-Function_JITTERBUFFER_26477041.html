@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Function_JITTERBUFFER</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Dialplan-Functions_26476698.html">Asterisk 12 Dialplan Functions</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Function_JITTERBUFFER
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Aug 29, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Function_JITTERBUFFER-JITTERBUFFER%28%29">JITTERBUFFER()</h1>
+
+<h3 id="Asterisk12Function_JITTERBUFFER-Synopsis">Synopsis</h3>
+
+<p>Add a Jitterbuffer to the Read side of the channel. This dejitters the audio stream before it reaches the Asterisk core. This is a write only function.</p>
+
+<h3 id="Asterisk12Function_JITTERBUFFER-Description">Description</h3>
+
+<p>max_size: Defaults to 200 ms</p>
+
+<p>Length in milliseconds of buffer.</p>
+
+
+
+<p>resync_threshold: Defaults to 1000ms</p>
+
+<p>The length in milliseconds over which a timestamp difference will result in resyncing the jitterbuffer.</p>
+
+
+
+<p>target_extra: Defaults to 40ms</p>
+
+<p>This option only affects the adaptive jitterbuffer. It represents the amount time in milliseconds by which the new jitter buffer will pad its size.</p>
+
+
+
+<p>Examples:</p>
+
+<p>exten =&gt; 1,1,Set(JITTERBUFFER(fixed)=default);Fixed with defaults.</p>
+
+<p>exten =&gt; 1,1,Set(JITTERBUFFER(fixed)=200);Fixed with max size 200ms, default resync threshold and target extra.</p>
+
+<p>exten =&gt; 1,1,Set(JITTERBUFFER(fixed)=200,1500);Fixed with max size 200ms resync threshold 1500.</p>
+
+<p>exten =&gt; 1,1,Set(JITTERBUFFER(adaptive)=default);Adaptive with defaults.</p>
+
+<p>exten =&gt; 1,1,Set(JITTERBUFFER(adaptive)=200,,60);Adaptive with max size 200ms, default resync threshold and 40ms target extra.</p>
+
+<p>exten =&gt; 1,n,Set(JITTERBUFFER(disabled)=);Remove previously applied jitterbuffer</p>
+
+    <div class="aui-message hint shadowed information-macro">
+                    <p class="title">Note</p>
+                            <span class="aui-icon icon-hint">Icon</span>
+                <div class="message-content">
+                            
+<p>If a channel specifies a jitterbuffer due to channel driver configuration and the JITTERBUFFER function has set a jitterbuffer for that channel, the jitterbuffer set by the JITTERBUFFER function will take priority and the jitterbuffer set by the channel configuration will not be applied.</p>
+
+                    </div>
+    </div>
+
+
+<h3 id="Asterisk12Function_JITTERBUFFER-Syntax">Syntax</h3>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>JITTERBUFFER(jitterbuffer type)</pre>
+</div></div>
+
+<h5 id="Asterisk12Function_JITTERBUFFER-Arguments">Arguments</h5>
+
+<ul>
+	<li><code>jitterbuffer type</code> - Jitterbuffer type can be <code>fixed</code>, <code>adaptive</code>, or <code>disabled</code>.<br />
+Used as follows.<br />
+Set(JITTERBUFFER(type)=max_size[,resync_threshold[,target_extra]])<br />
+Set(JITTERBUFFER(type)=default)</li>
+</ul>
+
+
+<h3 id="Asterisk12Function_JITTERBUFFER-SeeAlso">See Also</h3>
+
+
+<h3 id="Asterisk12Function_JITTERBUFFER-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version Unknown</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:16</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

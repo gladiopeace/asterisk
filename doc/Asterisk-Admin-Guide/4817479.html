@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk Architecture, The Big Picture</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Architecture_4817475.html">Asterisk Architecture</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk Architecture, The Big Picture
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on May 17, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Before we dive too far into the various types of modules, let's first take a step back and look at the overall architecture of Asterisk.</p>
+
+<p>﻿﻿ <img class="confluence-embedded-image" width="300" src="attachments/4817479/4980749.png" data-image-src="attachments/4817479/4980749.png"></p>
+
+<p>Asterisk Architecture</p>
+
+<p>We need to add CEL and Bridge modules to this picture, and take CLI and Manager out for now</p>
+
+<p>The heart of any Asterisk system is the <strong>core</strong>. The PBX core is the essential component that takes care of bridging calls. The core also takes care of other items like reading the configuration files and loading the other modules. We'll talk more about the core below, but for now just remember that all the other modules connect to it.<br />
+From a logistical standpoint, these modules are typically files with a <strong>.so</strong> file extension, which live in the Asterisk modules directory (which is typically <strong>/usr/lib/asterisk/modules</strong>). When Asterisk starts up, it loads these files and adds their functionality to the system.</p>
+
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">A Plethora of Modules</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            
+<p>Take just a minute and go look at the Asterisk modules directory on your system. You should find a wide variety of modules. A typical Asterisk system has over one hundred fifty different modules!</p>
+                    </div>
+    </div>
+
+
+<p>The core also contains the dialplan, which is the logic of any Asterisk system. The dialplan contains a list of instructions that Asterisk should follow to know how to handle incoming and outgoing calls on the system.</p>
+
+<p>Asterisk modules which are part of the core have a file name that look like <strong>pbx_xxxxx.so</strong>.</p>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4817479/4980749.png">bigpicture.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

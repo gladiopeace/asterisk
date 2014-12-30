@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Configuration of phoneprov.conf</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Phone-Provisioning-in-Asterisk_5243047.html">Phone Provisioning in Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Configuration of phoneprov.conf
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mjordan  on Sep 20, 2012
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The configuration file, phoneprov.conf, is used to set up the built-in variables SERVER and SERVER_PORT, to define a default phone profile to use, and to define different phone profiles available for provisioning.</p>
+
+<h3 id="Configurationofphoneprov.conf-The%5Bgeneral%5Dsection">The [general] section</h3>
+
+<p>Below is a sample of the general section of phoneprov.conf:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[general]
+;serveriface=eth0 
+;serveraddr=192.168.1.1 
+;serverport=5060 
+default_profile=polycom
+</pre>
+</div></div>
+
+<p>By default, res_phoneprov will set the SERVER variable to the IP address on the server that the requesting phone uses to contact the asterisk HTTP server. The SERVER_PORT variable will default to the bindport setting in sip.conf. </p>
+
+<p>Should the defaults be insufficient, there are two choices for overriding the default setting of the SERVER variable. If the IP address of the server is known, or the hostname resolvable by the phones, the appropriate serveraddr value should be set. Alternatively, the network interface that the server listens on can be set by specifying a serveriface and SERVER will be set to the IP address of that interface. Only one of these options should be set. </p>
+
+<p>The default SERVER_PORT variable can be overridden by setting the serverport. If bindport is not set in sip.conf and serverport is not specified, it is set to a default value of 5060. </p>
+
+<p>Any user set for auto-provisioning in users.conf without a specified profile will be assumed to belong to the profile set with default_profile.</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-10649803"></a>
+                                    <font class="smallfont"><p>The default_profile will be used for all files that are handled without an identifying MAC address.  Firmwares, ringtones, background images and other files will be requested from the default profile.  The profile can be set in the users.conf along with the autoprov setting and will be identified by the MAC address during HTTP request.</p>
+
+<p>The use of a proxy server for FTP and TFTP can enable the provisioning of a wide array of devices.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Dec 20, 2010 12:23
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

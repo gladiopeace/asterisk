@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Phone Provisioning Templates</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Phone-Provisioning-in-Asterisk_5243047.html">Phone Provisioning in Asterisk</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Phone Provisioning Templates
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Dec 20, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Configuration templates are a generic way to configure phones with text-based configuration files. Templates can use any loaded dialplan function and all of the variables created by phoneprov.conf and users.conf. A short example is the included 000000000000.cfg Polycom template:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot;?&gt;
+  &lt;APPLICATION 
+    APP_FILE_PATH=&quot;sip.ld&quot; 
+    CONFIG_FILES=&quot;${IF($[${STAT(e,${CUSTOM_CONFIG})}] ? &quot;custom.cfg, &quot;)}config/${TOLOWER(${MAC})}, sip.cfg&quot; 
+    MISC_FILES=&quot;&quot; LOG_FILE_DIRECTORY=&quot;&quot;
+ /&gt;
+</pre>
+</div></div>
+
+<p>This template uses dialplan functions, expressions, and a couple of variables to generate a config file to instruct the Polycom where to pull other needed config files. If a phone with MAC address 0xDEADBEEF4DAD requests this config file, and the filename that is stored in variable CUSTOM_CONFIG does not exist, then the generated output would be:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot;?&gt;
+  &lt;APPLICATION
+    APP_FILE_PATH=&quot;sip.ld&quot;
+    CONFIG_FILES=&quot;config/deadbeef4dad, sip.cfg&quot;
+    MISC_FILES=&quot;&quot;
+    LOG_FILE_DIRECTORY=&quot;&quot;
+/&gt;
+</pre>
+</div></div>
+
+<p>The Polycom phone would then download both sip.cfg (which would be registered in phoneprov.conf as a static file) and config/deadbeef4dad (which would be registered as a dynamic file pointing to another template, polycom.xml). </p>
+
+<p>res_phoneprov also registers its own dialplan function: PP_EACH_USER. This function was designed to be able to print out a particular string for each user that res_phoneprov knows about. An example use of this function is the template for a Polycom contact directory:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: xml; gutter: false" style="font-size:12px;">
+&lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot;?&gt;
+&lt;directory&gt;
+  &lt;item_list&gt;
+    ${PP_EACH_USER(&lt;item&gt;&lt;fn&gt;%{DISPLAY_NAME}&lt;/fn&gt;&lt;ct&gt;%{CALLERID}&lt;/ct&gt;&lt;bw&gt;1&lt;/bw&gt;&lt;/item&gt;|${MAC})}
+  &lt;/item_list&gt;
+&lt;/directory&gt;
+</pre>
+</div></div>
+
+<p>PP_EACH_USER takes two arguments. The first is the string to be printed for each user. Any variables that are to be substituted need to be in the format %{VARNAME} so that Asterisk doesn't try to substitute the variable immediately before it is passed to PP_EACH_USER. The second, optional, argument is a MAC address to exclude from the list iterated over (so, in this case, a phone won't be listed in its own contact directory).</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-10649811"></a>
+                                    <font class="smallfont"><p>Note separator error in </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CONFIG_FILES=&quot;${IF($[${STAT(e|${CUSTOM_CONFIG})}] ? &quot;custom.cfg, &quot;)}config/${TOLOWER(${MAC})}, sip.cfg&quot;</pre>
+</div></div>
+<p> <a href="https://issues.asterisk.org/view.php?id=18503" class="external-link" rel="nofollow">where the pipe is no longer used</a>. This should be: </p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">CONFIG_FILES=&quot;${IF($[${STAT(e,${CUSTOM_CONFIG})}] ? &quot;custom.cfg, &quot;)}config/${TOLOWER(${MAC})}, sip.cfg&quot;</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Dec 20, 2010 13:50
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649817"></a>
+                                    <font class="smallfont"><p>Good catch.  Addressed. <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Dec 20, 2010 16:27
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-18415663"></a>
+                                    <font class="smallfont"><p>Examples for some advanced usage.</p>
+
+<div class="code panel pdl" style="border-style: solid;border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;border-bottom-style: solid;"><b>Advanced Usage</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+%{SIPPEER(%{CALLERID},pickupgroup)}
+%{SIPPEER(%{CALLERID},callgroup)}
+%{SIPPEER(%{CALLERID},context)}
+%{SIPPEER(%{CALLERID},useragent)}
+%{SIPPEER(%{CALLERID},ip)}
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Sep 06, 2011 14:57
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

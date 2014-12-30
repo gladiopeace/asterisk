@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Function_QUEUE_MEMBER</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Dialplan-Functions_26476698.html">Asterisk 12 Dialplan Functions</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Function_QUEUE_MEMBER
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Aug 29, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Function_QUEUE_MEMBER-QUEUE_MEMBER%28%29">QUEUE_MEMBER()</h1>
+
+<h3 id="Asterisk12Function_QUEUE_MEMBER-Synopsis">Synopsis</h3>
+
+<p>Count number of members answering a queue.</p>
+
+<h3 id="Asterisk12Function_QUEUE_MEMBER-Description">Description</h3>
+
+<p>Allows access to queue counts [R] and member information [R/W].</p>
+
+<p><em>queuename</em> is required for all operations <em>interface</em> is required for all member operations.</p>
+
+
+<h3 id="Asterisk12Function_QUEUE_MEMBER-Syntax">Syntax</h3>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>QUEUE_MEMBER(queuename,option[,interface])</pre>
+</div></div>
+
+<h5 id="Asterisk12Function_QUEUE_MEMBER-Arguments">Arguments</h5>
+
+<ul>
+	<li><code>queuename</code></li>
+	<li><code>option</code>
+	<ul>
+		<li><code>logged</code> - Returns the number of logged-in members for the specified queue.</li>
+		<li><code>free</code> - Returns the number of logged-in members for the specified queue that either can take calls or are currently wrapping up after a previous call.</li>
+		<li><code>ready</code> - Returns the number of logged-in members for the specified queue that are immediately available to answer a call.</li>
+		<li><code>count</code> - Returns the total number of members for the specified queue.</li>
+		<li><code>penalty</code> - Gets or sets queue member penalty.</li>
+		<li><code>paused</code> - Gets or sets queue member paused status.</li>
+		<li><code>ringinuse</code> - Gets or sets queue member ringinuse.</li>
+	</ul>
+	</li>
+	<li><code>interface</code></li>
+</ul>
+
+
+<h3 id="Asterisk12Function_QUEUE_MEMBER-SeeAlso">See Also</h3>
+
+<ul>
+	<li><a href="Asterisk-12-Application_Queue_26476897.html">Asterisk 12 Application_Queue</a></li>
+	<li><a href="Asterisk-12-Application_QueueLog_26476902.html">Asterisk 12 Application_QueueLog</a></li>
+	<li><a href="Asterisk-12-Application_AddQueueMember_26476898.html">Asterisk 12 Application_AddQueueMember</a></li>
+	<li><a href="Asterisk-12-Application_RemoveQueueMember_26476899.html">Asterisk 12 Application_RemoveQueueMember</a></li>
+	<li><a href="Asterisk-12-Application_PauseQueueMember_26476900.html">Asterisk 12 Application_PauseQueueMember</a></li>
+	<li><a href="Asterisk-12-Application_UnpauseQueueMember_26476901.html">Asterisk 12 Application_UnpauseQueueMember</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_VARIABLES_26476903.html">Asterisk 12 Function_QUEUE_VARIABLES</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_MEMBER_26476904.html">Asterisk 12 Function_QUEUE_MEMBER</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_MEMBER_COUNT_26476905.html">Asterisk 12 Function_QUEUE_MEMBER_COUNT</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_EXISTS_26476906.html">Asterisk 12 Function_QUEUE_EXISTS</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_WAITING_COUNT_26476907.html">Asterisk 12 Function_QUEUE_WAITING_COUNT</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_MEMBER_LIST_26476908.html">Asterisk 12 Function_QUEUE_MEMBER_LIST</a></li>
+	<li><a href="Asterisk-12-Function_QUEUE_MEMBER_PENALTY_26476909.html">Asterisk 12 Function_QUEUE_MEMBER_PENALTY</a></li>
+</ul>
+
+
+
+<h3 id="Asterisk12Function_QUEUE_MEMBER-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version Unknown</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:16</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Create a new resource with ARI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started-with-ARI_26478450.html">Getting Started with ARI</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Create a new resource with ARI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  dlee , edited by  dlee  on Oct 17, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Creating new ARI resources is fairly straightforward.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570471426 {padding: 0px;}
+div.rbtoc1387570471426 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1387570471426 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570471426'>
+<ul class='toc-indentation'>
+<li><a href='#CreateanewresourcewithARI-CreatetheAPIdeclaration'>Create the API declaration</a></li>
+<li><a href='#CreateanewresourcewithARI-Addittoresources.json'>Add it to&nbsp;<code>resources.json</code></a></li>
+<li><a href='#CreateanewresourcewithARI-Generatethecode'>Generate the code</a></li>
+<li><a href='#CreateanewresourcewithARI-ImplementtheAPI'>Implement the API</a></li>
+<li><a href='#CreateanewresourcewithARI-Recommendedpractices'>Recommended practices</a>
+<ul class='toc-indentation'>
+<li><a href='#CreateanewresourcewithARI-UseHTTPerrorcodes'>Use HTTP error codes</a></li>
+<li><a href='#CreateanewresourcewithARI-Validateyourinputs'>Validate your inputs</a></li>
+<li><a href='#CreateanewresourcewithARI-Don%27tputbusinesslogicintheARIcode'>Don't put business logic in the ARI code</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="CreateanewresourcewithARI-CreatetheAPIdeclaration">Create the API declaration</h1><p>In the Asterisk source tree, the Swagger API declarations are stored in <code>./rest-api/api-docs/</code>. For this example, we are creating a new resource named &quot;fizzbuzz&quot;.</p><p>These API declarations are documented using <a href="https://developers.helloreverb.com/swagger/" class="external-link" rel="nofollow">Swagger</a>. Details on documenting the API declarations can be found <a href="https://github.com/wordnik/swagger-core/wiki/API-Declaration" class="external-link" rel="nofollow">on the Swagger wiki</a>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>fizzbuzz.json</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: js; collapse: true; gutter: true" style="font-size:12px;">{
+	&quot;_copyright&quot;: &quot;Copyright (C) 2013, Digium, Inc.&quot;,
+	&quot;_author&quot;: &quot;David M. Lee, II &lt;dlee@digium.com&gt;&quot;,
+	&quot;_svn_revision&quot;: &quot;$Revision$&quot;,
+	&quot;apiVersion&quot;: &quot;0.0.1&quot;,
+	&quot;swaggerVersion&quot;: &quot;1.1&quot;,
+	&quot;basePath&quot;: &quot;http://localhost:8088/stasis&quot;,
+	&quot;resourcePath&quot;: &quot;/api-docs/fizzbuzz.{format}&quot;,
+	&quot;apis&quot;: [
+		{
+			&quot;path&quot;: &quot;/fizzbuzz&quot;,
+			&quot;description&quot;: &quot;The FizzBuzz test. See http://www.codinghorror.com/blog/2007/02/why-cant-programmers-program.html.&quot;,
+			&quot;operations&quot;: [
+				{
+					&quot;httpMethod&quot;: &quot;GET&quot;,
+					&quot;summary&quot;: &quot;Returns an array of numbers from 1 to 100. But for multiples of three return \&quot;Fizz\&quot; instead of the number and for the multiples of five return \&quot;Buzz\&quot;. For numbers which are multiples of both three and five return \&quot;FizzBuzz\&quot;.&quot;,
+					&quot;nickname&quot;: &quot;fizzbuzz&quot;,
+					&quot;responseClass&quot;: &quot;object&quot;,
+					&quot;parameters&quot;: [
+						{
+							&quot;name&quot;: &quot;max&quot;,
+							&quot;description&quot;: &quot;Set the max number to fizzbuzz up to&quot;,
+							&quot;paramType&quot;: &quot;query&quot;,
+							&quot;required&quot;: false,
+							&quot;dataType&quot;: &quot;long&quot;
+						}
+					]
+				}
+			]
+		}
+	],
+	&quot;models&quot;: {
+		&quot;FizzBuzz&quot;: {
+			&quot;id&quot;: &quot;FizzBuzz&quot;,
+			&quot;description&quot;: &quot;List of ints, with Fizz and Buzz mixed in&quot;,
+			&quot;properties&quot;: {
+				&quot;fizzbuzz&quot;: {
+					&quot;type&quot;: &quot;List[object]&quot;
+				}
+			}
+		}
+	}
+}</pre>
+</div></div><h1 id="CreateanewresourcewithARI-Addittoresources.json">Add it to <code>resources.json</code></h1><p>The master list of resources served by Asterisk is kept in <code>rest-api/resources.json</code>. Simply add your resource to the end of the list.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>resources.json.diff</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: diff; gutter: false" style="font-size:12px;">Index: rest-api/resources.json
+===================================================================
+--- rest-api/resources.json	(revision 401118)
++++ rest-api/resources.json	(working copy)
+@@ -41,6 +41,10 @@
+ 		{
+ 			&quot;path&quot;: &quot;/api-docs/applications.{format}&quot;,
+ 			&quot;description&quot;: &quot;Stasis application resources&quot;
++		},
++		{
++			&quot;path&quot;: &quot;/api-docs/fizzbuzz.{format}&quot;,
++			&quot;description&quot;: &quot;FizzBuzz example&quot;
+ 		}
+ 	]
+ }</pre>
+</div></div><h1 id="CreateanewresourcewithARI-Generatethecode">Generate the code</h1><p>The API declarations are used to generate much of the boilerplate code in Asterisk for routing RESTful API invocations. This code is generated using <code>make ari-stubs</code>.</p>    <div class="aui-message warning shadowed information-macro">
+                            <span class="aui-icon icon-warning">Icon</span>
+                <div class="message-content">
+                            <p>The code generator requires <a href="https://pypi.python.org/pypi/pystache" class="external-link" rel="nofollow">Pystache</a>, which can be installed using <code>pip install pystache</code>.</p>
+                    </div>
+    </div>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;">$ make ari-stubs
+/usr/bin/python rest-api-templates/make_ari_stubs.py \
+		rest-api/resources.json .
+Writing ./doc/rest-api/Asterisk 12 Fizzbuzz REST API.wiki
+Writing ./res/res_ari_fizzbuzz.c
+Writing ./res/ari/resource_fizzbuzz.h
+Writing ./res/ari/resource_fizzbuzz.c
+Writing ./res/ari.make</pre>
+</div></div><h1 id="CreateanewresourcewithARI-ImplementtheAPI">Implement the API</h1><p>As you can see, a number of files are generated. Most of the files are always regenerated, and not meant to be modified. However <code>./res/ari/resource_fizbuzz.c</code> is simply stub functions to help you get started with your implementation.</p><p>The parameters described in your API declaration are parsed into an <code>args</code> structure for use in your implementation. The <code>response</code> struct is to be filled in with the HTTP response.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>resource_fizzbuzz.c</b></div><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: cpp; gutter: true" style="font-size:12px;">void ast_ari_fizzbuzz(struct ast_variable *headers,
+    struct ast_fizzbuzz_args *args,
+    struct ast_ari_response *response)
+{
+    RAII_VAR(struct ast_json *, json, NULL, ast_json_unref);
+    struct ast_json *fb;
+    int i;
+    int max = 100;
+    if (args-&gt;max) {
+        max = args-&gt;max;
+    }
+    json = ast_json_pack(&quot;{s: []}&quot;, &quot;fizzbuzz&quot;);
+    fb = ast_json_object_get(json, &quot;fizzbuzz&quot;);
+        /* This is what one would call &quot;business logic&quot;, and doesn&#39;t belong in
+         * the ARI layer. But this is just a silly example.
+         */
+    for (i = 1; i &lt;= max; ++i) {
+        if (i % 15 == 0) {
+            ast_json_array_append(fb,
+                ast_json_string_create(&quot;FizzBuzz&quot;));
+        } else if (i % 5 == 0) {
+            ast_json_array_append(fb,
+                ast_json_string_create(&quot;Buzz&quot;));
+        } else if (i % 3 == 0) {
+            ast_json_array_append(fb,
+                ast_json_string_create(&quot;Fizz&quot;));
+        } else {
+            ast_json_array_append(fb, ast_json_integer_create(i));
+        }
+    }
+    ast_ari_response_ok(response, json);
+}</pre>
+</div></div><h1 id="CreateanewresourcewithARI-Recommendedpractices">Recommended practices</h1><h2 id="CreateanewresourcewithARI-UseHTTPerrorcodes">Use HTTP error codes</h2><p>The HTTP error codes do a surprisingly good job describing error conditions you are likely to encounter. Do your best to stay true to the original intention of the error code; it will help keep the API understandable.</p><p>The use of extensions can also be useful. For example, we use <code>422 Unprocessable Entity</code> to indicate that a request was syntactically correct, but semantically invalid. This helps to keep <code>400 Bad Request</code> from being a  catch all for all sort of errors.</p><h2 id="CreateanewresourcewithARI-Validateyourinputs"><span style="color: rgb(0,0,0);">Validate your inputs</span></h2><p><span style="color: rgb(0,0,0);">While Swagger can describe input constraints (min, max, required), these are currently not validated in the request routing. Path parameters cannot be <code>NULL</code> (because you couldn't route the request if they were), but query parameters could be.</span></p><h2 id="CreateanewresourcewithARI-Don%27tputbusinesslogicintheARIcode"><span style="color: rgb(0,0,0);">Don't put business logic in the ARI code</span></h2><p><span style="color: rgb(0,0,0);">The design of Asterisk, including ARI, is to be modular. All of the <code>res_ari_*.so</code> modules are supposed to be the logic exposing underlying API's via an HTTP interface. Think of it as a controller in a Model-View-Controller architecture. This could should look up objects, validate inputs, call functions on those object, build the HTTP response.</span></p><p><span style="color: rgb(0,0,0);">If you find yourself writing lots of logic in your ARI code, it should probably be extracted down into either a <code>res_stasis*.so</code> module, or into Asterisk core.</span></p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:14</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

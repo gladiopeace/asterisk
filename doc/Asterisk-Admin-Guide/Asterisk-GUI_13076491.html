@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk GUI</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Historical-Pages_20189322.html">Historical Pages</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk GUI
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  espiceland , edited by  mdavenport  on Nov 18, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                        <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>Asterisk GUI is no longer maintained and should not be used</p>
+                    </div>
+    </div>
+<h1 id="AsteriskGUI-IntroductiontoAsteriskGUI">Introduction to Asterisk GUI</h1><p>Asterisk GUI is a framework for the creation of graphical interfaces for configuring Asterisk. Some sample graphical interfaces for specific vertical markets are included for reference or for actual use and extension.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1387570719013 {padding: 0px;}
+div.rbtoc1387570719013 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1387570719013 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1387570719013'>
+<ul class='toc-indentation'>
+<li><a href='#AsteriskGUI-IntroductiontoAsteriskGUI'>Introduction to Asterisk GUI</a>
+<ul class='toc-indentation'>
+<li><a href='#AsteriskGUI-SoftwareLicense'>Software License</a></li>
+<li><a href='#AsteriskGUI-Download'>Download</a></li>
+<li><a href='#AsteriskGUI-Support'>Support</a></li>
+</ul>
+</li>
+<li><a href='#AsteriskGUI-InstallationandConfiguration'>Installation and Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#AsteriskGUI-Installation'>Installation</a></li>
+<li><a href='#AsteriskGUI-Configuration'>Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#AsteriskGUI-http.conf%3A'>http.conf:</a></li>
+<li><a href='#AsteriskGUI-manager.conf'>manager.conf</a></li>
+<li><a href='#AsteriskGUI-Access'>Access</a></li>
+</ul>
+</li>
+<li><a href='#AsteriskGUI-Troubleshooting'>Troubleshooting</a></li>
+</ul>
+</li>
+<li><a href='#AsteriskGUI-Development'>Development</a>
+<ul class='toc-indentation'>
+<li><a href='#AsteriskGUI-Debugging'>Debugging</a></li>
+<li><a href='#AsteriskGUI-HideMenuCategories'>Hide Menu Categories</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h3 id="AsteriskGUI-SoftwareLicense">Software License</h3><p>Asterisk GUI HTML and Javascript files Copyright (C) 2006-2011 Digium, Inc.</p><p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2 only. This software is also available under commercial terms from Digium, Inc.</p><p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p><p>Please contact Digium for information on alternative licensing arrangements for Asterisk GUI.</p><h3 id="AsteriskGUI-Download">Download</h3><p>While package release is inconsistent and infrequent, you can always get a current copy of <a href="http://svn.asterisk.org/svn/asterisk-gui/branches/2.0/" class="external-link" rel="nofollow">Asterisk GUI from subversion</a>. The current stable version will always be under <code>branches</code> and is currently located in <code>branches/2.0</code>.</p><h3 id="AsteriskGUI-Support">Support</h3><p>Please note that Asterisk GUI is not officially supported, though bugs, patches, and feature requests may be submitted at <a href="http://issues.asterisk.org" class="external-link" rel="nofollow">http://issues.asterisk.org</a> and should reference the Asterisk GUI project. You may also find peer support in the #asterisk-gui IRC channel and the <a href="http://forums.asterisk.org/viewforum.php?f=35" class="external-link" rel="nofollow">Asterisk GUI forum</a>.</p><h1 id="AsteriskGUI-InstallationandConfiguration">Installation and Configuration</h1><h3 id="AsteriskGUI-Installation">Installation</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">$ ./configure
+$ make
+$ make install
+$ make checkconfig</pre>
+</div></div><h3 id="AsteriskGUI-Configuration">Configuration</h3><p>You may install sample configuration files by doing &quot;make samples&quot;. Also you will need to edit your Asterisk configuration files to enable Asterisk GUI properly, specifically:</p><h5 id="AsteriskGUI-http.conf%3A">http.conf:</h5><p>Enable http.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[general]
+enabled=yes
+enablestatic=yes
+#bindaddr=0.0.0.0 # allow GUI to be accessible from all IP addresses.
+bindaddr=127.0.0.1 # require access from the machine Asterisk is running on
+bindport=8088</pre>
+</div></div><h5 id="AsteriskGUI-manager.conf">manager.conf</h5><p>Enable manager access.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[general]
+enabled = yes
+webenabled = yes</pre>
+</div></div><p>Create an appropriate entry in <code>manager.conf</code> for the administrative user (PLEASE READ THE security.txt FILE!)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">[admin]
+secret = thiswouldbeaninsecurepassword
+read = system,call,log,verbose,command,agent,config,read,write,originate
+write = system,call,log,verbose,command,agent,config,read,write,originate</pre>
+</div></div><h5 id="AsteriskGUI-Access">Access</h5><p>Access Asterisk GUI via a URL formatted in the following way, where $IP is the IP address on which both Asterisk and Asterisk GUI are installed, $PORT is <code>bindport</code> from <code>http.conf</code>, and $PREFIX is the <code>prefix</code> from <code>http.conf</code>, and it can be omitted if blank.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">http://$IP:$PORT/$PREFIX/static/config/index.html</pre>
+</div></div><h3 id="AsteriskGUI-Troubleshooting">Troubleshooting</h3><p>Check your filesystem permissions:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">$ chown -R asterisk:asterisk /etc/asterisk/ /var/lib/asterisk /usr/share/asterisk # if asterisk runs as the user &quot;asterisk&quot;
+$ chmod 644 /etc/asterisk/*</pre>
+</div></div><p>Check that the bindaddr value in <code>/etc/asterisk/http.conf</code> matches the IP address of the machine you're using to <strong>access</strong> Asterisk GUI, not necessarily the IP address Asterisk GUI is running on.</p><p>Check on the Asterisk CLI that Asterisk is receiving the values you've set.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">http show status
+manager show settings</pre>
+</div></div><p>Output should look like this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">amelia*CLI&gt; http show status
+HTTP Server Status:
+Prefix: /asterisk
+Server Enabled and Bound to 0.0.0.0:8088
+
+Enabled URI&#39;s:
+/asterisk/httpstatus =&gt; Asterisk HTTP General Status
+/asterisk/phoneprov/... =&gt; Asterisk HTTP Phone Provisioning Tool
+/asterisk/amanager =&gt; HTML Manager Event Interface w/Digest authentication
+/asterisk/arawman =&gt; Raw HTTP Manager Event Interface w/Digest authentication
+/asterisk/manager =&gt; HTML Manager Event Interface
+/asterisk/rawman =&gt; Raw HTTP Manager Event Interface
+/asterisk/static/... =&gt; Asterisk HTTP Static Delivery
+/asterisk/amxml =&gt; XML Manager Event Interface w/Digest authentication
+/asterisk/mxml =&gt; XML Manager Event Interface
+
+Enabled Redirects:
+  None.
+amelia*CLI&gt; manager show settings
+
+Global Settings:
+----------------
+  Manager (AMI):             Yes            
+  Web Manager (AMI/HTTP):    Yes            
+  TCP Bindaddress:           0.0.0.0:5038   
+  HTTP Timeout (minutes):    60             
+  TLS Enable:                No             
+  TLS Bindaddress:           Disabled       
+  TLS Certfile:              asterisk.pem   
+  TLS Privatekey:                           
+  TLS Cipher:                               
+  Allow multiple login:      Yes            
+  Display connects:          Yes            
+  Timestamp events:          No             
+  Channel vars:                             
+  Debug:                     No             
+  Block sockets:             No             
+</pre>
+</div></div><p>Check that the ports you've specified are open by using telnet from another computer.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">telnet $ASTERISK_SERVER_IP_ADDRESS 5038
+telnet $ASTERISK_SERVER_IP_ADDRESS 8088</pre>
+</div></div><p>Check that the <code>dahdi_genconf</code> script runs correctly and creates <code>/etc/asterisk/dahdi_guiread.conf</code>.</p><p>Check the existence of <code>/etc/asterisk/guipreferences.conf</code> and inside that file, the existence of the following line:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">config_upgraded = yes</pre>
+</div></div><p>Check the last modified date of <code>/etc/asterisk/http.conf</code>. Asterisk GUI updates the timestamp on this file every time it is loaded. If the timestamp is not getting updated, your HTTP request is either not making it to Asterisk or it is not being processed correctly by Asterisk. This indicates a configuration error.</p><p>Check that the user Asterisk runs as has a login shell. Asterisk GUI depends on Asterisk being able to use the <a href="https://wiki.asterisk.org/wiki/display/AST/Application_System">System</a> application.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">su - asterisk</pre>
+</div></div><p>If you installed Asterisk GUI via 'yum' or 'apt-get', you may need to symlink <code>/var/lib/asterisk/static-http</code> to <code>/usr/share/asterisk/static-http</code>. Unfortunately <code>/usr/share/asterisk/static-http</code> will already exist, but fortunately it does not contain any useful files.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">ls /var/lib/asterisk/static-http/config &amp;&amp; rm -rf /usr/share/asterisk/static-http &amp;&amp; ln -s /var/lib/asterisk/static-http /usr/share/asterisk/static-http</pre>
+</div></div><h1 id="AsteriskGUI-Development">Development</h1><h3 id="AsteriskGUI-Debugging">Debugging</h3><p>To turn on debug messages, open <code>config/js/session.js</code>. On line 30, set &quot;log&quot; to &quot;true&quot;:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">    log: true, /**&lt; boolean toggling logging */</pre>
+</div></div><h3 id="AsteriskGUI-HideMenuCategories">Hide Menu Categories</h3><p>Hide menu categories by changing the HTML class attribute to &quot;AdvancedMode&quot; in index.html. Show them by enabling Advanced Options in the GUI.</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

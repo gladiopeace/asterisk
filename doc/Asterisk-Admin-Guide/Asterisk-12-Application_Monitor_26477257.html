@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Asterisk 12 Application_Monitor</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Documentation_25919697.html">Asterisk 12 Documentation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Command-Reference_26476688.html">Asterisk 12 Command Reference</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-12-Dialplan-Applications_26476696.html">Asterisk 12 Dialplan Applications</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Asterisk 12 Application_Monitor
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  wikibot , edited by  wikibot  on Aug 29, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Asterisk12Application_Monitor-Monitor%28%29">Monitor()</h1>
+
+<h3 id="Asterisk12Application_Monitor-Synopsis">Synopsis</h3>
+
+<p>Monitor a channel.</p>
+
+<h3 id="Asterisk12Application_Monitor-Description">Description</h3>
+
+<p>Used to start monitoring a channel. The channel's input and output voice packets are logged to files until the channel hangs up or monitoring is stopped by the StopMonitor application.</p>
+
+<p>By default, files are stored to <code>/var/spool/asterisk/monitor/</code>. Returns <code>-1</code> if monitor files can't be opened or if the channel is already monitored, otherwise <code>0</code>.</p>
+
+
+<h3 id="Asterisk12Application_Monitor-Syntax">Syntax</h3>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Monitor(file_format:urlbase,fname_base,options)</pre>
+</div></div>
+
+<h5 id="Asterisk12Application_Monitor-Arguments">Arguments</h5>
+
+<ul>
+	<li><code>file_format</code>
+	<ul>
+		<li><code>file_format</code> - optional, if not set, defaults to <code>wav</code></li>
+		<li><code>urlbase</code></li>
+	</ul>
+	</li>
+	<li><code>fname_base</code> - if set, changes the filename used to the one specified.</li>
+	<li><code>options</code>
+	<ul>
+		<li><code>m</code> - when the recording ends mix the two leg files into one and delete the two leg files. If the variable <code>MONITOR_EXEC</code> is set, the application referenced in it will be executed instead of soxmix/sox and the raw leg files will NOT be deleted automatically. soxmix/sox or <code>MONITOR_EXEC</code> is handed 3 arguments, the two leg files and a target mixed file name which is the same as the leg file names only without the in/out designator.<br />
+If <code>MONITOR_EXEC_ARGS</code> is set, the contents will be passed on as additional arguments to <code>MONITOR_EXEC</code>. Both <code>MONITOR_EXEC</code> and the Mix flag can be set from the administrator interface.</li>
+		<li><code>b</code> - Don't begin recording unless a call is bridged to another channel.</li>
+		<li><code>i</code> - Skip recording of input stream (disables <code>m</code> option).</li>
+		<li><code>o</code> - Skip recording of output stream (disables <code>m</code> option).</li>
+	</ul>
+	</li>
+</ul>
+
+
+<h3 id="Asterisk12Application_Monitor-SeeAlso">See Also</h3>
+
+<ul>
+	<li><a href="Asterisk-12-Application_StopMonitor_26477258.html">Asterisk 12 Application_StopMonitor</a></li>
+</ul>
+
+
+
+<h3 id="Asterisk12Application_Monitor-ImportVersion">Import Version</h3>
+
+<p>This documentation was imported from Asterisk Version Unknown</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:16</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

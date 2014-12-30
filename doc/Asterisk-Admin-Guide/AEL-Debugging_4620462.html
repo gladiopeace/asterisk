@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : AEL Debugging</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="4620445.html">Asterisk Extension Language (AEL)</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : AEL Debugging
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  pabelanger  on May 22, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Right at this moment, the following commands are available, but do nothing: </p>
+
+<ul>
+	<li>Enable AEL contexts debug
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+*CLI&gt; ael debug contexts 
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Enable AEL macros debug
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+*CLI&gt; ael debug macros 
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Enable AEL read debug
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+*CLI&gt; ael debug read 
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Enable AEL tokens debug
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+*CLI&gt; ael debug tokens 
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul>
+	<li>Disable AEL debug messages
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+*CLI&gt; ael no debug 
+</pre>
+</div></div></li>
+</ul>
+
+
+    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>If things are going wrong in your dialplan, you can use the following facilities to debug your file:</p>
+<ol>
+	<li>The messages log in /var/log/asterisk. (from the checks done at load time).</li>
+	<li>The &quot;show dialplan&quot; command in asterisk</li>
+	<li>The standalone executable, &quot;aelparse&quot; built in the utils/ dir in the source.</li>
+</ol>
+
+                    </div>
+    </div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-13076778"></a>
+                                    <font class="smallfont"><p>In order to avoid confusion, maybe the CLI lines could have the '&gt;' symbol, so no one tries to execute 'CLI ael no debug' or something like that.</p>
+
+<p>Note: Feel free to delete this comment if suggestion is accepted.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by khratos at May 20, 2011 10:18
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-13076791"></a>
+                                    <font class="smallfont"><p>Fixed.  Ideally we should create a macro for all CLI commands.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by pabelanger at May 22, 2011 21:00
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

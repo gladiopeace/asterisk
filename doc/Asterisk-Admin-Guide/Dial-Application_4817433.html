@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Dial Application</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Dialplan-Fundamentals_4817412.html">Dialplan Fundamentals</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Dial Application
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  lmadsen  on Feb 24, 2011
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Now that you've learned the basics of using dialplan applications, let's take a closer look at the <strong>Dial()</strong> application that we used earlier in extensions <strong>6001</strong> and <strong>6002</strong>. <strong>Dial()</strong> attempts to ring an external device, and if the call is answered it bridges the two channels together and does any necessary protocol or CODEC conversion. It also handles call progress responses (busy, no-answer, ringing).</p>
+    <div class="aui-message success shadowed information-macro">
+                    <p class="title">Dial() and the Dialplan</p>
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>Please note that if the Dial() application successfully bridges two channels together, that the call does not progress in the dialplan. The call will only continue on to the next priority if the Dial() application is unable to bridge the calling channel to the dialed device.</p>
+                    </div>
+    </div>
+
+<p>The <strong>Dial()</strong> application takes four parameters:</p>
+
+<ol>
+	<li><strong>Devices</strong>
+	<ul>
+		<li>A list of the device(s) you want to call. Devices are specified as technology or channel driver, a forward slash, and the device or account name. For example, <strong>SIP/demo-alice</strong> would use the SIP channel driver to call the device specified in the <strong>demo-alice</strong> section of <strong>sip.conf</strong>. Devices using the IAX2 channel driver take the form of <strong>IAX2/demo-george</strong>, and DAHDI channels take the form of <strong>DAHDI/1</strong>.</li>
+		<li>When calling through a device (such as a gateway) or service provider to reach another number, the syntax is <strong>technology/device/number</strong> such as <strong>SIP/my_provider/5551212</strong> or <strong>DAHDI/4/5551212</strong>.</li>
+		<li>To dial multiple devices at once, simply concatenate the devices together whith the ampersand character (<strong>&amp;</strong>). The first device to answer will get bridged with the caller, and the other endpoints will stop ringing.</li>
+		<li><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: javascript; gutter: false" style="font-size:12px;">exten =&gt; 6003,1,Dial(SIP/demo-alice&amp;SIP/demo-bob,30)</pre>
+</div></div></li>
+	</ul>
+	</li>
+	<li><strong>Timeout</strong>
+	<ul>
+		<li>The number of seconds to allow the device(s) to ring before giving up and moving on to the next priority in the extension.</li>
+	</ul>
+	</li>
+	<li><strong>Options</strong>
+	<ul>
+		<li>There are dozens of options that you can set on the outbound call, including call screening, distinctive ringing and more. Type <strong>core show application dial</strong> at the Asterisk CLI for a complete list of all available options. If you want to specify multiple options, simply concatenate them together. For example, if you want to use both the *m*and <strong>H</strong> options, you would set <strong>mH</strong> as the options parameter.</li>
+	</ul>
+	</li>
+	<li><strong>URL</strong>
+	<ul>
+		<li>The fourth parameter is a URL that will be sent to the endpoint. Few endpoints do anything with the URL, but there are a few (softphones mostly) that do act on the URL.</li>
+	</ul>
+	</li>
+</ol>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

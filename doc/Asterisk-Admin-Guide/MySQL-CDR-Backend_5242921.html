@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : MySQL CDR Backend</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="5242894.html">Call Detail Records (CDR)</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="CDR-Storage-Backends_5242913.html">CDR Storage Backends</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : MySQL CDR Backend
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  rnewton  on Jan 25, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h5 id="MySQLCDRBackend-ODBC">ODBC</h5>
+<p>Using MySQL for CDR records is supported by using ODBC and the cdr_adaptive_odbc module (depends on res_odbc).</p>
+
+    <div class="aui-message problem shadowed information-macro">
+                            <span class="aui-icon icon-problem">Icon</span>
+                <div class="message-content">
+                            <p>The below cdr_mysql module has been deprecated in 1.8.</p>
+                    </div>
+    </div>
+
+
+<h5 id="MySQLCDRBackend-Native">Native</h5>
+
+<p>Alternatively, there is a native MySQL CDR module. </p>
+
+<p>To use it, configure the module in cdr_mysql.conf. Create a table called cdr under the database name you will be using the following schema.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>CREATE TABLE cdr ( 
+        calldate datetime NOT NULL default &#39;0000-00-00 00:00:00&#39;, 
+        clid varchar(80) NOT NULL default &#39;&#39;, 
+        src varchar(80) NOT NULL default &#39;&#39;, 
+        dst varchar(80) NOT NULL default &#39;&#39;, 
+        dcontext varchar(80) NOT NULL default &#39;&#39;, 
+        channel varchar(80) NOT NULL default &#39;&#39;, 
+        dstchannel varchar(80) NOT NULL default &#39;&#39;, 
+        lastapp varchar(80) NOT NULL default &#39;&#39;, 
+        lastdata varchar(80) NOT NULL default &#39;&#39;, 
+        duration int(11) NOT NULL default &#39;0&#39;, 
+        billsec int(11) NOT NULL default &#39;0&#39;, 
+        disposition varchar(45) NOT NULL default &#39;&#39;, 
+        amaflags int(11) NOT NULL default &#39;0&#39;, 
+        accountcode varchar(20) NOT NULL default &#39;&#39;, 
+        uniqueid varchar(32) NOT NULL default &#39;&#39;, 
+        userfield varchar(255) NOT NULL default &#39;&#39; 
+);
+</pre>
+</div></div>
+
+
+<h5 id="MySQLCDRBackend-In1.8andlater">In 1.8 and later</h5>
+
+<p>The following columns can also be defined:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>        peeraccount varchar(20) NOT NULL default &#39;&#39;
+        linkedid varchar(32) NOT NULL default &#39;&#39;
+        sequence int(11) NOT NULL default &#39;0&#39;
+</pre>
+</div></div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-13076109"></a>
+                                    <font class="smallfont"><p>There are more fields available, 'start', 'answer' and 'end'.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by varnav at Apr 06, 2011 16:04
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-13076842"></a>
+                                    <font class="smallfont"><p>The <strong>start</strong> is already there, but it's called <strong>calldate</strong> in MySQL for instance.</p>
+
+<p>If you do a</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> 
+ grep &quot;^[^;]&quot; /etc/asterisk/cdr_mysql.conf
+</pre>
+</div></div>
+<p>on an Asterisk 1.8.4 installation amongst other things it reveals:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: bash; gutter: false" style="font-size:12px;"> 
+ [columns]
+ alias start =&gt; calldate
+ alias callerid =&gt; clid
+</pre>
+</div></div>
+<p>So what's Asterisk internally called <strong>start</strong> is called <strong>calldate</strong> in MySQL. As you can see from the <strong>.conf</strong> excerpt, the same goes for <strong>callerid</strong> and <strong>clid</strong>.</p>
+
+<p>If I'm not totally mistaken, <strong>end</strong> and <strong>answer</strong> can be derived from <strong>duration</strong> and <strong>billsec</strong>. In the original description of the <a href="CDR-Fields_5242902.html">CDR Fields</a> it says this:</p>
+<blockquote>
+<ul>
+	<li>start: Start of call (date/time)</li>
+	<li>answer: Answer of call (date/time)</li>
+	<li>end: End of call (date/time)</li>
+	<li>duration: Total time in system, in seconds (integer), from dial to hangup</li>
+	<li>billsec: Total time call is up, in seconds (integer), from answer to hangup</li>
+</ul>
+</blockquote>
+<p>In MySQL you only have <strong>duration</strong>, <strong>billsec</strong>, and <strong>start</strong> which is actually called <strong>calldate</strong>.</p>
+
+<p>Thus, this should be what you're looking for:</p>
+
+<p><strong>start</strong> = calldate<br />
+<strong>answer</strong> = start + (duration - billsec)<br />
+<strong>end</strong> = start + duration</p>
+
+<p>In SQL this would look like this:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+SELECT
+    *,
+    (`calldate`+(`duration`-`billsec`)) AS `answer`,
+    (`calldate`+`duration`) AS `end`
+FROM
+    cdr;
+</pre>
+</div></div>
+<p>If you want to create a view to avoid this calculation by hand you can do so with this command:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE VIEW YOUR_DATABASE.cdr_full AS
+SELECT
+    *,
+    (`calldate`+(`duration`-`billsec`)) AS `answer`,
+    (`calldate`+`duration`) AS `end`
+FROM
+    cdr;
+</pre>
+</div></div>
+<p>There is one problem with the column types though: <strong>answer</strong> and <strong>end</strong> in my case are of type <strong>double(23,6)</strong> which is not what we want. To fix this we need to do some casting (Don't know if this is MySQL specific):</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE VIEW YOUR_DATABASE.cdr_full AS
+SELECT
+    *,
+    CAST( `calldate`+(`duration`-`billsec`) AS DATETIME ) AS `answer`,
+    CAST( `calldate`+`duration` AS DATETIME ) AS `end`
+FROM
+    `cdr`;
+</pre>
+</div></div>
+<p>If you want to be perfectly correct, the colum attributes like <strong>NOT NULL</strong> and default values need to be set correctly. Well, since all the other columns carry the <strong>NOT NULL</strong> definition it should suffice if you just do the calculation. Anyway should by whatever circumstance the result of a calculation be <strong>NULL</strong> you might want to default to <strong>'0000-00-00 00:00:00'</strong>. Here's how you can achieve this:</p>
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE VIEW YOUR_DATABASE.cdr_full AS
+SELECT
+    *,
+    CAST( COALESCE(`calldate`+(`duration`-`billsec`), &#39;0000-00-00 00:00:00&#39;) AS DATETIME ) AS `answer`,
+    CAST( COALESCE(`calldate`+`duration`,&#39;0000-00-00 00:00:00&#39;) AS DATETIME ) AS `end`
+FROM
+    `cdr`;
+</pre>
+</div></div></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by kwk at May 25, 2011 03:35
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-21464368"></a>
+                                    <font class="smallfont"><p>I am using this database structure:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: sql; gutter: false" style="font-size:12px;">
+CREATE TABLE `cdr` (
+   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `calldate` DATETIME NOT NULL DEFAULT &#39;0000-00-00 00:00:00&#39;,
+   `clid` VARCHAR(80) NOT NULL DEFAULT &#39;&#39;,
+   `src` VARCHAR(80) NOT NULL DEFAULT &#39;&#39;,
+   `dst` VARCHAR(80) NOT NULL DEFAULT &#39;&#39;,
+   `dcontext` VARCHAR(80) NOT NULL DEFAULT &#39;&#39;,
+   `lastapp` VARCHAR(200) NOT NULL DEFAULT &#39;&#39;,
+   `lastdata` VARCHAR(200) NOT NULL DEFAULT &#39;&#39;,
+   `duration` FLOAT UNSIGNED NULL DEFAULT NULL,
+   `billsec` FLOAT UNSIGNED NULL DEFAULT NULL,
+   `disposition` ENUM(&#39;ANSWERED&#39;,&#39;BUSY&#39;,&#39;FAILED&#39;,&#39;NO ANSWER&#39;,&#39;CONGESTION&#39;) NULL DEFAULT NULL,
+   `channel` VARCHAR(50) NULL DEFAULT NULL,
+   `dstchannel` VARCHAR(50) NULL DEFAULT NULL,
+   `amaflags` VARCHAR(50) NULL DEFAULT NULL,
+   `accountcode` VARCHAR(20) NULL DEFAULT NULL,
+   `uniqueid` VARCHAR(32) NOT NULL DEFAULT &#39;&#39;,
+   `userfield` FLOAT UNSIGNED NULL DEFAULT NULL,
+   `answer` DATETIME NOT NULL,
+   `end` DATETIME NOT NULL,
+   PRIMARY KEY (`id`),
+   INDEX `calldate` (`calldate`),
+   INDEX `dst` (`dst`),
+   INDEX `src` (`src`),
+   INDEX `dcontext` (`dcontext`),
+   INDEX `clid` (`clid`),
+)
+COLLATE=&#39;utf8_bin&#39;
+ENGINE=InnoDB;
+</pre>
+</div></div>
+
+<p>1. This table uses InnoDB that is much better for writing operations like logging.<br />
+2. It has microsecond resolutions for timers.<br />
+3. It has more fields that are used in recent Asterisk versions.<br />
+4. It has indexes that make search and select operations faster</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by varnav at Nov 09, 2012 11:47
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

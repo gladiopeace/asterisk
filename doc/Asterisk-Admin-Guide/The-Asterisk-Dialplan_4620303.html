@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : The Asterisk Dialplan</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Asterisk-Configuration_4620290.html">Asterisk Configuration</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="General-Configuration-Information_4620292.html">General Configuration Information</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : The Asterisk Dialplan
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  russell  on Aug 30, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h3 id="TheAsteriskDialplan-TheAsteriskdialplan">The Asterisk dialplan</h3>
+
+<p>The Asterisk dialplan is divided into contexts. A context is simply a group of extensions. For each &quot;line&quot; that should be able to be called, an extension must be added to a context. Then, you configure the calling &quot;line&quot; to have access to this context. </p>
+
+<p>If you change the dialplan, you can use the Asterisk CLI command &quot;dialplan reload&quot; to load the new dialplan without disrupting service in your PBX. </p>
+
+<p>Extensions are routed according to priority and may be based on any set of characters (a-z), digits, #, and *. Please note that when matching a pattern, &quot;N&quot;, &quot;X&quot;, and &quot;Z&quot; are interpreted as classes of digits. </p>
+
+<p>For each extension, several actions may be listed and must be given a unique priority. When each action completes, the call continues at the next priority (except for some modules which use explicitly GOTO's). </p>
+
+<p>Extensions frequently have data they pass to the executing application (most frequently a string). You can see the available dialplan applications by entering the &quot;core show applications&quot; command in the CLI. </p>
+
+<p>In this version of Asterisk, dialplan functions are added. These can be used as arguments to any application. For a list of the installed functions in your Asterisk, use the &quot;core show functions&quot; command.</p>
+
+<h5 id="TheAsteriskDialplan-Exampledialplan">Example dialplan</h5>
+<p>The example dial plan, in the configs/extensions.conf.sample file is installed as extensions.conf if you run &quot;make samples&quot; after installation of Asterisk. This file includes many more instructions and examples than this file, so it's worthwhile to read it.</p>
+
+<h5 id="TheAsteriskDialplan-Specialextensions">Special extensions</h5>
+<p>There are some extensions with important meanings:</p>
+
+<ul>
+	<li>s - What to do when an extension context is entered (unless overridden by the low level channel interface) This is used in macros, and some special cases. &quot;s&quot; is not a generic catch-all wildcard extension.</li>
+	<li>i - What to do if an invalid extension is entered</li>
+	<li>h - The hangup extension, executed at hangup</li>
+	<li>t - What to do if nothing is entered in the requisite amount of time.</li>
+	<li>T - This is the extension that is executed when the 'absolute' timeout is reached. See &quot;core show function TIMEOUT&quot; for more information on setting timeouts.</li>
+	<li>e - This extension will substitute as a catchall for any of the 'i', 't', or 'T' extensions, if any of them do not exist and catching the error in a single routine is desired. The function EXCEPTION may be used to query the type of exception or the location where it occurred.</li>
+</ul>
+
+
+<p>And finally, the extension context &quot;default&quot; is used when either a) an extension context is deleted while an extension is in use, or b) a specific starting extension handler has not been defined (unless overridden by the low level channel interface).</p>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

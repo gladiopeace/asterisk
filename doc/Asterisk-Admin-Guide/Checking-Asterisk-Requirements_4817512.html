@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Checking Asterisk Requirements</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Getting-Started_5243710.html">Getting Started</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Beginning-Asterisk_4817304.html">Beginning Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk_4817553.html">Installing Asterisk</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Installing-Asterisk-From-Source_4817561.html">Installing Asterisk From Source</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Checking Asterisk Requirements
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  malcolmd , edited by  rnewton  on Aug 07, 2013
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Now it's time to compile and install Asterisk. Let's change to the directory which contains the Asterisk source code.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server dahdi-linux-complete-2.X.Y+2.X.Y]# cd /usr/local/src/asterisk-1.8.X.Y
+</pre>
+</div></div><p>Next, we'll run a command called <strong>./configure</strong>, which will perform a number of checks on the operating system, and get the Asterisk code ready to compile on this particular server.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server asterisk-1.8.X.Y]# ./configure
+</pre>
+</div></div><p>This will run for a couple of minutes, and warn you of any missing system libraries or other dependencies.</p><p>If you have missing dependencies then you should install them now and then run <strong>configure</strong> again to make sure they are recognized. A helpful way to install most of the dependencies you need is to use the <strong>install_prereq</strong> script included in the <strong>contrib/scripts/</strong> directory of your Asterisk source. It's quite straightforward to use, but may not work on all systems. Run the script with no arguments to see the usage help.</p><p>Upon completion of ./configure, you should see a message that looks similar to the one shown below. (Obviously, your host CPU type may be different than the below.)</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>                .$$$$$$$$$$$$$$$=..      
+              .$7$7..        .7$$7:.    
+            .$7$7..           .7$$7:.
+          .$$:.                 ,$7.7
+        .$7.     7$$$$           .$$77
+     ..$$.       $$$$$            .$$$7
+    ..7$   .?.   $$$$$   .?.       7$$$.
+   $.$.   .$$$7. $$$$7 .7$$$.      .$$$.
+ .777.   .$$$$$$77$$$77$$$$$7.      $$$,
+ $$$~      .7$$$$$$$$$$$$$7.       .$$$.
+.$$7          .7$$$$$$$7:          ?$$$.
+$$$          ?7$$$$$$$$$$I        .$$$7
+$$$       .7$$$$$$$$$$$$$$$$      :$$$.
+$$$       $$$$$$7$$$$$$$$$$$$    .$$$.
+$$$        $$$   7$$$7  .$$$    .$$$.
+$$$$             $$$$7         .$$$.
+7$$$7            7$$$$        7$$$
+ $$$$$                        $$$
+  $$$$7.                       $$  (TM)
+   $$$$$$$.           .7$$$$$$  $$
+     $$$$$$$$$$$$7$$$$$$$$$.$$$$$$
+       $$$$$$$$$$$$$$$$.
+
+configure: Package configured for:&amp;nbsp;
+configure: OS type &amp;nbsp;: linux-gnu
+configure: Host CPU : x86_64
+configure: build-cpu:vendor:os: x86_64 : unknown : linux-gnu :
+configure: host-cpu:vendor:os: x86_64 : unknown : linux-gnu :
+</pre>
+</div></div>    <div class="aui-message success shadowed information-macro">
+                            <span class="aui-icon icon-success">Icon</span>
+                <div class="message-content">
+                            <p>Cached Data<br /> The <strong>./configure</strong> command caches certain data to speed things up if it's invoked multiple times. To clear all the cached data, you can use the following command to completely clear out any cached data from the Asterisk build system.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[root@server asterisk-1.8.X.Y]# make distclean
+</pre>
+</div></div>
+                    </div>
+    </div>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-8126992"></a>
+                                    <font class="smallfont"><p>Innocent newbie question.  Would one run &quot;make distclean&quot; before or after &quot;./configure&quot;  ??  I realize someone with experience would know when or why &quot;make distclean&quot; would be in order.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by howwhi at Nov 04, 2010 13:12
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-8126996"></a>
+                                    <font class="smallfont"><p>First there is no such thing as an innocent question. Only a fool presumes he/she knows everything.<br />
+One good time to run &quot;make distclean&quot; is when you have run the &quot;make&quot; command to compile your sources.<br />
+If you had a failure in the process and it crapped out, you would run &quot;make distclean&quot;. The &quot;make distclean&quot; command erases all the files created by &quot;./configure&quot; and &quot;make&quot;. Running &quot;make clean&quot; would remove the files created by &quot;make&quot; only, So &quot;make distclean&quot; removes the files created by &quot;./configure&quot; and &quot;make&quot;. <br />
+I hope this helps.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by albro at Nov 04, 2010 14:21
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649799"></a>
+                                    <font class="smallfont"><p>Howard, Albro</p>
+
+<p><em>make</em> <em>dist-clean</em> is an alias to <em>distclean</em> which removes menuselect, sounds, makeopts and other build settings. The Makefile is a good read for users interested in the build system.</p>
+
+<p>You can look at the source of <a href="http://svn.asterisk.org/svn/asterisk/trunk/Makefile" class="external-link" rel="nofollow">Makefile</a> and see what it does.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by lathama at Dec 20, 2010 11:57
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478175"></a>
+                                    <font class="smallfont"><p>I cant install the install_prereq, any other way to install the prereq?</p><p> </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by Ecaridad0 at Sep 11, 2013 23:24
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-26478181"></a>
+                                    <font class="smallfont"><p>Not at this time. You can look inside the script to see the various package names, then install them manually via your package manager.</p><p>If there are problems with the install_prereq script, feel free to read through <a href="Asterisk-Issue-Guidelines_19726406.html">Asterisk Issue Guidelines</a> and post an issue on the bug tracker.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by rnewton at Sep 12, 2013 17:08
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:17</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

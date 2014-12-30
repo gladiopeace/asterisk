@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asterisk Project : Call Queues</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Asterisk Project</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Configuration-and-Operation_4260139.html">Configuration and Operation</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Features_4260053.html">Features</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Asterisk Project : Call Queues
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                                                Added by  mdavenport , edited by  mdavenport  on Aug 27, 2010
+                    </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Template holder while we wait for input on a good README for call queues. Please open a bug report and add text to this document</p>
+
+<h5 id="CallQueues-Generaladviceontheagentchannel">General advice on the agent channel</h5>
+
+<h5 id="CallQueues-Usingdynamicqueuemembers">Using dynamic queue members</h5>
+
+<h5 id="CallQueues-SIPchannelconfiguration">SIP channel configuration</h5>
+
+<p>Queues depend on the channel driver reporting the proper state for each member of the queue. To get proper signalling on <br />
+queue members that use the SIP channel driver, you need to enable a call limit (could be set to a high value so it <br />
+is not put into action) and also make sure that both inbound and outbound calls are accounted for.</p>
+
+<p>Example:</p>
+
+<div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="theme: Confluence; brush: java; gutter: false" style="font-size:12px;">
+[general]
+limitonpeer = yes
+
+[peername]
+type=friend
+call-limit=10
+</pre>
+</div></div>
+
+<h5 id="CallQueues-Otherreferences">Other references</h5>
+
+<ul>
+	<li>queuelog.txt</li>
+	<li>queues-with-callback-members.txt</li>
+</ul>
+
+
+<p>(Should we merge those documents into this?)</p>
+                    </div>
+
+                    
+                                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="comments" class="pageSectionTitle">Comments:</h2>
+                        </div>
+
+                        <table border="0" width="100%">
+                                                        <tr>
+                                <td >
+                                    <a name="comment-10649825"></a>
+                                    <font class="smallfont"><p>I don't know if there is a correct place to talk on my problem or but!<br />
+but i am looking to do a Queue failover.</p>
+
+<p>for example, in the case that i have 2 queue:<br />
+<strong>support-central</strong><br />
+<strong>support-provinces</strong></p>
+
+<p>i have two state:<br />
+<em>1- queue max length.</em><br />
+<em>2- no member available.</em></p>
+
+<p>in both situation, i want to send provinces caller to central queue.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by shayne.alone@gmail.com at Dec 21, 2010 03:11
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649826"></a>
+                                    <font class="smallfont"><p><img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/><br />
+hope this question to be a good point, for starting a wiki on queue management.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by shayne.alone@gmail.com at Dec 21, 2010 03:14
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649838"></a>
+                                    <font class="smallfont"><p>Okay, so that will be a combination of dialplan then - try provinces queue first and then second line of dialplan rings the central queue - as well as use of the maxlen, joinempty, and leavewhenempty queue options.</p>
+
+<p>Are you familiar with those options from queues.conf.sample ?</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Dec 21, 2010 08:50
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649876"></a>
+                                    <font class="smallfont"><p>Dear Malcolm;<br />
+first of all, thanks for your hellp...<br />
+<img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p>
+
+<p>i was trying somewhat like what you told,but it's my first try, so i hope to have your help <img class="emoticon emoticon-wink" src="images/icons/emoticons/wink.png" data-emoticon-name="wink" alt="(wink)"/><br />
+the following is what i did right now, and i hope to update it with queue length check today...</p>
+
+<p>i will do my tries and report the result ASAP.</p>
+
+<p>sorry if it's dirty dialplan</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by shayne.alone@gmail.com at Dec 22, 2010 00:16
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649879"></a>
+                                    <font class="smallfont"><p>it seems to be a better job <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.png" data-emoticon-name="smile" alt="(smile)"/></p>
+
+
+<p>of course it's not still ready for a WIKI, i like to modify it as a macro,but<br />
+how should i convert them into a WIKI page?</p>
+
+<p>is it enough to turn them into a label? </p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by shayne.alone@gmail.com at Dec 22, 2010 07:56
+                                    </div>
+                                </td>
+                            </tr>
+                                                        <tr>
+                                <td  style="border-top: 1px dashed #666666">
+                                    <a name="comment-10649882"></a>
+                                    <font class="smallfont"><p>The best way to turn things into a Wiki page is to create content in your private space.  From there, Wiki mods can pull it into mainline content.  We'll have the workflow software installed in the near future to simply the contribution process.</p></font>
+                                    <div align="left" class="smallfont" style="color: #666666; width: 98%; margin-bottom: 10px;">
+                                        <img src="images/icons/contenttypes/comment_16.png" height="16" width="16" border="0" align="absmiddle"/>
+                                        Posted by mdavenport at Dec 22, 2010 08:48
+                                    </div>
+                                </td>
+                            </tr>
+                                                    </table>
+                    </div>
+                                      
+                </div>             </div> 
+            <div id="footer">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Dec 20, 2013 14:18</p>
+                </section>
+            </div>
+        </div>     </body>
+</html>

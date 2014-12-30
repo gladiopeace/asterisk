@@ -12678,6 +12678,12 @@ static void add_ice_to_sdp(struct ast_rtp_instance *instance, struct ast_str **a
 	i = ao2_iterator_init(candidates, 0);
 
 	while ((candidate = ao2_iterator_next(&i))) {
+		// With sipml5 on client side and Asterisk on Amazon EC2 on server side,
+		// we should only send reflexive server candidate information
+		if (candidate->type == AST_RTP_ICE_CANDIDATE_TYPE_HOST) {
+			continue;
+		}
+
 		ast_str_append(a_buf, 0, "a=candidate:%s %u %s %d ", candidate->foundation, candidate->id, candidate->transport, candidate->priority);
 		ast_str_append(a_buf, 0, "%s ", ast_sockaddr_stringify_host(&candidate->address));
 
